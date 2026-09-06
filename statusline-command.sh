@@ -44,18 +44,21 @@ make_bar() {
   printf '%s' "$bar"
 }
 
-# Format a unix epoch seconds value as a short local clock time, e.g. "3:45 PM".
-fmt_time() {
-  local epoch
-  epoch=$(awk -v e="$1" 'BEGIN{printf "%d", e}')
-  date -r "$epoch" "+%l:%M %p" 2>/dev/null | sed 's/^ *//'
+# Format a Unix epoch seconds value as a local-time string in the given `date`
+# format. Tries GNU date (Linux, WSL, Git Bash / MSYS2 on Windows), then falls
+# back to BSD date (macOS).
+fmt_reset() {
+  date -d "@$1" "+$2" 2>/dev/null || date -r "$1" "+$2" 2>/dev/null
 }
 
-# Format a unix epoch seconds value as a short local weekday, e.g. "Thu".
+# Format the timestamp as a short local clock time, e.g. "3:45 PM".
+fmt_time() {
+  fmt_reset "$1" "%l:%M %p" | sed 's/^ *//'
+}
+
+# Format the timestamp as a short local weekday, e.g. "Thu".
 fmt_day() {
-  local epoch
-  epoch=$(awk -v e="$1" 'BEGIN{printf "%d", e}')
-  date -r "$epoch" "+%a" 2>/dev/null
+  fmt_reset "$1" "%a"
 }
 
 # Prompt-cache countdown: use the transcript file's last-modified time as a
