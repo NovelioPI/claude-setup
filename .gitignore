@@ -1,3 +1,19 @@
 .DS_Store
 *.swp
 *~
+
+# Secrets
+.credentials.json
+
+# Runtime state
+.last-cleanup
+.last-update-result.json
+history.jsonl
+backups/
+cache/
+file-history/
+ide/
+projects/
+sessions/
+shell-snapshots/
+session-env/
