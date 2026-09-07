@@ -6,12 +6,17 @@ Read code as if the reader sees it for the first time, with no other context.
 
 ### Comments and docstrings
 
+Default: write no comment and no docstring.
+Add one only when the user asks for it, or when a hidden constraint, a
+subtle invariant, or a workaround would make a reader change the code
+wrongly without it.
 Do not write a docstring for a private or internal function.
-Write one line only for a public function docstring, only when the
+Write one line only for a public function docstring, and only when the
 signature does not already say what it does.
 Do not write a comment that restates the code. Write a comment only for
 a non-obvious reason behind a choice.
-Push long explanation into a doc file. Write a doc file only when asked.
+Push a multi-sentence explanation into a doc file, not a docstring or a
+comment block. Write a doc file only when asked.
 
 ### Functions
 
@@ -29,6 +34,54 @@ Use `Any` only at a true boundary with untyped external input. At the
 boundary, validate into a concrete type (a `TypedDict`, a `pydantic`
 model, or a `cast()` right after the call). Do not let `Any` pass the
 boundary line.
+Use `X | None`, not `Optional[X]`. Use a builtin generic (`list[int]`),
+not the `typing` alias (`List[int]`).
+Use `Literal` for a fixed set of specific strings, or a string enum,
+instead of a bare `str` parameter. A bare `str` accepts a typo; `Literal`
+or an enum fails at check time.
+
+### State
+
+Thread state through a parameter or a constructor. Do not read or write
+module-level mutable state (a global RNG, a global client, a global
+cache).
+Risk: if two callers share hidden global state, then a test run leaks
+state between tests and results depend on run order.
+
+### Errors
+
+Raise an exception for an input or a precondition check. Do not use
+`assert` for that job: `python -O` strips every `assert`, so a check
+written as one disappears silently in an optimized run.
+Reserve `assert` for an internal invariant, never for external input.
+
+### Logging
+
+Use the `logging` module for output outside a CLI or a script entry
+point. Do not use `print` there: a library caller cannot filter, level,
+or redirect a `print` call.
+
+### Data objects
+
+Make a value object immutable by default: a frozen dataclass or a
+`NamedTuple`. Make it mutable only when the code needs to mutate it in
+place, not for convenience.
+
+### Imports
+
+Do not use a wildcard import (`from x import *`). It hides where a name
+came from and breaks static analysis.
+
+### Resources
+
+Open a file, a lock, or a connection with `with`. Do not pair a manual
+open call with a manual close call: an exception between the two skips
+the close.
+
+### Constants
+
+Name a magic number as a constant. An unexplained literal forces the
+reader to reverse-engineer its meaning.
 
 ### Tests
 

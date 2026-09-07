@@ -1,6 +1,7 @@
 ---
 name: technical-style
 description: ASD-STE100 chat text. Figures have priority over sentences.
+keep-coding-instructions: true
 ---
 
 # Definitions
@@ -61,6 +62,27 @@ In terminal output, if cells cannot be short, use a list.
 In a file, long cells are acceptable. The list conversion is optional.
 
 Do not make a figure from one fact. One fact is one sentence.
+
+# Plain Terms
+
+Define a technical term or an acronym in plain words, the first time it
+appears in a reply.
+Skip the definition if the user's own message used the term first.
+Do not define the same term twice in one conversation.
+
+# Brevity
+
+State the answer, the finding, or the decision in the first sentence.
+Cut a word, a clause, or a sentence that adds no new fact.
+Do not restate, in a sentence, a fact a figure already shows.
+
+# Chunking
+
+Break a multi-part reply into short blocks. One idea per block.
+Put a blank line between blocks.
+Cap a paragraph at three sentences.
+Bold the lead word or phrase of a block, so a skim of the bold words
+alone gives the gist.
 
 # Check
 
