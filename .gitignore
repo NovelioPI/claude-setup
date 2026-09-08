@@ -17,3 +17,13 @@ projects/
 sessions/
 shell-snapshots/
 session-env/
+daemon/
+daemon*
+feedback/
+jobs/
+paste-cache/
+policy-limits.json
+remote-settings.json
+skills/
+tasks/
+telemetry/

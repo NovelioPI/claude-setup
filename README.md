@@ -41,3 +41,57 @@ is personal, not a public dotfiles project.
 - The `notify.sh` hook uses `osascript` and `afplay`, both macOS-only.
 - This repo excludes `~/.claude/projects/*/memory/`: those memory files are tied
   to session-specific paths on the machine that wrote them, and are not portable.
+
+## Skills setup
+
+`~/.claude/skills/` is excluded from this repo (see `.gitignore`) — every entry
+in it is a symlink into `~/.agents/skills/`, which lives outside `~/.claude/`.
+On a new device, reinstall the skills with the Skills CLI (`npx skills`, see
+https://skills.sh/) — this recreates `~/.agents/skills/<name>/` and the
+matching symlink under `~/.claude/skills/`:
+
+```bash
+npx skills add mattpocock/skills@ask-matt -g -y
+npx skills add mattpocock/skills@claude-handoff -g -y
+npx skills add mattpocock/skills@code-review -g -y
+npx skills add mattpocock/skills@codebase-design -g -y
+npx skills add mattpocock/skills@diagnosing-bugs -g -y
+npx skills add mattpocock/skills@domain-modeling -g -y
+npx skills add mattpocock/skills@git-guardrails-claude-code -g -y
+npx skills add mattpocock/skills@grill-me -g -y
+npx skills add mattpocock/skills@grill-with-docs -g -y
+npx skills add mattpocock/skills@grilling -g -y
+npx skills add mattpocock/skills@handoff -g -y
+npx skills add mattpocock/skills@implement -g -y
+npx skills add mattpocock/skills@implement-spec -g -y
+npx skills add mattpocock/skills@improve-codebase-architecture -g -y
+npx skills add mattpocock/skills@loop-me -g -y
+npx skills add mattpocock/skills@migrate-to-shoehorn -g -y
+npx skills add mattpocock/skills@prototype -g -y
+npx skills add mattpocock/skills@research -g -y
+npx skills add mattpocock/skills@resolving-merge-conflicts -g -y
+npx skills add mattpocock/skills@retro -g -y
+npx skills add mattpocock/skills@scaffold-exercises -g -y
+npx skills add mattpocock/skills@setup-matt-pocock-skills -g -y
+npx skills add mattpocock/skills@setup-pre-commit -g -y
+npx skills add mattpocock/skills@setup-ts-deep-modules -g -y
+npx skills add mattpocock/skills@tdd -g -y
+npx skills add mattpocock/skills@teach -g -y
+npx skills add mattpocock/skills@to-questionnaire -g -y
+npx skills add mattpocock/skills@to-spec -g -y
+npx skills add mattpocock/skills@to-tickets -g -y
+npx skills add mattpocock/skills@triage -g -y
+npx skills add mattpocock/skills@wait-what -g -y
+npx skills add mattpocock/skills@wayfinder -g -y
+npx skills add mattpocock/skills@wizard -g -y
+npx skills add mattpocock/skills@writing-beats -g -y
+npx skills add mattpocock/skills@writing-for-agents -g -y
+npx skills add mattpocock/skills@writing-fragments -g -y
+npx skills add mattpocock/skills@writing-shape -g -y
+npx skills add vercel-labs/skills@find-skills -g -y
+```
+
+`skills/tabbit` is not managed by the Skills CLI (it has no entry in
+`~/.agents/.skill-lock.json`). It's a real directory, installed and kept in
+sync automatically by the Tabbit Browser app (marked `.tabbit-dance-managed`).
+Install/run that app on the new device to regenerate it.
