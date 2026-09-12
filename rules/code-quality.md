@@ -4,8 +4,11 @@ Definition: cognitive debt = the mental effort a reader needs to hold code in mi
 Priority: minimize cognitive debt over completeness, cleverness, or flexibility.
 Read code as if the reader sees it for the first time, with no other context.
 
-Python: read `rules/code-quality-python.md` before you write or edit Python
-code. That file gives the Python form of the rules below.
+Read the language file before you write or edit code in that language.
+It gives the language form of the rules below.
+Python: `rules/code-quality-python.md`.
+TypeScript and JavaScript: `rules/code-quality-typescript.md`.
+C and C++: `rules/code-quality-cpp.md`.
 
 ### Comments and docstrings
 
@@ -60,7 +63,9 @@ At the boundary, validate into a concrete type. Do not let the catch-all
 type pass the boundary line.
 Use an enum or a literal union for a fixed set of specific strings,
 instead of a bare string type.
-Depend on an interface only when two implementations exist.
+Depend on an injected abstraction only when two implementations exist.
+A named type that only describes a data shape is not an abstraction.
+Name the shape of every object you pass across a function boundary.
 Split a wide interface only when a client must implement a method it
 never calls.
 Wrap a primitive in a type when two or more functions validate it the
@@ -77,7 +82,11 @@ Risk: if two callers share hidden global state, then a test run leaks
 state between tests and results depend on run order.
 Do not assign to a parameter. Copy it into a local variable first.
 Give each variable one purpose. Do not reuse one variable for two jobs.
-Do not chain more than two calls to reach a value. Ask the first object.
+Do not reach through an object graph to get a value. Ask the first
+object.
+This limit covers a walk across objects. It does not cover a chain that
+keeps returning the same kind of value, such as a promise chain, a
+builder, or a query.
 
 ### Errors
 
@@ -135,6 +144,11 @@ parameter.
 Prefer composition and delegation over inheritance.
 Replace a type conditional with one subclass for each type. Do this only
 when the same switch appears in three or more places.
+Prefer a tagged union with an exhaustive switch when the language can
+prove that every case is handled. Use one subclass for each type only
+when the language cannot prove it.
+Reason: the compiler reports a missing case, so a new variant fails the
+build instead of failing at run time.
 Give two types that do the same job the same method names, or delete one.
 Do not add a subclass here that forces a subclass there. Hold a reference
 instead.
@@ -152,6 +166,15 @@ tracks how long a reader needs to understand a snippet.
 Do not use cyclomatic complexity as a limit.
 Risk: if you cap cyclomatic complexity, then it scores five nested
 conditions better than six flat ones, against the guard clause rule.
+
+### Names
+
+Make the length of a name match the length of its scope. A name inside a
+ten-line scope can be short. A name the whole module reads cannot.
+Do not encode type information in a name.
+Do not abbreviate by deleting letters.
+Risk: if a reader cannot say a name out loud, then they cannot discuss
+the code.
 
 ### Constants
 
@@ -180,3 +203,9 @@ consolidation, not more files.
 
 A project CLAUDE.md rule overrides this section when the two conflict,
 for that project only.
+
+A house style guide that demands a doc comment on every public name does
+not override the Comments and docstrings section. PEP 257 and the Google
+TypeScript guide both demand one.
+Reason: they target a shared repository with generated API docs, not a
+reader of the source.

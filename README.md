@@ -13,6 +13,8 @@ Target platform is WSL2 on Windows. The notification hook uses Windows interop.
 | `CLAUDE.md` | `~/.claude/CLAUDE.md` | Workflow contract: approval protocol, conversation flow, process gates |
 | `rules/code-quality.md` | `~/.claude/rules/code-quality.md` | Coding, comment, typing, test, file-layout rules — imported by CLAUDE.md |
 | `rules/code-quality-python.md` | `~/.claude/rules/code-quality-python.md` | Python form of the code quality rules — read on demand, not imported |
+| `rules/code-quality-typescript.md` | `~/.claude/rules/code-quality-typescript.md` | TypeScript and JavaScript form of the code quality rules — read on demand |
+| `rules/code-quality-cpp.md` | `~/.claude/rules/code-quality-cpp.md` | C and C++ form of the code quality rules — read on demand |
 | `rules/plain-words.md` | `~/.claude/rules/plain-words.md` | Word replacements for chat text and commit messages — imported by CLAUDE.md |
 | `rules/commit-style.md` | `~/.claude/rules/commit-style.md` | Commit subject, body, word, and trailer rules — imported by CLAUDE.md |
 | `rules/doc-style.md` | `~/.claude/rules/doc-style.md` | Style for a document a human reads — imported by CLAUDE.md |
@@ -22,6 +24,7 @@ Target platform is WSL2 on Windows. The notification hook uses Windows interop.
 | `hooks/check-complexity.sh` | `~/.claude/hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on a Python file |
 | `hooks/notify.sh` | `~/.claude/hooks/notify.sh` | Notification hook: Windows toast through WSL interop |
 | `statusline-command.sh` | `~/.claude/statusline-command.sh` | Status line script |
+| `plans/` | `~/.claude/plans/` | Research findings and the decisions taken from them |
 | `plans/archive/` | `~/.claude/plans/archive/` | Finished planning notes, kept for history |
 
 An output style file is inert on its own. `settings.json` activates one with
