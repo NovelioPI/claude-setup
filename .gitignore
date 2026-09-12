@@ -31,5 +31,17 @@ skills/*
 !skills/todo-plan/**
 !skills/todo-update/
 !skills/todo-update/**
+!skills/grilling/
+!skills/grilling/**
+!skills/research/
+!skills/research/**
+!skills/resolving-merge-conflicts/
+!skills/resolving-merge-conflicts/**
+!skills/diagnosing-bugs/
+!skills/diagnosing-bugs/**
+!skills/handoff/
+!skills/handoff/**
+!skills/writing-for-agents/
+!skills/writing-for-agents/**
 tasks/
 telemetry/
