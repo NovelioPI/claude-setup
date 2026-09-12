@@ -19,6 +19,7 @@ Target platform is WSL2 on Windows. The notification hook uses Windows interop.
 | `output-styles/plain-style.md` | `~/.claude/output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
 | `output-styles/technical-style.md` | `~/.claude/output-styles/technical-style.md` | Older ASD-STE100 chat output style, kept as a fallback |
 | `hooks/block-dangerous-git.sh` | `~/.claude/hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
+| `hooks/check-complexity.sh` | `~/.claude/hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on a Python file |
 | `hooks/notify.sh` | `~/.claude/hooks/notify.sh` | Notification hook: Windows toast through WSL interop |
 | `statusline-command.sh` | `~/.claude/statusline-command.sh` | Status line script |
 | `plans/archive/` | `~/.claude/plans/archive/` | Finished planning notes, kept for history |

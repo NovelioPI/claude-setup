@@ -142,6 +142,17 @@ Do not inherit when the child ignores part of the parent contract.
 Risk: if a child breaks the parent contract, then a caller that holds the
 parent type fails on the child.
 
+### Complexity
+
+Cap cognitive complexity at 15 for one function.
+Cap nesting depth at 5.
+Reason: cognitive complexity is the only measure with evidence, because it
+tracks how long a reader needs to understand a snippet.
+
+Do not use cyclomatic complexity as a limit.
+Risk: if you cap cyclomatic complexity, then it scores five nested
+conditions better than six flat ones, against the guard clause rule.
+
 ### Constants
 
 Name a magic number as a constant. An unexplained literal forces the
