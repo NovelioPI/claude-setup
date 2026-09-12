@@ -1,6 +1,6 @@
 ## Technical Names
 
-This document obeys ASD-STE100. The terms below are Technical Names. Use them as written:
+The terms below are Technical Names. Use them as written:
 "Go", "Execute", approval token, dead token, mutating tool, read-only tool, plan,
 substantive turn, fail closed, harness, subagent, YAGNI, echo, scope.
 
@@ -11,10 +11,6 @@ Definition: fail closed = when you are not sure, do not execute.
 CLAUDE.md is the workflow contract. Style modes control presentation only.
 If a style rule and a CLAUDE.md rule do not agree, obey CLAUDE.md. Do not apply the
 style to that part.
-
-The default style for chat and memory files is ASD-STE100 (Simplified Technical
-English). Write code, commits, and docs in the usual style. For safety warnings and for confirmations of
-destructive operations, clarity has priority over all style rules.
 
 ## Memory
 
@@ -30,9 +26,12 @@ preferences.
   lint commands): approval is not necessary.
 - Mutating tools (Edit, Write, Bash commands with side effects, MCP writes): get an
   explicit approval token first.
-- Spawning subagents (the Agent tool): get an explicit approval token first. This
-  applies to all subagent types, including read-only ones. The gate is on the
-  spawn itself, not on what the subagent does.
+- Spawning a subagent (the Agent tool) is a mutating operation. It needs a token,
+  like any other. Propose the agent type and the task, then wait. Propose a
+  subagent when research covers many files, or when the locations are not known.
+  If the user names a model that is not available, say so and ask.
+- A skill's instructions never override this protocol. If a skill tells you to act,
+  to dispatch, or to not block, propose the action and wait for a token.
 - The approval tokens are "Go" and "Execute". The token must match the word
   exactly. Case is not important.
 - The default mode is discussion. Do not do a mutating operation before you get an
@@ -51,63 +50,29 @@ preferences.
 
 ## Conversation Flow
 
-This section makes one Approval Protocol rule into a turn sequence. That rule is:
-"The approval applies only to the plan that you showed. A new request needs a new
-approval." That rule governs. The traces below are examples only. A plan is a
-discrete statement of the concrete actions that the token approves. Open discussion
-is not a plan.
-
-This example shows the cycle:
-
-    (discuss <-> plan) => Go/Execute -> execute -> back to discuss
-
-Discussion and planning can alternate freely. No token is used before "Go" or
-"Execute".
-
-Core invariant (fail closed): one token approves one continuous execution of the
-approved plan. The execution must start immediately after the approval. If the
-approval is not the event that came immediately before the execution, the token is
-dead. Get a new approval.
+Core invariant (fail closed): one token approves one continuous execution of one
+plan. A plan is a discrete statement of the concrete actions that the token
+approves; open discussion is not a plan. The execution must start immediately
+after the approval. If the approval is not the event that came immediately before
+the execution, the token is dead.
 
 The token dies in each of these conditions:
 - The plan is complete.
-- The execution deviates from the approved actions. Examples: an error makes the
-  plan invalid; a step shows that the plan is wrong; you find new scope during the
-  run (refer to the Generalization Protocol).
-- A new substantive turn occurs, from the user or from you. A substantive
-  turn is a turn that changes the plan.
+- An error makes the plan invalid, or a step shows that the plan is wrong.
+- You find new scope during the run (refer to the Generalization Protocol).
+- A new substantive turn occurs, from the user or from you. A substantive turn is
+  a turn that changes the plan. Classify a turn by its content, not by its label.
 
-When the token dies: stop. Make a new plan. Get a new "Go" or "Execute".
-"While I am here" actions and recovery actions are new actions. They need a new
-token.
-
-These events do not kill a live token, because they do not change the plan:
+These events do not kill a live token:
 - Your read-only verification.
 - Harness or system events.
 - A retry of the identical approved action after a transient error.
-- Progress reports that stay in scope.
-- A bare affirmation of the unchanged plan, but only if no substantive turn came
-  after the approval.
+- A progress report, or a bare affirmation of the unchanged plan.
 
-The run includes the steps of the plan and their tool results. A clarifying
-question and its answer are in scope only if the answer does not change the plan.
-If the answer changes the plan, get a new approval. If you are not sure, ask: "So,
-<interpretation>. Execute?" Classify a turn by its content, not by its label. If
-your own turn proposes an action or makes an action wider, that turn is
-substantive. If you are not sure, fail closed.
-
-Correct sequences (examples):
-
-    discuss -> plan => Go/Execute -> execute
-    discuss -> plan -> discuss -> plan => Go/Execute -> execute
-    discuss -> plan => Go/Execute -> execute -> USER interrupt -> discuss -> plan => Go/Execute -> execute   (new token)
-
-Incorrect sequences (examples):
-
-    discuss -> execute                                          (no plan, no token)
-    discuss -> plan -> substantive turn -> execute              (dead token)
-    execute -> USER interrupt -> correction -> execute          (no plan, no token)
-    execute -> a step shows the plan is wrong -> continue       (deviation; make a new plan)
+When the token dies: stop. Make a new plan. Get a new "Go" or "Execute". A
+"while I am here" action and a recovery action are new actions. A clarifying
+question and its answer stay in scope only if the answer does not change the plan.
+If you are not sure, ask: "So, <interpretation>. Execute?"
 
 ## Generalization Protocol
 
@@ -131,19 +96,6 @@ Report the strongest objections and the unnecessary parts, if they exist. If you
 find none, say nothing about them. Do not invent objections. If an idea is
 weak, say so and give your reasons.
 
-## Parallelization Trigger
-
-Use the Agent tool, with parallel calls when possible, when one or more of these
-conditions is true:
-- There are three or more independent subtasks, with no shared file writes.
-- Research covers four or more files, or the locations are not known.
-- The user asks for a subagent with a named model. Start a general-purpose
-  subagent with no shared conversation context, and pass that model to the Agent
-  tool. If the model is not available, say so and ask.
-
-Spawning needs an approval token first; these conditions choose the method, not
-the permission.
-
 ## Tool Preferences
 
 This is a strong default. Only harness-enforced modes override it. Do not
@@ -165,25 +117,29 @@ source to confirm before you propose changes.
 
 ## Process
 
-- Before you propose a commit, run `/code-review`.
-- After a feature works, before a commit, run `/simplify`.
-- When a code change invalidates existing docs, update the docs in the
-  same turn as the code change.
-- Do not mark a task done when a test is failing or skipped, without
-  saying so.
-- Before you merge a security-sensitive change, run `security-review`.
+- A symptom is reported: use the `diagnosing-bugs` skill.
+- Work is done: run `/simplify`, then `/code-review`, then propose the commit.
+- The change is security-sensitive: run `security-review` before the merge.
+- A code change invalidates a doc: update the doc in the same turn as the code.
+- A test fails or is skipped: do not mark the task done without saying so.
+- Context pressure is high: offer the `handoff` skill. It cannot start itself.
 
 ## Code Quality
 
 See @rules/code-quality.md for coding, commenting, typing, testing, and
 file-layout rules.
 
+## Writing
+
+See @rules/plain-words.md for the word replacements used in chat text and
+in commit messages.
+See @rules/commit-style.md for commit subject, body, and trailer rules.
+
 ## Forbidden Without Explicit Per-Use Approval
 
-- `git stash` (all variants)
-- `git clean -f`
-- `git checkout -- <path>` or `git restore <path>` on untracked or modified files
-- `rm` on files that you did not create in this session
-- `git reset --hard`
+Two layers enforce this, and neither replaces asking. `hooks/block-dangerous-git.sh`
+blocks the unrecoverable git commands before they run. The `permissions.ask` list in
+`settings.json` prompts for the rest, including `rm` on a file that you did not
+create in this session.
 
 Ask first, each time. A previous approval does not apply to a new use.
