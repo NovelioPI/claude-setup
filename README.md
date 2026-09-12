@@ -12,6 +12,7 @@ Target platform is WSL2 on Windows. The notification hook uses Windows interop.
 | `settings.json` | `~/.claude/settings.json` | Model, effort, output style, permission rules, hooks, status line, attribution |
 | `CLAUDE.md` | `~/.claude/CLAUDE.md` | Workflow contract: approval protocol, conversation flow, process gates |
 | `rules/code-quality.md` | `~/.claude/rules/code-quality.md` | Coding, comment, typing, test, file-layout rules — imported by CLAUDE.md |
+| `rules/code-quality-python.md` | `~/.claude/rules/code-quality-python.md` | Python form of the code quality rules — read on demand, not imported |
 | `rules/plain-words.md` | `~/.claude/rules/plain-words.md` | Word replacements for chat text and commit messages — imported by CLAUDE.md |
 | `rules/commit-style.md` | `~/.claude/rules/commit-style.md` | Commit subject, body, word, and trailer rules — imported by CLAUDE.md |
 | `rules/doc-style.md` | `~/.claude/rules/doc-style.md` | Style for a document a human reads — imported by CLAUDE.md |
@@ -30,15 +31,8 @@ An output style file is inert on its own. `settings.json` activates one with
 1. Install Claude Code and run it once, so `~/.claude/` exists.
 2. Clone this repo, then copy the files to their target paths:
    ```
-   cp settings.json ~/.claude/settings.json
-   cp CLAUDE.md ~/.claude/CLAUDE.md
-   mkdir -p ~/.claude/rules ~/.claude/hooks ~/.claude/output-styles ~/.claude/plans
-   cp rules/code-quality.md ~/.claude/rules/code-quality.md
-   cp hooks/block-dangerous-git.sh ~/.claude/hooks/block-dangerous-git.sh
-   cp hooks/notify.sh ~/.claude/hooks/notify.sh
-   cp output-styles/technical-style.md ~/.claude/output-styles/technical-style.md
-   cp statusline-command.sh ~/.claude/statusline-command.sh
-   cp -r plans ~/.claude/plans
+   cp settings.json CLAUDE.md statusline-command.sh ~/.claude/
+   cp -r rules output-styles hooks skills plans ~/.claude/
    ```
 3. Make the scripts executable:
    ```

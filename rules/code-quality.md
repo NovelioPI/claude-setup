@@ -4,6 +4,9 @@ Definition: cognitive debt = the mental effort a reader needs to hold code in mi
 Priority: minimize cognitive debt over completeness, cleverness, or flexibility.
 Read code as if the reader sees it for the first time, with no other context.
 
+Python: read `rules/code-quality-python.md` before you write or edit Python
+code. That file gives the Python form of the rules below.
+
 ### Comments and docstrings
 
 Default: write no comment and no docstring.
@@ -18,6 +21,18 @@ a non-obvious reason behind a choice.
 Push a multi-sentence explanation into a doc file, not a docstring or a
 comment block. Write a doc file only when asked.
 
+Cap a comment at 20 words and at 2 lines.
+Write a comment with one of two labels, because this section allows only
+two cases:
+
+    Reason: <cause> causes <effect>.
+    Risk: if <condition>, then <consequence>.
+
+Use simple English. See @rules/plain-words.md for the word tables.
+Do not use a figure of speech.
+Write a TODO with a plan ID: `TODO(H5): ...`. A bare TODO competes with
+TODO.md.
+
 ### Functions
 
 Do not extract a function that is called once, unless it removes real
@@ -25,20 +40,33 @@ duplication or names a non-obvious step.
 Inline a single-use helper into its caller.
 A function does one job. Split a function only when it does two or more
 unrelated jobs, not to shorten line count.
+Return early with a guard clause instead of nesting conditions.
+A function returns a value or changes state, never both.
+Do not pass a boolean that picks behavior. Write two functions instead.
+Cap a function at four parameters. Group values that always travel
+together into one type.
+Rename a function as soon as its name stops matching its job.
+Put a function in the module that owns the data it reads most.
+Extract a single-use fragment when you had to read it twice to name it.
+Merge conditions that produce the same result into one condition.
+Pass the whole object when the callee reads three or more of its fields.
 
-### Types (Python)
+### Types
 
-Do not use `Any` to pass a contract through. Name the real type: a
-concrete class, `TypedDict`, `Protocol`, or a union of concrete types.
-Use `Any` only at a true boundary with untyped external input. At the
-boundary, validate into a concrete type (a `TypedDict`, a `pydantic`
-model, or a `cast()` right after the call). Do not let `Any` pass the
-boundary line.
-Use `X | None`, not `Optional[X]`. Use a builtin generic (`list[int]`),
-not the `typing` alias (`List[int]`).
-Use `Literal` for a fixed set of specific strings, or a string enum,
-instead of a bare `str` parameter. A bare `str` accepts a typo; `Literal`
-or an enum fails at check time.
+Do not use a catch-all type to pass a contract through. Name the real
+type: a concrete class, a record type, or a union of concrete types.
+Use a catch-all type only at a true boundary with untyped external input.
+At the boundary, validate into a concrete type. Do not let the catch-all
+type pass the boundary line.
+Use an enum or a literal union for a fixed set of specific strings,
+instead of a bare string type.
+Depend on an interface only when two implementations exist.
+Split a wide interface only when a client must implement a method it
+never calls.
+Wrap a primitive in a type when two or more functions validate it the
+same way.
+Risk: if a parameter takes a bare string, then a typo passes the type
+check and fails at run time.
 
 ### State
 
@@ -47,36 +75,72 @@ module-level mutable state (a global RNG, a global client, a global
 cache).
 Risk: if two callers share hidden global state, then a test run leaks
 state between tests and results depend on run order.
+Do not assign to a parameter. Copy it into a local variable first.
+Give each variable one purpose. Do not reuse one variable for two jobs.
+Do not chain more than two calls to reach a value. Ask the first object.
 
 ### Errors
 
-Raise an exception for an input or a precondition check. Do not use
-`assert` for that job: `python -O` strips every `assert`, so a check
-written as one disappears silently in an optimized run.
-Reserve `assert` for an internal invariant, never for external input.
+Raise an exception for an input or a precondition check. Do not use an
+assertion for that job.
+Risk: if a check is an assertion, then an optimized build strips it and
+the check disappears without a message.
+Reserve an assertion for an internal invariant, never for external input.
+Report a failure with an exception, not with a returned error code.
 
 ### Logging
 
-Use the `logging` module for output outside a CLI or a script entry
-point. Do not use `print` there: a library caller cannot filter, level,
-or redirect a `print` call.
+Use a logger for output outside a CLI or a script entry point. Do not
+write to standard output there.
+Risk: if a library writes to standard output, then a caller cannot
+filter, level, or redirect it.
 
 ### Data objects
 
-Make a value object immutable by default: a frozen dataclass or a
-`NamedTuple`. Make it mutable only when the code needs to mutate it in
-place, not for convenience.
+Make a value object immutable by default. Make it mutable only when the
+code needs to mutate it in place, not for convenience.
+Return a read-only view of a collection. Expose an add method and a
+remove method instead.
 
-### Imports
+### Module boundaries
 
-Do not use a wildcard import (`from x import *`). It hides where a name
-came from and breaks static analysis.
+Do not use a wildcard import. It hides where a name came from and breaks
+static analysis.
+Keep a function private unless a caller outside the module needs it.
+Do not read another module's private names. Ask that module for the value.
 
 ### Resources
 
-Open a file, a lock, or a connection with `with`. Do not pair a manual
-open call with a manual close call: an exception between the two skips
-the close.
+Open a file, a lock, or a connection in a scope that closes it
+automatically. Do not pair a manual open call with a manual close call.
+Risk: if an exception happens between the two calls, then the close never
+runs.
+
+### Unused code
+
+Delete code that no caller reaches. Do not comment it out, because
+version control keeps the old copy.
+Do not add a class, a parameter, or a hook for a future need.
+Write the plain solution first. Add a pattern only for a real problem you
+can name.
+Add an extension point only when a second caller needs it now.
+Move a part into its own module when it has already changed twice. Do not
+move it on a guess.
+Delete a class or a function that only forwards calls.
+Delete a field that only one operation uses. Pass the value as a
+parameter.
+
+### Inheritance
+
+Prefer composition and delegation over inheritance.
+Replace a type conditional with one subclass for each type. Do this only
+when the same switch appears in three or more places.
+Give two types that do the same job the same method names, or delete one.
+Do not add a subclass here that forces a subclass there. Hold a reference
+instead.
+Do not inherit when the child ignores part of the parent contract.
+Risk: if a child breaks the parent contract, then a caller that holds the
+parent type fails on the child.
 
 ### Constants
 
