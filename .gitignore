@@ -21,8 +21,10 @@ daemon/
 daemon*
 feedback/
 jobs/
+mcp-needs-auth-cache.json
 paste-cache/
 policy-limits.json
+remote/
 remote-settings.json
 skills/*
 !skills/todo-plan/
