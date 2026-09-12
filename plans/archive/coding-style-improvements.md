@@ -42,3 +42,9 @@ All global items are done. Restart the session to load the latest
 ## Already covered, no action needed
 
 - No new `*.md` files unless asked — already enforced by the system output style.
+
+---
+
+**Archived 2026-09-12.** Every global item is done. The three per-project items
+stay open, and cannot run until a concrete repo is named: they depend on `init`
+discovering that repo's build, test, and lint commands.
