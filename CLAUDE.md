@@ -134,6 +134,7 @@ file-layout rules.
 See @rules/plain-words.md for the word replacements used in chat text and
 in commit messages.
 See @rules/commit-style.md for commit subject, body, and trailer rules.
+See @rules/doc-style.md for the style of a document a human reads.
 
 ## Forbidden Without Explicit Per-Use Approval
 

@@ -3,17 +3,27 @@
 Personal global config for Claude Code (`~/.claude/`). Private repo — the setup
 is personal, not a public dotfiles project.
 
+Target platform is WSL2 on Windows. The notification hook uses Windows interop.
+
 ## What is in here
 
 | File | Target path | Purpose |
 |---|---|---|
-| `settings.json` | `~/.claude/settings.json` | Status line, output style, permission rules, attribution, hooks |
-| `CLAUDE.md` | `~/.claude/CLAUDE.md` | Workflow contract: approval protocol, process rules |
+| `settings.json` | `~/.claude/settings.json` | Model, effort, output style, permission rules, hooks, status line, attribution |
+| `CLAUDE.md` | `~/.claude/CLAUDE.md` | Workflow contract: approval protocol, conversation flow, process gates |
 | `rules/code-quality.md` | `~/.claude/rules/code-quality.md` | Coding, comment, typing, test, file-layout rules — imported by CLAUDE.md |
-| `output-styles/technical-style.md` | `~/.claude/output-styles/technical-style.md` | ASD-STE100 chat output style |
-| `hooks/notify.sh` | `~/.claude/hooks/notify.sh` | Notification hook: macOS alert + sound |
+| `rules/plain-words.md` | `~/.claude/rules/plain-words.md` | Word replacements for chat text and commit messages — imported by CLAUDE.md |
+| `rules/commit-style.md` | `~/.claude/rules/commit-style.md` | Commit subject, body, word, and trailer rules — imported by CLAUDE.md |
+| `rules/doc-style.md` | `~/.claude/rules/doc-style.md` | Style for a document a human reads — imported by CLAUDE.md |
+| `output-styles/plain-style.md` | `~/.claude/output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
+| `output-styles/technical-style.md` | `~/.claude/output-styles/technical-style.md` | Older ASD-STE100 chat output style, kept as a fallback |
+| `hooks/block-dangerous-git.sh` | `~/.claude/hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
+| `hooks/notify.sh` | `~/.claude/hooks/notify.sh` | Notification hook: Windows toast through WSL interop |
 | `statusline-command.sh` | `~/.claude/statusline-command.sh` | Status line script |
-| `plans/coding-style-improvements.md` | `~/.claude/plans/coding-style-improvements.md` | Working notes on the coding-style rollout |
+| `plans/archive/` | `~/.claude/plans/archive/` | Finished planning notes, kept for history |
+
+An output style file is inert on its own. `settings.json` activates one with
+`"outputStyle": "plain-style"`.
 
 ## Setup on a new device
 
@@ -24,74 +34,78 @@ is personal, not a public dotfiles project.
    cp CLAUDE.md ~/.claude/CLAUDE.md
    mkdir -p ~/.claude/rules ~/.claude/hooks ~/.claude/output-styles ~/.claude/plans
    cp rules/code-quality.md ~/.claude/rules/code-quality.md
+   cp hooks/block-dangerous-git.sh ~/.claude/hooks/block-dangerous-git.sh
    cp hooks/notify.sh ~/.claude/hooks/notify.sh
    cp output-styles/technical-style.md ~/.claude/output-styles/technical-style.md
    cp statusline-command.sh ~/.claude/statusline-command.sh
-   cp plans/coding-style-improvements.md ~/.claude/plans/coding-style-improvements.md
+   cp -r plans ~/.claude/plans
    ```
 3. Make the scripts executable:
    ```
-   chmod +x ~/.claude/hooks/notify.sh ~/.claude/statusline-command.sh
+   chmod +x ~/.claude/hooks/block-dangerous-git.sh \
+            ~/.claude/hooks/notify.sh \
+            ~/.claude/statusline-command.sh
    ```
-4. Restart Claude Code so it loads the new settings, CLAUDE.md, and rules.
+4. Install `jq`. Both hooks need it.
+5. Restart Claude Code so it loads the new settings, CLAUDE.md, rules, and style.
+
+## Guardrails
+
+Two layers guard the destructive commands, and the overlap is on purpose.
+
+`hooks/block-dangerous-git.sh` runs as a `PreToolUse` hook on every Bash call and
+exits 2 to block. It guards `git reset --hard`, `git clean` with a force flag,
+`git branch -D`, and a whole-tree `git checkout` or `git restore`. It matches each
+chained segment at its own start, so a guarded string quoted inside another
+command does not trip it. Without `jq` it blocks every Bash call, by design.
+
+`git push` is **not** guarded, on purpose. A guardrail that blocks a command you
+use every day teaches you to route around the guardrail.
+
+The `permissions.ask` list in `settings.json` is the second layer. It prompts for
+`git stash`, a path-scoped `git checkout` or `git restore`, and `rm`. It still
+lists the commands the hook already blocks: if the hook loses its execute bit,
+that list is the only guard left.
+
+Test the hook after any edit:
+```
+printf '%s' '{"tool_input":{"command":"ls"}}' | ~/.claude/hooks/block-dangerous-git.sh
+```
 
 ## Notes
 
 - `settings.json` has no secrets or tokens — verified before this repo was created.
-- The `notify.sh` hook uses `osascript` and `afplay`, both macOS-only.
+- `hooks/notify.sh` sends a WinRT toast under the registered Windows PowerShell
+  AppId. A `NotifyIcon` balloon does not work: Windows 11 accepts the call, returns
+  success, and shows nothing.
 - This repo excludes `~/.claude/projects/*/memory/`: those memory files are tied
   to session-specific paths on the machine that wrote them, and are not portable.
 
-## Skills setup
+## Skills
 
-`~/.claude/skills/` is excluded from this repo (see `.gitignore`) — every entry
-in it is a symlink into `~/.agents/skills/`, which lives outside `~/.claude/`.
-On a new device, reinstall the skills with the Skills CLI (`npx skills`, see
-https://skills.sh/) — this recreates `~/.agents/skills/<name>/` and the
-matching symlink under `~/.claude/skills/`:
+`~/.claude/skills/` is mostly excluded from this repo (see `.gitignore`), with a
+negation for each skill that is tracked. Every entry is a **real directory**, not
+a symlink.
+
+Two skills are written here and tracked in full:
+
+| Skill | Purpose |
+|---|---|
+| `todo-plan` | Create `TODO.md`, a single-file project plan |
+| `todo-update` | Maintain `TODO.md`: move rows, file new scope, recount |
+
+The rest come from the Skills CLI (`npx skills`, see https://skills.sh/).
+Reinstall them on a new device:
 
 ```bash
-npx skills add mattpocock/skills@ask-matt -g -y
-npx skills add mattpocock/skills@claude-handoff -g -y
-npx skills add mattpocock/skills@code-review -g -y
-npx skills add mattpocock/skills@codebase-design -g -y
 npx skills add mattpocock/skills@diagnosing-bugs -g -y
-npx skills add mattpocock/skills@domain-modeling -g -y
-npx skills add mattpocock/skills@git-guardrails-claude-code -g -y
-npx skills add mattpocock/skills@grill-me -g -y
-npx skills add mattpocock/skills@grill-with-docs -g -y
 npx skills add mattpocock/skills@grilling -g -y
 npx skills add mattpocock/skills@handoff -g -y
-npx skills add mattpocock/skills@implement -g -y
-npx skills add mattpocock/skills@implement-spec -g -y
-npx skills add mattpocock/skills@improve-codebase-architecture -g -y
-npx skills add mattpocock/skills@loop-me -g -y
-npx skills add mattpocock/skills@migrate-to-shoehorn -g -y
-npx skills add mattpocock/skills@prototype -g -y
 npx skills add mattpocock/skills@research -g -y
 npx skills add mattpocock/skills@resolving-merge-conflicts -g -y
-npx skills add mattpocock/skills@retro -g -y
-npx skills add mattpocock/skills@scaffold-exercises -g -y
-npx skills add mattpocock/skills@setup-matt-pocock-skills -g -y
-npx skills add mattpocock/skills@setup-pre-commit -g -y
-npx skills add mattpocock/skills@setup-ts-deep-modules -g -y
-npx skills add mattpocock/skills@tdd -g -y
-npx skills add mattpocock/skills@teach -g -y
-npx skills add mattpocock/skills@to-questionnaire -g -y
-npx skills add mattpocock/skills@to-spec -g -y
-npx skills add mattpocock/skills@to-tickets -g -y
-npx skills add mattpocock/skills@triage -g -y
-npx skills add mattpocock/skills@wait-what -g -y
-npx skills add mattpocock/skills@wayfinder -g -y
-npx skills add mattpocock/skills@wizard -g -y
-npx skills add mattpocock/skills@writing-beats -g -y
 npx skills add mattpocock/skills@writing-for-agents -g -y
-npx skills add mattpocock/skills@writing-fragments -g -y
-npx skills add mattpocock/skills@writing-shape -g -y
-npx skills add vercel-labs/skills@find-skills -g -y
 ```
 
-`skills/tabbit` is not managed by the Skills CLI (it has no entry in
-`~/.agents/.skill-lock.json`). It's a real directory, installed and kept in
-sync automatically by the Tabbit Browser app (marked `.tabbit-dance-managed`).
-Install/run that app on the new device to regenerate it.
+A skill's own instructions never override the approval protocol in `CLAUDE.md`.
+Several of these skills tell the agent to dispatch a sub-agent or to not block;
+`CLAUDE.md` has an explicit clause that overrules them.

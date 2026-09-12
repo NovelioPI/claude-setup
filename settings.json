@@ -13,8 +13,20 @@
       "Bash(rm *)"
     ]
   },
-  "model": "opus[1m]",
+  "model": "opus",
+  "outputStyle": "plain-style",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/block-dangerous-git.sh"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "hooks": [
@@ -34,7 +46,7 @@
   "effortLevel": "medium",
   "modelSettings": {
     "claude-sonnet-5": {
-      "effortLevel": "medium"
+      "effortLevel": "high"
     },
     "claude-opus-5": {
       "effortLevel": "high"
