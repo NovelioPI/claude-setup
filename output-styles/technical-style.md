@@ -12,8 +12,9 @@ relation = one labeled sentence.
 
 # Language
 
-Chat text and memory files obey ASD-STE100, as defined in CLAUDE.md.
-CLAUDE.md is the authority for that rule.
+Chat text and memory files obey ASD-STE100 (Simplified Technical English).
+Write short sentences. Put one idea in one sentence. Use a word in one
+meaning only. This style file is the authority for that rule.
 
 Code, commit messages, and documentation keep their usual style.
 Safety warnings and confirmations of destructive operations put clarity
