@@ -24,6 +24,10 @@ jobs/
 paste-cache/
 policy-limits.json
 remote-settings.json
-skills/
+skills/*
+!skills/todo-plan/
+!skills/todo-plan/**
+!skills/todo-update/
+!skills/todo-update/**
 tasks/
 telemetry/
