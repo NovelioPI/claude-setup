@@ -48,7 +48,8 @@ with a green suite runs neither.
 
 ## Take what you want
 
-Most of this works in pieces. Copy one file and ignore the rest.
+Most of this works in pieces. Copy one file and ignore the rest. MIT licensed,
+so take it without asking.
 
 | Piece | Standalone | Needs |
 |---|---|---|
@@ -95,6 +96,7 @@ Most of this works in pieces. Copy one file and ignore the rest.
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `plans/` | Research findings and the decisions taken from them |
+| `LICENSE` | MIT |
 
 Claude Code auto-loads every file under `rules/` into every session and every
 subagent, with no import line needed. `guides/` is the opposite: nothing loads
@@ -173,12 +175,17 @@ Then the loop runs.
 `agents/reviewer.md` only when a review trigger fires. A milestone closes when
 its exit command returns 0.
 
-`~/.claude/skills/` is mostly excluded from this repo, with a negation for each
-tracked skill. Every entry is a real directory, never a symlink.
+This repo tracks only the four skills written here: `brainstorming`,
+`milestone-run`, `todo-plan`, and `todo-update`. The rest are other people's
+work, so they are not redistributed. `scripts/install.sh` fetches them.
 
-These skills are written here: `brainstorming`, `milestone-run`, `todo-plan`,
-`todo-update`. The rest come from the Skills CLI at https://skills.sh/ and the
-installer reinstalls them.
+| Skill | Source |
+|---|---|
+| `grilling`, `writing-for-agents`, `diagnosing-bugs`, `handoff`, `research`, `resolving-merge-conflicts` | [mattpocock/skills](https://github.com/mattpocock/skills), through the Skills CLI at https://skills.sh/ |
+| `impeccable`, and the `agents/impeccable-*.md` it dispatches | installed separately, not tracked here |
+
+`~/.claude/skills/` is otherwise excluded, with a negation for each tracked
+skill. Every entry is a real directory, never a symlink.
 
 A skill's own instructions never override the approval protocol in `CLAUDE.md`.
 Several of them tell the agent to dispatch a subagent or to not block, and

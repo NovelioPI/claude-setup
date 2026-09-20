@@ -33,27 +33,20 @@ paste-cache/
 policy-limits.json
 remote/
 remote-settings.json
+# Only the skills written here are tracked. The rest arrive through
+# `scripts/install.sh`, which fetches them from their own repositories.
 skills/*
+!skills/brainstorming/
+!skills/brainstorming/**
+!skills/milestone-run/
+!skills/milestone-run/**
 !skills/todo-plan/
 !skills/todo-plan/**
 !skills/todo-update/
 !skills/todo-update/**
-!skills/grilling/
-!skills/grilling/**
-!skills/research/
-!skills/research/**
-!skills/resolving-merge-conflicts/
-!skills/resolving-merge-conflicts/**
-!skills/diagnosing-bugs/
-!skills/diagnosing-bugs/**
-!skills/handoff/
-!skills/handoff/**
-!skills/writing-for-agents/
-!skills/writing-for-agents/**
-!skills/milestone-run/
-!skills/milestone-run/**
-!skills/brainstorming/
-!skills/brainstorming/**
+
+# Third-party agents that belong to the `impeccable` skill, which is not tracked.
+agents/impeccable-*.md
 tasks/
 telemetry/
 
