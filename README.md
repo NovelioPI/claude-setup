@@ -1,51 +1,183 @@
-# claude-code-setup
+# claude-setup
 
-Personal global config for Claude Code (`~/.claude/`). Private repo — the setup
-is personal, not a public dotfiles project.
+My global Claude Code config, living at `~/.claude/`. I am publishing it
+because most of it is decisions, not settings.
 
-Target platform is WSL2 on Windows. The notification hook uses Windows interop.
+## Why it looks like this
+
+An agent writes code faster than I can read it. That is the whole problem.
+Speed was never my bottleneck. My review was.
+
+So the work went into three things. A contract that says when the agent may
+act. Rules that make what it writes readable on the first pass. A loop that
+proves a change works before I look at it.
+
+Everything here follows from that. If you disagree with the premise, most of
+these files will look like too much process.
+
+## What is different here
+
+**The agent waits for a word.** Not "yes", not "sounds good", but the literal
+token `Go` or `Execute`. One token approves one plan, and the token dies when
+the plan changes. `CLAUDE.md` calls this failing closed.
+
+**A milestone closes on an exit code.** `TODO.md` carries versions, and each
+version names a command. The loop stops when that command returns 0. It never
+stops because the agent decided it was finished.
+
+**Comments are off by default.** A comment earns its place by naming a hidden
+constraint or a risk, in 20 words or fewer. Everything else is the code
+restating itself.
+
+**Short words are enforced.** `rules/plain-words.md` is a replacement table for
+chat text and commit messages. Write "use", not "leverage". Write "start", not
+"spin up".
+
+**Two guards on destructive git, and one deliberate gap.** A hook blocks the
+unrecoverable commands. `git push` is not blocked, on purpose. A guardrail you
+hit every day teaches you to route around it.
+
+**The rules cite their sources.** `plans/` holds the research behind each
+threshold. The cognitive complexity cap of 15 is SonarSource's own default, and
+`plans/research-quality-metrics.md` records why cyclomatic complexity is not
+used as a limit.
+
+**Reviews are triggered, not routine.** `/code-review` and `/simplify` run when
+a change touches an invariant, an exported symbol, or five files. A one-file fix
+with a green suite runs neither.
+
+## Take what you want
+
+Most of this works in pieces. Copy one file and ignore the rest.
+
+| Piece | Standalone | Needs |
+|---|---|---|
+| `rules/plain-words.md` | yes | nothing |
+| `rules/code-quality.md` and its language files | yes | nothing |
+| `output-styles/plain-style.md` | yes | one key in `settings.json` |
+| `hooks/block-dangerous-git.sh` | yes | `jq` |
+| `skills/todo-plan`, `skills/todo-update` | yes | nothing |
+| The approval protocol in `CLAUDE.md` | yes | your patience |
+| `skills/milestone-run` | no | the full skill chain and an acceptance command per row |
+
+## Not for you if
+
+- You want the agent to run unattended without writing an acceptance command
+  for each task.
+- You dislike typing a literal word before every write.
+- You are not on WSL2. `hooks/notify.sh` uses Windows interop and needs a
+  change elsewhere, though it falls back to a terminal bell.
+- You want a short config. The rules run to about nine thousand words.
 
 ## What is in here
 
-| File | Target path | Purpose |
-|---|---|---|
-| `settings.json` | `~/.claude/settings.json` | Model, effort, output style, permission rules, hooks, status line, attribution |
-| `CLAUDE.md` | `~/.claude/CLAUDE.md` | Workflow contract: approval protocol, conversation flow, process gates |
-| `rules/code-quality.md` | `~/.claude/rules/code-quality.md` | Coding, comment, typing, test, file-layout rules — imported by CLAUDE.md |
-| `rules/code-quality-python.md` | `~/.claude/rules/code-quality-python.md` | Python form of the code quality rules — read on demand, not imported |
-| `rules/code-quality-typescript.md` | `~/.claude/rules/code-quality-typescript.md` | TypeScript and JavaScript form of the code quality rules — read on demand |
-| `rules/code-quality-cpp.md` | `~/.claude/rules/code-quality-cpp.md` | C and C++ form of the code quality rules — read on demand |
-| `rules/plain-words.md` | `~/.claude/rules/plain-words.md` | Word replacements for chat text and commit messages — imported by CLAUDE.md |
-| `rules/commit-style.md` | `~/.claude/rules/commit-style.md` | Commit subject, body, word, and trailer rules — imported by CLAUDE.md |
-| `rules/doc-style.md` | `~/.claude/rules/doc-style.md` | Style for a document a human reads — imported by CLAUDE.md |
-| `output-styles/plain-style.md` | `~/.claude/output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
-| `output-styles/technical-style.md` | `~/.claude/output-styles/technical-style.md` | Older ASD-STE100 chat output style, kept as a fallback |
-| `hooks/block-dangerous-git.sh` | `~/.claude/hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
-| `hooks/check-complexity.sh` | `~/.claude/hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on a Python file |
-| `hooks/notify.sh` | `~/.claude/hooks/notify.sh` | Notification hook: Windows toast through WSL interop |
-| `statusline-command.sh` | `~/.claude/statusline-command.sh` | Status line script |
-| `plans/` | `~/.claude/plans/` | Research findings and the decisions taken from them |
-| `plans/archive/` | `~/.claude/plans/archive/` | Finished planning notes, kept for history |
+| Path | Purpose |
+|---|---|
+| `settings.json` | Model, effort, output style, permission rules, hooks, status line |
+| `CLAUDE.md` | Workflow contract: approval protocol, conversation flow, process gates |
+| `rules/code-quality.md` | Coding, comment, typing, test, and file-layout rules — imported by `CLAUDE.md` |
+| `rules/code-quality-python.md` | Python form of those rules — read on demand |
+| `rules/code-quality-typescript.md` | TypeScript and JavaScript form — read on demand |
+| `rules/code-quality-cpp.md` | C and C++ form — read on demand |
+| `rules/code-quality-kotlin.md` | Kotlin form, with coroutine and flow rules — read on demand |
+| `rules/code-quality-dart.md` | Dart form, with Flutter rules — read on demand |
+| `rules/agent-brief.md` | The compact working core a dispatched subagent reads |
+| `rules/plain-words.md` | Word replacements for chat text and commit messages — imported |
+| `rules/commit-style.md` | Commit subject, body, word, and trailer rules — imported |
+| `rules/doc-style.md` | Style for a document a human reads — imported |
+| `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
+| `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
+| `agents/implementer.md` | Subagent that builds one `TODO.md` row and returns a verdict |
+| `agents/reviewer.md` | Subagent that reviews a diff and returns ranked findings |
+| `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
+| `hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on Python |
+| `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
+| `statusline-command.sh` | Status line: model, effort, graft, cache, usage bars |
+| `scripts/install.sh` | Set up a new device; safe to re-run |
+| `plans/` | Research findings and the decisions taken from them |
 
-An output style file is inert on its own. `settings.json` activates one with
+An output style file does nothing on its own. `settings.json` activates one with
 `"outputStyle": "plain-style"`.
 
 ## Setup on a new device
 
+This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
+
 1. Install Claude Code and run it once, so `~/.claude/` exists.
-2. Clone this repo, then copy the files to their target paths:
+2. Move the generated directory aside and clone in its place:
+   ```bash
+   mv ~/.claude ~/.claude.bak
+   git clone git@github.com:NovelioPI/claude-setup.git ~/.claude
+   cp -r ~/.claude.bak/projects ~/.claude/ 2>/dev/null
    ```
-   cp settings.json CLAUDE.md statusline-command.sh ~/.claude/
-   cp -r rules output-styles hooks skills plans ~/.claude/
+3. Run the installer, which checks every tool and installs what needs no sudo:
+   ```bash
+   ~/.claude/scripts/install.sh
    ```
-3. Make the scripts executable:
-   ```
-   chmod +x ~/.claude/hooks/block-dangerous-git.sh \
-            ~/.claude/hooks/notify.sh \
-            ~/.claude/statusline-command.sh
-   ```
-4. Install `jq`. Both hooks need it.
-5. Restart Claude Code so it loads the new settings, CLAUDE.md, rules, and style.
+4. Fix anything it reports as a blocker, then run it again.
+5. Restart Claude Code so it loads the settings, `CLAUDE.md`, the rules, and the style.
+
+### What the installer needs
+
+| Tool | Used by | Installed by the script |
+|---|---|---|
+| `git` | the clone | no, needs sudo |
+| `jq` | all three hooks and the status line | no, needs sudo |
+| `node`, `npm` | graft and `npx skills` | no |
+| `uv` | `check-complexity.sh`, which runs `complexipy` and `ruff` through `uvx` | yes |
+| `graft` | the context graph, its hooks, the status line segment | yes |
+| `gh`, `rg` | optional convenience | no |
+
+## Graft
+
+Graft builds a context graph of a repo so an agent finds code without reading
+whole files. It is wired here through user-level hooks in `settings.json`.
+
+Run `graft init` inside each project. It writes that project's shims, and the
+user-level shim at `~/.claude/helpers/graft-hooks.cjs`.
+
+`helpers/` is not tracked. Graft regenerates it with absolute paths, so a
+committed copy breaks on the next device.
+
+`GRAFT_NO_STATUSLINE=1` in the `env` block stops `graft init` claiming the status
+line. `statusline-command.sh` renders the graft segment itself, beside the model
+and the effort level. Keep the same variable exported in your shell profile, so a
+`graft init` you type by hand honours it too.
+
+Re-run `scripts/install.sh` after any `graft init`. It rewrites absolute paths in
+`settings.json` back to `$HOME`.
+
+## Skills and the development loop
+
+Three skills chain into one workflow.
+
+| Order | Skill | Job |
+|---|---|---|
+| 1 | `brainstorming` | Widen a raw idea into features, grounded facts, and open decisions |
+| 2 | `grilling` | Close those decisions, one round of questions at a time |
+| 3 | `todo-plan` | Write `TODO.md`: rows, milestones, invariants |
+
+Then the loop runs.
+
+| Skill | Job |
+|---|---|
+| `todo-update` | Move a row, file new scope, recount, decide when to review |
+| `milestone-run` | Run a whole version: dispatch, gate on the acceptance command, commit, repeat |
+
+`milestone-run` dispatches `agents/implementer.md` per row, and
+`agents/reviewer.md` only when a review trigger fires. A milestone closes when
+its exit command returns 0.
+
+`~/.claude/skills/` is mostly excluded from this repo, with a negation for each
+tracked skill. Every entry is a real directory, never a symlink.
+
+These skills are written here: `brainstorming`, `milestone-run`, `todo-plan`,
+`todo-update`. The rest come from the Skills CLI at https://skills.sh/ and the
+installer reinstalls them.
+
+A skill's own instructions never override the approval protocol in `CLAUDE.md`.
+Several of them tell the agent to dispatch a subagent or to not block, and
+`CLAUDE.md` has a clause that overrules them.
 
 ## Guardrails
 
@@ -65,45 +197,14 @@ The `permissions.ask` list in `settings.json` is the second layer. It prompts fo
 lists the commands the hook already blocks: if the hook loses its execute bit,
 that list is the only guard left.
 
-Test the hook after any edit:
-```
-printf '%s' '{"tool_input":{"command":"ls"}}' | ~/.claude/hooks/block-dangerous-git.sh
-```
+`scripts/install.sh` tests both directions of the guard on every run.
 
 ## Notes
 
-- `settings.json` has no secrets or tokens — verified before this repo was created.
+- `settings.json` carries no secrets and no tokens. Machine-local settings live
+  in `settings.local.json`, which is not tracked.
 - `hooks/notify.sh` sends a WinRT toast under the registered Windows PowerShell
-  AppId. A `NotifyIcon` balloon does not work: Windows 11 accepts the call, returns
-  success, and shows nothing.
-- This repo excludes `~/.claude/projects/*/memory/`: those memory files are tied
-  to session-specific paths on the machine that wrote them, and are not portable.
-
-## Skills
-
-`~/.claude/skills/` is mostly excluded from this repo (see `.gitignore`), with a
-negation for each skill that is tracked. Every entry is a **real directory**, not
-a symlink.
-
-Two skills are written here and tracked in full:
-
-| Skill | Purpose |
-|---|---|
-| `todo-plan` | Create `TODO.md`, a single-file project plan |
-| `todo-update` | Maintain `TODO.md`: move rows, file new scope, recount |
-
-The rest come from the Skills CLI (`npx skills`, see https://skills.sh/).
-Reinstall them on a new device:
-
-```bash
-npx skills add mattpocock/skills@diagnosing-bugs -g -y
-npx skills add mattpocock/skills@grilling -g -y
-npx skills add mattpocock/skills@handoff -g -y
-npx skills add mattpocock/skills@research -g -y
-npx skills add mattpocock/skills@resolving-merge-conflicts -g -y
-npx skills add mattpocock/skills@writing-for-agents -g -y
-```
-
-A skill's own instructions never override the approval protocol in `CLAUDE.md`.
-Several of these skills tell the agent to dispatch a sub-agent or to not block;
-`CLAUDE.md` has an explicit clause that overrules them.
+  AppId. A `NotifyIcon` balloon does not work: Windows 11 accepts the call,
+  returns success, and shows nothing.
+- This repo excludes `~/.claude/projects/*/memory/`. Those memory files are tied
+  to session-specific paths on the machine that wrote them.
