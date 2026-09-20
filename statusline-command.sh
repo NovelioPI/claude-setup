@@ -96,6 +96,45 @@ if [ -n "$effort_level" ]; then
   effort_indicator="${ecolor}⚙ ${effort_level}${RESET}"
 fi
 
+# Graft context-graph indicator: graph size, freshness, and the tokens the graph
+# saved this session. Reason: the status line refreshes every second, so this
+# reads the cache JSON directly instead of starting a node process per refresh.
+graft_indicator=""
+project_dir="${CLAUDE_PROJECT_DIR:-$(printf '%s' "$input" | jq -r '.workspace.project_dir // .cwd // empty')}"
+graft_stats="$project_dir/graft/.cache/stats.json"
+if [ -n "$project_dir" ] && [ -f "$graft_stats" ]; then
+  IFS=$'\t' read -r g_nodes g_edges g_dirty g_stale g_syncing <<<"$(jq -r '[(.nodeCount//0),(.edgeCount//0),(.dirty//false),(.staleCount//0),(.syncing//false)]|@tsv' "$graft_stats" 2>/dev/null)"
+  if [ -n "$g_nodes" ]; then
+    if [ "$g_syncing" = "true" ]; then
+      g_state="syncing"
+    elif [ "$g_dirty" = "true" ] || [ "${g_stale:-0}" -gt 0 ]; then
+      g_state="stale"
+    else
+      g_state="synced"
+    fi
+
+    session_id=$(printf '%s' "$input" | jq -r '.session_id // empty')
+    graft_session="$project_dir/graft/.cache/session/$session_id.json"
+    g_saved=0
+    if [ -n "$session_id" ] && [ -f "$graft_session" ]; then
+      g_saved=$(jq -r '.savedTokens // 0' "$graft_session" 2>/dev/null)
+    fi
+
+    g_seg="◤ graft ${g_nodes}n/${g_edges}e · ${g_state}"
+    if [ "${g_saved:-0}" -gt 0 ]; then
+      g_saved_fmt=$(printf '%s' "$g_saved" | awk '{n=$1;s="";while(n>999){s=sprintf(",%03d",n%1000) s;n=int(n/1000)}printf "%d%s",n,s}')
+      g_seg="${g_seg} · ~${g_saved_fmt} tok saved"
+    fi
+
+    if [ "$g_state" = "synced" ]; then
+      gcolor="$DIM"
+    else
+      gcolor=$(color_for 85)
+    fi
+    graft_indicator="${gcolor}${g_seg}${RESET}"
+  fi
+fi
+
 lines=""
 
 if [ -n "$used_ctx" ]; then
@@ -134,6 +173,9 @@ fi
 header="${DIM}${model}${RESET}"
 if [ -n "$effort_indicator" ]; then
   header="${header}  ${effort_indicator}"
+fi
+if [ -n "$graft_indicator" ]; then
+  header="${header}  ${graft_indicator}"
 fi
 if [ -n "$cache_indicator" ]; then
   header="${header}  ${cache_indicator}"
