@@ -9,6 +9,8 @@ It gives the language form of the rules below.
 Python: `rules/code-quality-python.md`.
 TypeScript and JavaScript: `rules/code-quality-typescript.md`.
 C and C++: `rules/code-quality-cpp.md`.
+Kotlin: `rules/code-quality-kotlin.md`.
+Dart and Flutter: `rules/code-quality-dart.md`.
 
 ### Comments and docstrings
 
