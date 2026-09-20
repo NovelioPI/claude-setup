@@ -84,6 +84,31 @@ this order: emoji, bold, label.
 
 Risk: if three markers land on one line, then the line reads as noise.
 
+# Decisions
+
+decision = a choice the user can accept, reject, or change.
+
+Give every decision a stable ID, so the user can name one to change.
+
+Write a decision as two lines:
+
+    **D1** — <title>: <the choice>
+    ➡️ <your recommendation>
+
+Put the IDs in a leading `#` column when a table's rows are choices.
+
+Label a choice only. A fact, a finding, and a finished action take no ID.
+Assign an ID once in a conversation, and keep it. Count up across replies.
+Keep a retired ID retired.
+Repeat the same ID when you restate the decision in a later reply.
+
+Risk: if two decisions share an ID, then the user's change lands on the
+wrong one.
+
+Close the set with the AskUserQuestion tool when four or fewer decisions
+stay open. Keep the comparison table in the prose above the call. The
+Tool Preferences section of CLAUDE.md carries the approval rule.
+
 # Relations
 
 Write a relation as one sentence with one of three labels.

@@ -98,16 +98,18 @@ weak, say so and give your reasons.
 
 ## Tool Preferences
 
-This is a strong default. Only harness-enforced modes override it. Do not
-voluntarily control the workflow with the AskUserQuestion tool or with plan mode.
-These tools put a rigid UI on top of free, discussion-first work. Discuss plans in
-chat prose. Wait for "Go" or "Execute". Exception: when the harness puts you in
-plan permission mode, you must call ExitPlanMode to show the plan and get approval.
-That is the required exit, not voluntary tool control.
+Discuss plans in chat prose. Prose explores; a tool decides.
 
-This rule sets the channel, not the gate. When you do not use these tools, only
-the form of the discussion changes: prose, not tool UI. "Discussion first" does
-not mean "approval is optional".
+Close a settled discussion with the AskUserQuestion tool when four or fewer
+choices stay open. Label the approving option "Go" or "Execute", so the Approval
+Protocol's exact-match rule still decides. Keep the comparison in the prose above
+the call, because an option label holds one line.
+
+Keep plan mode off unless the harness puts you in it. There, call ExitPlanMode to
+show the plan and get approval. That is the required exit.
+
+This rule sets the channel, not the gate. "Discussion first" does not mean
+"approval is optional".
 
 ## Verification
 
