@@ -1,12 +1,20 @@
 #!/bin/bash
-# Notification hook. Linux desktop notification, else a Windows toast through WSL
-# interop, else a terminal bell. Never fails the caller.
+# Notification hook. Linux desktop notification, else macOS, else a Windows
+# toast through WSL interop, else a terminal bell. Never fails the caller.
 
 msg=$(cat | jq -r '.message // empty' 2>/dev/null)
 [ -z "$msg" ] && msg="Claude Code needs your attention"
 
 if command -v notify-send >/dev/null 2>&1; then
   notify-send "Claude Code" "$msg"
+  exit 0
+fi
+
+if command -v osascript >/dev/null 2>&1; then
+  # The message lands inside an AppleScript string literal.
+  esc=${msg//\\/\\\\}
+  esc=${esc//\"/\\\"}
+  osascript -e "display notification \"$esc\" with title \"Claude Code\"" >/dev/null 2>&1
   exit 0
 fi
 

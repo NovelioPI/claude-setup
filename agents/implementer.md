@@ -8,7 +8,7 @@ maxTurns: 40
 ---
 # Implementer
 
-You build one row. Read `~/.claude/rules/agent-brief.md` first; it carries your
+You build one row. Read `~/.claude/guides/agent-brief.md` first; it carries your
 search order, your code rules, and your verdict format.
 
 The orchestrator gives you the row ID, the Feature cell, and the acceptance

@@ -12,6 +12,18 @@ say()   { printf '  %-12s %s\n' "$1" "$2"; }
 block() { say "$1" "MISSING  -> $2"; BLOCKERS=$((BLOCKERS + 1)); }
 have()  { command -v "$1" >/dev/null 2>&1; }
 
+# Reason: the install command differs per platform, and wrong advice is worse
+# than none.
+pkg() {
+  if   have brew;    then echo "brew install $1"
+  elif have apt-get; then echo "sudo apt install -y $1"
+  elif have dnf;     then echo "sudo dnf install -y $1"
+  elif have pacman;  then echo "sudo pacman -S --noconfirm $1"
+  elif have zypper;  then echo "sudo zypper install -y $1"
+  else               echo "install $1 with your package manager"
+  fi
+}
+
 if [ "$REPO" != "$HOME/.claude" ]; then
   echo "This repo must live at ~/.claude, not $REPO." >&2
   echo "Claude Code reads ~/.claude directly; a copy elsewhere drifts." >&2
@@ -20,7 +32,7 @@ fi
 
 echo "Tools"
 for t in git jq; do
-  have "$t" && say "$t" "present" || block "$t" "sudo apt install -y $t"
+  have "$t" && say "$t" "present" || block "$t" "$(pkg "$t")"
 done
 for t in gh rg; do
   have "$t" && say "$t" "present" || say "$t" "absent (optional)"
@@ -128,6 +140,13 @@ if have jq; then
     *)      say "git guard" "FAILED to block: $out"; BLOCKERS=$((BLOCKERS + 1)) ;;
   esac
 fi
+
+echo
+./scripts/probe-context-floor.sh
+case $? in
+  0|2) ;;
+  *)   BLOCKERS=$((BLOCKERS + 1)) ;;
+esac
 
 echo
 if [ "$BLOCKERS" -eq 0 ]; then

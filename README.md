@@ -65,9 +65,8 @@ Most of this works in pieces. Copy one file and ignore the rest.
 - You want the agent to run unattended without writing an acceptance command
   for each task.
 - You dislike typing a literal word before every write.
-- You are not on WSL2. `hooks/notify.sh` uses Windows interop and needs a
-  change elsewhere, though it falls back to a terminal bell.
-- You want a short config. The rules run to about nine thousand words.
+- You want a short config. About 3,500 words load on every turn, and the
+  language guides add 5,500 more when you touch that language.
 
 ## What is in here
 
@@ -75,16 +74,16 @@ Most of this works in pieces. Copy one file and ignore the rest.
 |---|---|
 | `settings.json` | Model, effort, output style, permission rules, hooks, status line |
 | `CLAUDE.md` | Workflow contract: approval protocol, conversation flow, process gates |
-| `rules/code-quality.md` | Coding, comment, typing, test, and file-layout rules — imported by `CLAUDE.md` |
-| `rules/code-quality-python.md` | Python form of those rules — read on demand |
-| `rules/code-quality-typescript.md` | TypeScript and JavaScript form — read on demand |
-| `rules/code-quality-cpp.md` | C and C++ form — read on demand |
-| `rules/code-quality-kotlin.md` | Kotlin form, with coroutine and flow rules — read on demand |
-| `rules/code-quality-dart.md` | Dart form, with Flutter rules — read on demand |
-| `rules/agent-brief.md` | The compact working core a dispatched subagent reads |
-| `rules/plain-words.md` | Word replacements for chat text and commit messages — imported |
-| `rules/commit-style.md` | Commit subject, body, word, and trailer rules — imported |
-| `rules/doc-style.md` | Style for a document a human reads — imported |
+| `rules/code-quality.md` | Coding, comment, typing, test, and file-layout rules |
+| `rules/plain-words.md` | Word replacements for chat text and commit messages |
+| `rules/commit-style.md` | Commit subject, body, word, and trailer rules |
+| `rules/doc-style.md` | Style for a document a human reads |
+| `guides/code-quality-python.md` | Python form of those rules |
+| `guides/code-quality-typescript.md` | TypeScript and JavaScript form |
+| `guides/code-quality-cpp.md` | C and C++ form |
+| `guides/code-quality-kotlin.md` | Kotlin form, with coroutine and flow rules |
+| `guides/code-quality-dart.md` | Dart form, with Flutter rules |
+| `guides/agent-brief.md` | The compact working core a dispatched subagent reads |
 | `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
 | `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
 | `agents/implementer.md` | Subagent that builds one `TODO.md` row and returns a verdict |
@@ -94,7 +93,13 @@ Most of this works in pieces. Copy one file and ignore the rest.
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `statusline-command.sh` | Status line: model, effort, graft, cache, usage bars |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
+| `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `plans/` | Research findings and the decisions taken from them |
+
+Claude Code auto-loads every file under `rules/` into every session and every
+subagent, with no import line needed. `guides/` is the opposite: nothing loads
+it, and a pointer in `rules/code-quality.md` sends the agent there on its first
+edit in that language. That split is worth about 5,500 words per context.
 
 An output style file does nothing on its own. `settings.json` activates one with
 `"outputStyle": "plain-style"`.

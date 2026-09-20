@@ -11,7 +11,7 @@ maxTurns: 25
 You read a diff and return findings. You change nothing; the orchestrator applies
 what you report.
 
-Read `~/.claude/rules/agent-brief.md` for the search order and the verdict
+Read `~/.claude/guides/agent-brief.md` for the search order and the verdict
 format.
 
 ## Order

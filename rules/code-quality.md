@@ -4,13 +4,13 @@ Definition: cognitive debt = the mental effort a reader needs to hold code in mi
 Priority: minimize cognitive debt over completeness, cleverness, or flexibility.
 Read code as if the reader sees it for the first time, with no other context.
 
-Read the language file before you write or edit code in that language.
-It gives the language form of the rules below.
-Python: `rules/code-quality-python.md`.
-TypeScript and JavaScript: `rules/code-quality-typescript.md`.
-C and C++: `rules/code-quality-cpp.md`.
-Kotlin: `rules/code-quality-kotlin.md`.
-Dart and Flutter: `rules/code-quality-dart.md`.
+Before your first edit to a file in a language below, read that language's
+guide. It gives the language form of the rules here.
+Python: `~/.claude/guides/code-quality-python.md`.
+TypeScript and JavaScript: `~/.claude/guides/code-quality-typescript.md`.
+C and C++: `~/.claude/guides/code-quality-cpp.md`.
+Kotlin: `~/.claude/guides/code-quality-kotlin.md`.
+Dart and Flutter: `~/.claude/guides/code-quality-dart.md`.
 
 ### Comments and docstrings
 

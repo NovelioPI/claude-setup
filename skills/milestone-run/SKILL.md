@@ -67,7 +67,7 @@ Send each implementer four things and nothing more.
 ROW        <id>
 FEATURE    <the Feature cell, verbatim>
 ACCEPTANCE <the acceptance command>
-BRIEF      ~/.claude/rules/agent-brief.md
+BRIEF      ~/.claude/guides/agent-brief.md
 ```
 
 Paste no rule text, no file content, and no repository background. The agent
