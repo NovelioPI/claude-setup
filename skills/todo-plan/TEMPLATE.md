@@ -69,6 +69,16 @@ effort     S         under an hour, one file
            L         a day or more, split unless it must land atomically
 ```
 
+## Milestones
+
+| Version | Goal | Exit command | Status | Rows |
+|---|---|---|---|---|
+| <v0.1> | <Imperative phrase> | `<command that exits 0>` | next | <L>1, <L>2 |
+| <v0.2> | <Imperative phrase> | `<command that exits 0>` | plan | <L>3 |
+
+The exit command is the oracle. A version closes when its rows are `done` and the
+command returns 0.
+
 ## Scoreboard
 
 ```
@@ -81,10 +91,10 @@ scoreboard              done  next  plan  blocked  parked
 
 ## <L> — <Area name>
 
-| ID | Feature | Status | Value | Effort | Depends on | Note |
-|---|---|---|---|---|---|---|
-| <L>1 | <Imperative phrase> | done | 1 | M | — | `<file>`, <n> tests |
-| <L>2 | **<Imperative phrase>** | plan | 2 | S | <L>1 | Passes when <acceptance check> |
+| ID | Feature | Status | Milestone | Value | Effort | Depends on | Note |
+|---|---|---|---|---|---|---|---|
+| <L>1 | <Imperative phrase> | done | <v0.1> | 1 | M | — | `<file>`, <n> tests |
+| <L>2 | **<Imperative phrase>** | plan | <v0.1> | 2 | S | <L>1 | `<acceptance command>` |
 
 Reason: <why this area is ordered the way it is>.
 

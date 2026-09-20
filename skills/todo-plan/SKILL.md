@@ -13,6 +13,9 @@ description: >-
 Router: this skill writes or extends the file. A row's status change, a new row, or
 a status report belongs to `todo-update`.
 
+An idea that is not yet a set of settled decisions starts at `brainstorming`,
+then `grilling`. Arrive here with the decisions already closed.
+
 Read `~/.claude/skills/todo-plan/REFERENCE.md` for columns, wording, and format.
 Copy `~/.claude/skills/todo-plan/TEMPLATE.md` to the repo root as `TODO.md`.
 
@@ -30,12 +33,13 @@ what is next, and why.
 | 5 | Entry points | no | The project ships a command or a service |
 | 6 | Operating cycle | no | Work is clock-driven or event-driven |
 | 7 | Legend | yes | — |
-| 8 | Scoreboard | yes | — |
-| 9 | Area sections | yes | — |
-| 10 | Invariants | yes | — |
+| 8 | Milestones | no | The project ships versions, or an agent loop runs the rows |
+| 9 | Scoreboard | yes | — |
+| 10 | Area sections | yes | — |
+| 11 | Invariants | yes | — |
 
 Delete a conditional section when its trigger does not fire. A one-package project
-with one entry point needs sections 1-3 and 7-10 only.
+with one entry point needs sections 1-3, 7, and 9-11 only.
 
 ## Choose the areas
 
@@ -59,7 +63,8 @@ clock-driven or model-facing surface last.
 3. Leave `next` empty until work starts.
 4. Fill `Depends on` before Value and Effort — the dependency order often shows
    that an Effort estimate is wrong.
-5. Recount the scoreboard from the rows, never by hand.
+5. Assign a Milestone to every `plan` row, or `—` when the row is unscheduled.
+6. Recount the scoreboard from the rows, never by hand.
 
 Reason: a plan file that starts empty is abandoned, so the first pass records the
 existing code and earns the file its authority.
@@ -76,4 +81,5 @@ never a preference or a style rule.
 |---|---|
 | A new area | Add the section in dependency order, add the scoreboard line |
 | A new conditional section | Add it only when its trigger now fires |
+| A new version | Add a Milestones row with its exit command, then set the Milestone cell on each row it ships |
 | An area grows past one theme | Split it; keep the old IDs on the old rows |

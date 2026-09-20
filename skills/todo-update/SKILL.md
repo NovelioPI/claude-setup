@@ -26,6 +26,9 @@ Read `~/.claude/skills/todo-plan/REFERENCE.md` for columns, wording, and format.
 | An external input is missing | Set `blocked`, name the input in the Note |
 | The row is refused | Set `parked`, put the reason in the Note |
 | A `done` row regresses | Add a new row; never move `done` backwards |
+| Every row in a milestone is `done` | Run the milestone's exit command |
+| The exit command returns 0 | Set the milestone `done`, set the next one `next` |
+| The exit command fails with every row `done` | The milestone is underspecified; file the missing work as a row |
 
 ```
 plan ──▶ next ──▶ done
@@ -56,7 +59,7 @@ value-1 safety row, and the file stops being a risk order.
 | Effort | Before code | Test | Before commit | Shape |
 |---|---|---|---|---|
 | `S` | Write the acceptance clause in one line | Only for a bug fix | Run the suite | 1 row, 1 commit |
-| `M` | Plan in chat, wait for approval | One at the behaviour boundary | Suite, then the project's review step | 1 row, 1-2 commits |
+| `M` | Plan in chat, wait for approval | One at the behaviour boundary | Suite, then the review triggers below | 1 row, 1-2 commits |
 | `L` | Brainstorm, then split into `S`/`M` rows | One for each sub-row | Same as `M` for each part | Never ships as one row |
 
 `L` is a smell, not a size. An `L` row that stays `L` carries its reason in the
@@ -65,6 +68,28 @@ the scale never calibrates.
 
 Follow the project's own review rule. CLAUDE.md may require a review before a
 commit, and a project memory may make it ask-first; the memory wins.
+
+## Review triggers
+
+Skip `/code-review` and `/simplify` by default. Run them when a row below fires.
+
+| Condition | `/code-review` | `/simplify` |
+|---|---|---|
+| Effort `S`, one file, suite green | skip | skip |
+| Bug fix shipped with its regression test | skip | skip |
+| Effort `M` or `L` | run | run |
+| Touches a row in Invariants | run, then `security-review` | run |
+| Adds or changes an exported symbol | run | run |
+| Touches 5 or more files, or 200 or more changed lines | run | run |
+| A milestone's exit command passes | run once over the whole milestone diff | run once |
+
+Count the changed lines with `git diff --stat`.
+
+Reason: a review on every row costs a full context read per row, and the same
+bugs surface once over the milestone diff.
+
+Risk: if every row triggers a review, then the token cost of the loop doubles and
+the reviewer reads the same file many times.
 
 ## When to branch
 
