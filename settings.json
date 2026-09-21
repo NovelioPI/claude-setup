@@ -54,7 +54,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/helpers/graft-hooks.cjs\" post-edit",
+            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" post-edit; fi",
             "timeout": 10000
           }
         ]
@@ -64,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/helpers/graft-hooks.cjs\" tool-savings",
+            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" tool-savings; fi",
             "timeout": 8000
           }
         ]
@@ -75,7 +75,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/helpers/graft-hooks.cjs\" prompt",
+            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" prompt; fi",
             "timeout": 15000
           }
         ]
@@ -86,7 +86,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/helpers/graft-hooks.cjs\" session-start",
+            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" session-start; fi",
             "timeout": 8000
           }
         ]
@@ -97,7 +97,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$HOME/.claude/helpers/graft-hooks.cjs\" stop",
+            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" stop; fi",
             "timeout": 8000
           }
         ]
