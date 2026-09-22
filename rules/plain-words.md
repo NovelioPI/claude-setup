@@ -32,6 +32,7 @@ messages.
 | retain | keep |
 | subsequent to | after |
 | sufficient | enough |
+| tally | count |
 | terminate | stop |
 | therefore | so |
 | utilize | use |
