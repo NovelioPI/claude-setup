@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clae/verification.schema.json",
+  "type": "object",
+  "required": ["task_id", "status", "checks"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "status": {"enum": ["PASS", "FAIL", "BLOCKED"]},
+    "checks": {"type": "array", "items": {"type": "object", "required": ["name", "status"], "properties": {"name": {"type": "string"}, "status": {"enum": ["PASS", "FAIL", "SKIPPED"]}, "command": {"type": "string"}, "summary": {"type": "string"}, "failures": {"type": "array", "items": {"type": "string"}}}}},
+    "next_action": {"type": "string"}
+  }
+}

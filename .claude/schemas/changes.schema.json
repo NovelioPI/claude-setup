@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clae/changes.schema.json",
+  "type": "object",
+  "required": ["task_id", "status", "summary", "files_changed", "verification_attempted"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "status": {"enum": ["DONE", "BLOCKED", "PARTIAL"]},
+    "summary": {"type": "string"},
+    "behavior_changes": {"type": "array", "items": {"type": "string"}},
+    "structural_changes": {"type": "array", "items": {"type": "string"}},
+    "api_data_changes": {"type": "array", "items": {"type": "string"}},
+    "files_changed": {"type": "array", "items": {"type": "string"}},
+    "verification_attempted": {"type": "array", "items": {"type": "string"}},
+    "scope_expansion": {"type": "array", "items": {"type": "string"}},
+    "blockers": {"type": "array", "items": {"type": "string"}}
+  }
+}

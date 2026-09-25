@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clae/facts.schema.json",
+  "type": "object",
+  "required": ["task_id", "status", "relevant_files", "relevant_symbols", "dependency_path", "constraints", "unknowns", "evidence"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "status": {"enum": ["READY", "BLOCKED"]},
+    "relevant_files": {"type": "array", "items": {"type": "string"}},
+    "relevant_symbols": {"type": "array", "items": {"type": "string"}},
+    "dependency_path": {"type": "array", "items": {"type": "string"}},
+    "existing_patterns": {"type": "array", "items": {"type": "string"}},
+    "existing_tests": {"type": "array", "items": {"type": "string"}},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "unknowns": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "array", "items": {"type": "string"}}
+  }
+}

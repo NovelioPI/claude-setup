@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clae/plan.schema.json",
+  "type": "object",
+  "required": ["task_id", "goal", "non_goals", "steps", "risks", "verification"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "goal": {"type": "string"},
+    "non_goals": {"type": "array", "items": {"type": "string"}},
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "action", "files"],
+        "properties": {
+          "id": {"type": "string"},
+          "action": {"type": "string"},
+          "files": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "verification": {"type": "array", "items": {"type": "string"}},
+    "rollback": {"type": "string"},
+    "open_questions": {"type": "array", "items": {"type": "string"}}
+  }
+}

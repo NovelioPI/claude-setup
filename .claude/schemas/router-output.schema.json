@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clae/router-output.schema.json",
+  "type": "object",
+  "required": ["clae_version", "complexity", "risk", "route", "reason", "artifacts"],
+  "properties": {
+    "clae_version": {"const": "0.1"},
+    "complexity": {"enum": ["XS", "S", "M", "L"]},
+    "risk": {"enum": ["LOW", "MEDIUM", "HIGH"]},
+    "route": {"type": "array", "items": {"type": "string"}},
+    "reason": {"type": "string"},
+    "artifacts": {"type": "string"}
+  }
+}

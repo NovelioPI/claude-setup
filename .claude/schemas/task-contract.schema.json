@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clae/task-contract.schema.json",
+  "type": "object",
+  "required": ["task_id", "goal", "scope", "non_goals", "acceptance_criteria", "risk", "complexity"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "goal": {"type": "string"},
+    "scope": {"type": "array", "items": {"type": "string"}},
+    "non_goals": {"type": "array", "items": {"type": "string"}},
+    "acceptance_criteria": {"type": "array", "items": {"type": "string"}},
+    "risk": {"enum": ["LOW", "MEDIUM", "HIGH"]},
+    "complexity": {"enum": ["XS", "S", "M", "L"]},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "expected_output": {"type": "string"},
+    "routing_decision": {"type": "array", "items": {"type": "string"}}
+  }
+}

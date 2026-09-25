@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "clae/review.schema.json",
+  "type": "object",
+  "required": ["task_id", "status", "findings"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "status": {"enum": ["APPROVED", "CHANGES_REQUIRED", "BLOCKED"]},
+    "findings": {"type": "array", "items": {"type": "object", "required": ["severity", "finding"], "properties": {"severity": {"enum": ["BLOCKER", "CONCERN", "SUGGESTION"]}, "finding": {"type": "string"}, "evidence": {"type": "array", "items": {"type": "string"}}, "recommendation": {"type": "string"}}}},
+    "scope_check": {"type": "string"},
+    "test_check": {"type": "string"}
+  }
+}
