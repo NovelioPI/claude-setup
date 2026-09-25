@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CLAE Project Index",
+  "type": "object",
+  "required": ["project", "status", "active_tasks", "blocked_tasks", "next_tasks"],
+  "properties": {
+    "project": {"type": "string"},
+    "status": {"enum": ["ACTIVE", "PAUSED", "DONE"]},
+    "current_task": {"type": ["string", "null"]},
+    "active_tasks": {"type": "array", "items": {"type": "string"}},
+    "blocked_tasks": {"type": "array", "items": {"type": "string"}},
+    "next_tasks": {"type": "array", "maxItems": 5, "items": {"type": "string"}},
+    "last_updated": {"type": "string"}
+  },
+  "additionalProperties": false
+}
