@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "default_budget_tokens": 10000,
+  "max_escalation_steps": 3,
+  "max_budget_multiplier": 2.0,
+  "min_candidate_utility": 0.000001,
+  "prefer_deterministic_sources": true,
+  "source_order": ["task_artifact", "ast", "filesystem", "git", "local_docs", "mcp"]
+}

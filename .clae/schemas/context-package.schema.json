@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CLAE Context Package",
+  "type": "object",
+  "required": [
+    "package",
+    "materialized"
+  ],
+  "properties": {
+    "package": {
+      "type": "object",
+      "required": [
+        "budget_tokens",
+        "selected",
+        "deferred",
+        "remaining_tokens"
+      ],
+      "properties": {
+        "task_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "objective": {
+          "type": "string"
+        },
+        "budget_tokens": {
+          "type": "integer"
+        },
+        "selected": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "deferred": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "remaining_tokens": {
+          "type": "integer"
+        },
+        "escalation_level": {
+          "type": "integer"
+        },
+        "forbidden": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "materialized": {
+      "type": "object"
+    }
+  }
+}

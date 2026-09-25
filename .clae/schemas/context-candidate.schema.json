@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CLAE Context Candidate",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "source",
+    "title",
+    "estimated_tokens",
+    "authority",
+    "freshness",
+    "relevance",
+    "dependency",
+    "confidence",
+    "hard"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "estimated_tokens": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "authority": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "freshness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "relevance": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "dependency": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "hard": {
+      "type": "boolean"
+    },
+    "line_start": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "line_end": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "symbol": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CLAE Checkpoint",
+  "type": "object",
+  "required": [
+    "task_id",
+    "objective",
+    "completed",
+    "evidence",
+    "unresolved",
+    "retained",
+    "discarded"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "objective": {
+      "type": "string"
+    },
+    "completed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unresolved": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "retained": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "discarded": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_artifacts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
