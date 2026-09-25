@@ -13,3 +13,7 @@ graft/
 
 # OS
 .DS_Store
+
+# CLAE runtime output (packages, telemetry, checkpoints, indexes)
+.clae/runtime/*
+!.clae/runtime/.gitkeep

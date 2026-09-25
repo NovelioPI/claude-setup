@@ -18,6 +18,9 @@ CandidateKind = Literal[
     "other",
 ]
 
+# Soft candidates below this relevance are never selected.
+MIN_SOFT_RELEVANCE = 0.18
+
 
 @dataclass(slots=True)
 class ContextDemand:

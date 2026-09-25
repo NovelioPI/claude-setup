@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 TEMPLATE = """id: {task_id}
@@ -19,6 +19,8 @@ created: {today}
 updated: {today}
 """
 
+ROOT = Path(__file__).resolve().parents[2]
+
 
 def main() -> int:
     parser = argparse.ArgumentParser()
@@ -26,8 +28,7 @@ def main() -> int:
     parser.add_argument("title")
     args = parser.parse_args()
 
-    root = Path.cwd()
-    path = root / ".clae" / "tasks" / f"{args.task_id}.yaml"
+    path = ROOT / ".clae" / "tasks" / f"{args.task_id}.yaml"
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists():
         raise SystemExit(f"Task already exists: {path}")
@@ -35,7 +36,7 @@ def main() -> int:
         TEMPLATE.format(
             task_id=args.task_id,
             title=args.title,
-            today=datetime.now(UTC).date().isoformat(),
+            today=datetime.now(timezone.utc).date().isoformat(),
         )
     )
     print(path)

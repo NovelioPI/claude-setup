@@ -27,7 +27,7 @@ def main() -> int:
     )
     p_package.add_argument("--task", required=True)
     p_package.add_argument("--task-id")
-    p_package.add_argument("--budget", type=int, default=10000)
+    p_package.add_argument("--budget", type=int, help="Defaults to config.json")
     p_package.set_defaults(handler="package")
 
     p_escalate = sub.add_parser(
@@ -47,9 +47,15 @@ def main() -> int:
             "unverifiable_acceptance",
         ],
     )
-    p_escalate.add_argument("--level", type=int, default=1)
-    p_escalate.add_argument("--step", type=int, default=0)
-    p_escalate.add_argument("--budget", type=int, default=10000)
+    p_escalate.add_argument(
+        "--level", type=int, help="Defaults to the saved package's level"
+    )
+    p_escalate.add_argument(
+        "--step", type=int, help="Defaults to the saved package's escalation step"
+    )
+    p_escalate.add_argument(
+        "--budget", type=int, help="Defaults to the saved package's budget"
+    )
     p_escalate.set_defaults(handler="escalate")
 
     p_checkpoint = sub.add_parser("checkpoint", help="Create a task checkpoint")
@@ -73,6 +79,14 @@ def main() -> int:
     p_summary.set_defaults(handler="telemetry")
 
     args = parser.parse_args()
+    try:
+        return run(args)
+    except (ValueError, FileNotFoundError) as exc:
+        print(f"clae: {exc}", file=sys.stderr)
+        return 1
+
+
+def run(args: argparse.Namespace) -> int:
     gateway = ContextGateway(ROOT)
 
     if args.handler == "index":

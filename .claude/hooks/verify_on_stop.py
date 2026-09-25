@@ -4,13 +4,14 @@
 The router creates `.claude/work/ACTIVE`. The file may contain either a task ID
 or `TASK_ID|VERIFY_ON_STOP=1`.
 
-This hook intentionally stays conservative: it runs `git diff --check` always
-and discovers a focused test command from the active task's verification.md if
+This hook intentionally stays conservative: when activated it runs
+`git diff --check` and discovers a focused test command from the active task's verification.md if
 one is recorded. It blocks only when a recorded required check fails.
 """
 
 from __future__ import annotations
 
+import json
 import os
 import pathlib
 import re
@@ -27,8 +28,19 @@ def run(cmd: list[str]) -> tuple[int, str]:
     return proc.returncode, output[-4000:]
 
 
+def stop_hook_active() -> bool:
+    """True when Claude is already continuing because a Stop hook blocked."""
+    try:
+        return bool(json.load(sys.stdin).get("stop_hook_active"))
+    except (json.JSONDecodeError, AttributeError):
+        return False
+
+
 def main() -> int:
     if not ACTIVE.exists():
+        return 0
+    # Block at most once per stop; a persistent failure must not loop forever.
+    if stop_hook_active():
         return 0
 
     raw = ACTIVE.read_text(encoding="utf-8").strip()

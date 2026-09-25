@@ -23,3 +23,21 @@ def test_code_task_forbids_design_context(tmp_path):
     package = select_context(candidates, demand, forbidden=demand.forbidden_patterns)
     assert not any("design.md" in c.source for c in package.selected)
     assert any(c.symbol == "calculate_bid" for c in package.selected)
+
+
+def test_repo_under_excluded_dir_name_is_still_scanned(tmp_path):
+    repo = tmp_path / "build" / "repo"
+    repo.mkdir(parents=True)
+    (repo / "optimizer.py").write_text("def optimize():\n    return 1\n")
+    demand = infer_demand("fix optimizer bug", "T-1")
+    candidates = discover_candidates(repo, demand, [])
+    assert any(c.source == "optimizer.py" for c in candidates)
+
+
+def test_test_detection_uses_file_name_patterns(tmp_path):
+    (tmp_path / "latest.py").write_text("def optimizer():\n    return 1\n")
+    (tmp_path / "test_optimizer.py").write_text("def test_optimizer():\n    pass\n")
+    demand = infer_demand("fix optimizer bug", "T-1")
+    kinds = {c.source: c.kind for c in discover_candidates(tmp_path, demand, [])}
+    assert kinds["latest.py"] == "code"
+    assert kinds["test_optimizer.py"] == "test"

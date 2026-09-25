@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import datetime as dt
 import pathlib
 import re
-import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 
 def slug(text: str) -> str:
@@ -13,16 +15,15 @@ def slug(text: str) -> str:
 
 
 def main() -> int:
-    if len(sys.argv) < 2:
-        print("usage: init_task.py <task description>", file=sys.stderr)
-        return 2
-    root = pathlib.Path.cwd().resolve()
-    task_id = (
-        f"TASK-{dt.datetime.now(dt.UTC):%Y%m%d-%H%M}-{slug(' '.join(sys.argv[1:]))}"
-    )
-    work = root / ".claude" / "work" / task_id
+    parser = argparse.ArgumentParser()
+    parser.add_argument("description", nargs="+")
+    parser.add_argument("--id", help="Stable task ID, e.g. DSP-142")
+    args = parser.parse_args()
+    stamp = f"{dt.datetime.now(dt.timezone.utc):%Y%m%d-%H%M}"
+    task_id = args.id or f"TASK-{stamp}-{slug(' '.join(args.description))}"
+    work = ROOT / ".claude" / "work" / task_id
     work.mkdir(parents=True, exist_ok=False)
-    (root / ".claude" / "work" / "ACTIVE").write_text(
+    (ROOT / ".claude" / "work" / "ACTIVE").write_text(
         task_id + "|VERIFY_ON_STOP=1\n", encoding="utf-8"
     )
     print(task_id)

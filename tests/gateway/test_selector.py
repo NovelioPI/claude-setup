@@ -79,3 +79,38 @@ def test_soft_candidates_compete_for_budget():
     pkg = select_context([a, b], demand(800))
     assert [x.id for x in pkg.selected] == ["a"]
     assert pkg.remaining_tokens == 600
+
+
+def test_forbidden_patterns_do_not_drop_hard_context():
+    hard = ContextCandidate(
+        "h",
+        "task",
+        ".claude/work/T-project-x/contract.md",
+        "contract.md",
+        100,
+        hard=True,
+    )
+    pkg = select_context([hard], demand(500), forbidden=["project"])
+    assert [x.id for x in pkg.selected] == ["h"]
+
+
+def test_escalation_widens_breadth():
+    soft = [
+        ContextCandidate(
+            f"c{i}",
+            "code",
+            f"m{i}.py",
+            f"m{i}",
+            100,
+            authority=1,
+            freshness=1,
+            relevance=1,
+            dependency=1,
+            confidence=1,
+        )
+        for i in range(8)
+    ]
+    level1 = select_context(list(soft), demand(10000))
+    level3 = select_context(list(soft), demand(10000), escalation_level=3)
+    assert len(level3.selected) > len(level1.selected)
+    assert level3.escalation_level == 3

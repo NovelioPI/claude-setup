@@ -38,22 +38,29 @@ CODE_EXTS = {
     ".swift",
     ".sql",
 }
-TEST_HINTS = ("test", "tests", "spec", "__tests__")
+TEST_DIRS = {"test", "tests", "spec", "__tests__"}
+TEST_NAME = re.compile(r"^(test_.+|.+_test|.+[._]spec|.+\.test|conftest)$")
 DOC_SUFFIXES = {".md", ".mdx", ".rst", ".adoc"}
 
 
 def iter_files(root: Path) -> Iterable[Path]:
+    runtime = root / ".clae" / "runtime"
     for path in root.rglob("*"):
         if not path.is_file():
             continue
-        if any(part in EXCLUDED_DIRS for part in path.parts):
+        # Check repo-relative parts only: a repo checked out under e.g. /srv/build
+        # must not have every file excluded.
+        if any(part in EXCLUDED_DIRS for part in path.relative_to(root).parts):
             continue
-        try:
-            path.relative_to(root / ".clae" / "runtime")
+        if path.is_relative_to(runtime):
             continue
-        except ValueError:
-            pass
         yield path
+
+
+def is_test_file(rel_path: Path) -> bool:
+    return any(part.lower() in TEST_DIRS for part in rel_path.parts[:-1]) or bool(
+        TEST_NAME.match(rel_path.stem.lower())
+    )
 
 
 def keywords(text: str) -> set[str]:
@@ -137,7 +144,7 @@ def build_index(root: Path) -> dict:
 def discover_candidates(root: Path, demand, task_artifacts: list[Path]) -> list:
     import time
 
-    from .models import ContextCandidate
+    from .models import MIN_SOFT_RELEVANCE, ContextCandidate
 
     now = time.time()
     terms = set(demand.required_terms)
@@ -183,8 +190,6 @@ def discover_candidates(root: Path, demand, task_artifacts: list[Path]) -> list:
 
     for path in iter_files(root):
         rel = str(path.relative_to(root)).replace("\\", "/")
-        if rel.startswith(".clae/runtime/"):
-            continue
         if ".claude/work/" in rel:
             continue
         if rel.startswith(".claude/rules/"):
@@ -198,17 +203,15 @@ def discover_candidates(root: Path, demand, task_artifacts: list[Path]) -> list:
         words = keywords(rel + " " + text[:16000])
         overlap_count = len(terms & words)
         relevance = min(1.0, 0.08 + 0.11 * overlap_count)
-        if rel.endswith("CLAUDE.md") or rel.startswith(".claude/rules/"):
+        if rel.endswith("CLAUDE.md"):
             relevance = max(relevance, 0.85)
-        is_test = any(part.lower() in TEST_HINTS for part in path.parts) or any(
-            x in path.name.lower() for x in TEST_HINTS
-        )
+        is_test = is_test_file(path.relative_to(root))
         is_doc = path.suffix in DOC_SUFFIXES
         is_code = path.suffix in CODE_EXTS
         if not (is_code or is_doc):
             continue
         kind = "test" if is_test else "doc" if is_doc else "code"
-        if kind == "code" and not demand.task_type in {
+        if kind == "code" and demand.task_type not in {
             "code",
             "bug_fix",
             "test",
@@ -224,8 +227,6 @@ def discover_candidates(root: Path, demand, task_artifacts: list[Path]) -> list:
         stat = path.stat()
         freshness = 1.0 / (1.0 + max(0.0, (now - stat.st_mtime) / 86400 / 90))
         authority = 0.95 if is_code else 0.85 if kind == "test" else 0.7
-        if rel.startswith(".claude/rules/"):
-            authority = 0.9
         estimated_tokens = max(120, min(2600, len(text) // 4))
         add(
             ContextCandidate(
@@ -282,8 +283,13 @@ def discover_candidates(root: Path, demand, task_artifacts: list[Path]) -> list:
                     )
                 )
 
-    # Language rules become hard only when there is matching code in the candidate pool.
-    suffixes = {Path(c.source).suffix for c in candidates if c.kind in {"code", "test"}}
+    # Language rules become hard only when selectable code exists in the candidate pool.
+    selectable_code = [
+        c
+        for c in candidates
+        if c.kind in {"code", "test"} and c.relevance >= MIN_SOFT_RELEVANCE
+    ]
+    suffixes = {Path(c.source).suffix for c in selectable_code}
     lang_map = {
         ".py": "python",
         ".ts": "typescript",
@@ -318,7 +324,7 @@ def discover_candidates(root: Path, demand, task_artifacts: list[Path]) -> list:
             )
 
     clean = root / ".claude" / "rules" / "clean-code.md"
-    if clean.exists() and any(c.kind == "code" for c in candidates):
+    if clean.exists() and selectable_code:
         rel = str(clean.relative_to(root)).replace("\\", "/")
         text = clean.read_text(encoding="utf-8", errors="ignore")
         candidates.append(
