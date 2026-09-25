@@ -1,107 +1,86 @@
 ---
 name: task-router
-description: Classify a coding task by complexity and risk, create a task contract, and choose the minimum CLAE agent workflow required.
+description: Route each request to the smallest CLAE workflow. Use before execution when task type, risk, or scope is unclear.
 ---
 
-# Task Router — CLAE v0.1
+# Task Router — CLAE
 
-You are the routing layer, not the implementer.
+Route the request before spawning agents or loading large context.
 
-## Objective
+## Intent classes
 
-Turn an unstructured user request into a compact task contract and a minimal execution route.
+### BRAINSTORM
 
-## Step 1 — Create task ID
+Use when the user is:
+- starting a new idea or project;
+- unsure what to build;
+- asking for alternatives, research, architecture exploration, or product discovery;
+- trying to mature a concept before implementation.
 
-Use a stable identifier such as `TASK-YYYYMMDD-HHMM-<short-slug>`.
-Create:
+Route to `/brainstorm`.
+Do not start coding.
 
-`.claude/work/<TASK_ID>/`
+### PROJECT
 
-Write the ID to:
+Use when the user is:
+- asking for status, next task, blockers, parking, completion, or roadmap;
+- maintaining task state without changing code.
 
-`.claude/work/ACTIVE`
+Route to `/project`.
+Do not load the full task history.
 
-## Step 2 — Classify
+### CODE
 
-Assess two dimensions.
+Use when the user wants a repository change, bug fix, refactor, test, migration, or implementation.
+Proceed through the normal CLAE pipeline.
 
-### Complexity
+## CODE routing matrix
 
-- `XS`: trivial local edit; one or very few files; behavior obvious.
-- `S`: localized bug/feature; small change surface.
-- `M`: multiple modules, non-trivial behavior, or meaningful refactor.
-- `L`: cross-cutting architecture, migration, subsystem replacement, or broad refactor.
-
-### Risk
-
-- `LOW`: internal/local, reversible, well-tested.
-- `MEDIUM`: user-visible behavior, public API, data behavior, or performance-sensitive code.
-- `HIGH`: auth/security, destructive data changes, payments, production migrations, concurrency, or sensitive integrations.
-
-When uncertain, choose the higher risk class and record why.
-
-## Step 3 — Create contract
-
-Write `.claude/work/<TASK_ID>/contract.md` with:
-
-- goal
-- scope
-- non-goals
-- acceptance criteria
-- risk
-- constraints
-- expected output
-- routing decision
-
-## Routing matrix
-
-| Complexity | Risk | Route |
+| Complexity | Risk | Workflow |
 |---|---|---|
-| XS | LOW | direct implementation + lightweight verification |
-| S | LOW/MEDIUM | `repo-scout -> builder -> verifier` |
-| S | HIGH | `repo-scout -> builder -> verifier -> reviewer` + security-specific checks when applicable |
-| M | LOW/MEDIUM | `repo-scout -> planner -> builder -> verifier -> reviewer` |
-| M | HIGH | same as M + specialized verification/review |
-| L | any | parallel scouts -> planner -> builder -> verifier -> reviewer -> simplify -> verifier |
+| XS | low | main agent → verify |
+| S | low | repo-scout → builder → verify |
+| M | low/medium | repo-scout → planner → builder → verify → reviewer |
+| L | medium/high | parallel scouts → planner → builder → verify → reviewer |
+| XL | high | explicit plan + isolated work + specialized reviewers |
 
-Do not spawn agents merely to satisfy the matrix. Skip an agent when deterministic repository evidence already makes its job unnecessary.
+## Risk signals
 
-## Step 4 — Route context
+Increase risk when the task touches:
+- auth / security;
+- public APIs;
+- data migrations;
+- billing / payments;
+- concurrency / distributed state;
+- destructive operations;
+- performance-critical paths;
+- infrastructure / deployment.
 
-Pass artifacts, not transcripts.
+## Context rules
 
-- Scout receives the task contract.
-- Planner receives contract + facts.
-- Builder receives contract + facts + plan.
-- Verifier receives contract + plan + changes + diff.
-- Reviewer receives contract + plan + changes + verification + diff.
+1. Use deterministic inspection before spawning an agent.
+2. Give each agent only the artifacts it needs.
+3. Do not load every coding standard into `builder`.
+4. Language rules are path-scoped and activate when matching files are read.
+5. Framework guidance is a skill and should be loaded only when the framework is confirmed.
+6. Prefer a small number of high-value research passes over broad parallel exploration.
+7. Stop routing once the task has a clear execution path.
 
-## Step 5 — Escalation
+## Output
 
-Escalate only when:
+Write router decisions to:
 
-- actual change surface exceeds the plan,
-- verification exposes an architectural issue,
-- an unknown blocks correctness,
-- risk is higher than initially classified.
+`.claude/work/<task-id>/router.md`
 
-If blocked, preserve work and update the artifact rather than starting another broad exploration.
+Use this structure:
 
-## Required router output
+```markdown
+# Route
 
-The final routing summary should fit in a compact structure:
-
-```yaml
-clae_version: 0.1
-complexity: S|M|L|XS
-risk: LOW|MEDIUM|HIGH
-route:
-  - repo-scout
-  - planner
-  - builder
-  - verifier
-  - reviewer
-reason: <one concise paragraph>
-artifacts: .claude/work/<TASK_ID>/
+Intent: CODE | BRAINSTORM | PROJECT
+Complexity: XS | S | M | L | XL
+Risk: LOW | MEDIUM | HIGH
+Workflow: <one line>
+Reason: <1-3 short bullets>
+Required context: <artifacts / paths>
 ```
