@@ -82,3 +82,7 @@ local artifact → local index → git → MCP → human decision
 ## Output
 
 Prefer simple English and compact status-first responses. Do not restate earlier turns unless they change the decision. Use `.claude/output-styles/clae-concise.md` when working interactively.
+
+## Git commits
+
+Do not add a `Co-Authored-By` trailer to commit messages.
