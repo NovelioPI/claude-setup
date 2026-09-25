@@ -1,84 +1,40 @@
 # CLAE
 
-CLAE is a context-limited agentic workflow for software projects.
+CLAE (Context-Limited Agentic Engineering) is a repository-local operating system for agentic software work.
 
-## What changed from v0.1
+The goal is broader than coding: manage **context, capability, artifacts, and verification** across ideation, project management, code, tests, documentation, and design.
 
-### 1. Concise output
+## Design rules
 
-Use `.claude/output-styles/clae-concise.md`.
+- Always-on instructions stay small.
+- Rules are path-scoped.
+- Skills are loaded on demand.
+- MCP is optional and routed only when useful.
+- Work is persisted as small artifacts rather than long chat transcripts.
+- Deterministic checks handle deterministic rules.
 
-Recommended personal setup:
-
-```text
-cp .claude/output-styles/clae-concise.md ~/.claude/output-styles/
-```
-
-Then run:
-
-```text
-/output-style CLAE Concise
-```
-
-The style keeps Claude Code's coding instructions and changes only communication style. Because output styles affect the main session system prompt, keep the file short.
-
-### 2. Brainstorm before execution
-
-Use `/brainstorm` when the idea is not mature.
-Long-running ideation lives under `.clae/ideas/` and does not enter every session automatically.
-
-### 3. Sparse project management
-
-Use the `project` skill for task state.
-
-The old giant `todo.md` is replaced by:
-
-- `.clae/project.yaml` — tiny index
-- `.clae/tasks/*.yaml` — active tasks
-- `.clae/archive/` — history
-
-Read only the records needed for the current request.
-
-### 4. Lazy language and framework rules
-
-Rules are path-scoped under `.claude/rules/`.
-Python rules load for Python files, TypeScript rules for TypeScript files, and so on.
-This avoids loading every language guide into every builder context.
-
-Keep language rules small. Put mechanically enforceable style in formatters/linters, not prompts.
-
-## Recommended flow
+## Main layers
 
 ```text
-brainstorm
-   ↓
-project task
-   ↓
-contract
-   ↓
-repo-scout
-   ↓
-plan
-   ↓
-builder
-   ↓
-verify
-   ↓
-review
-   ↓
-simplify
-   ↓
-verify
-   ↓
-archive + learn
+Project control
+  .clae/
+
+Execution knowledge
+  .claude/rules/
+  .claude/skills/
+
+Context routing
+  .claude/routers/
+  .claude/skills/context-gateway/
+
+Workers
+  .claude/agents/
+
+Task memory
+  .claude/work/<task-id>/
+
+External/local capabilities
+  .claude/integrations/
 ```
 
-## Personal output style setup
-
-For a per-user default, copy the style to `~/.claude/output-styles/` and set:
-
-```json
-{ "outputStyle": "CLAE Concise" }
-```
-
-A project-local example is available at `.claude/settings.local.json.example`.
+See `../docs/README.md` for the design record behind this version.

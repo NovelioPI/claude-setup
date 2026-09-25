@@ -1,86 +1,49 @@
 ---
 name: task-router
-description: Route each request to the smallest CLAE workflow. Use before execution when task type, risk, or scope is unclear.
+description: Route requests to the smallest CLAE workflow. Use before non-trivial work.
 ---
 
 # Task Router — CLAE
 
-Route the request before spawning agents or loading large context.
+Route first. Load context second. Execute third.
 
 ## Intent classes
 
-### BRAINSTORM
+- BRAINSTORM → `/brainstorm`
+- PROJECT → `/project`
+- CODE → coding pipeline
+- TEST → `test-strategy` + relevant verification
+- DOCS → `doc-router` + doc agents
+- DESIGN → `design-router` + design agents/tools
+- MIXED → split into explicit sub-tasks with independent artifacts
 
-Use when the user is:
-- starting a new idea or project;
-- unsure what to build;
-- asking for alternatives, research, architecture exploration, or product discovery;
-- trying to mature a concept before implementation.
-
-Route to `/brainstorm`.
-Do not start coding.
-
-### PROJECT
-
-Use when the user is:
-- asking for status, next task, blockers, parking, completion, or roadmap;
-- maintaining task state without changing code.
-
-Route to `/project`.
-Do not load the full task history.
-
-### CODE
-
-Use when the user wants a repository change, bug fix, refactor, test, migration, or implementation.
-Proceed through the normal CLAE pipeline.
-
-## CODE routing matrix
+## Code routing
 
 | Complexity | Risk | Workflow |
 |---|---|---|
-| XS | low | main agent → verify |
-| S | low | repo-scout → builder → verify |
-| M | low/medium | repo-scout → planner → builder → verify → reviewer |
-| L | medium/high | parallel scouts → planner → builder → verify → reviewer |
-| XL | high | explicit plan + isolated work + specialized reviewers |
+| XS | low | main → verify |
+| S | low | scout → builder → verify |
+| M | low/medium | scout → planner → test-strategy → builder → verify → review |
+| L | medium/high | parallel focused scouts → planner → test-strategy → builder → specialized review |
+| XL | high | explicit plan → isolated execution → specialized verification |
 
 ## Risk signals
 
-Increase risk when the task touches:
-- auth / security;
-- public APIs;
-- data migrations;
-- billing / payments;
-- concurrency / distributed state;
-- destructive operations;
-- performance-critical paths;
-- infrastructure / deployment.
+Increase risk for:
+- auth/security
+- public APIs
+- migrations
+- billing/payments
+- concurrency/distributed state
+- destructive operations
+- infrastructure/deployment
+- performance-critical code
 
-## Context rules
+## Routing rules
 
-1. Use deterministic inspection before spawning an agent.
-2. Give each agent only the artifacts it needs.
-3. Do not load every coding standard into `builder`.
-4. Language rules are path-scoped and activate when matching files are read.
-5. Framework guidance is a skill and should be loaded only when the framework is confirmed.
-6. Prefer a small number of high-value research passes over broad parallel exploration.
-7. Stop routing once the task has a clear execution path.
-
-## Output
-
-Write router decisions to:
-
-`.claude/work/<task-id>/router.md`
-
-Use this structure:
-
-```markdown
-# Route
-
-Intent: CODE | BRAINSTORM | PROJECT
-Complexity: XS | S | M | L | XL
-Risk: LOW | MEDIUM | HIGH
-Workflow: <one line>
-Reason: <1-3 short bullets>
-Required context: <artifacts / paths>
-```
+- Do not load all language rules. They are path-scoped.
+- Load framework Skills only after the framework is confirmed.
+- Do not load design tools for backend-only work.
+- Do not load browser tooling unless a browser check is useful.
+- Do not load project history for a coding task unless the task depends on it.
+- Use the lowest-cost capability that can answer the question.

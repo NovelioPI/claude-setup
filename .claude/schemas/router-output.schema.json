@@ -2,13 +2,55 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "clae/router-output.schema.json",
   "type": "object",
-  "required": ["clae_version", "complexity", "risk", "route", "reason", "artifacts"],
+  "required": [
+    "intent",
+    "complexity",
+    "risk",
+    "workflow"
+  ],
   "properties": {
-    "clae_version": {"const": "0.1"},
-    "complexity": {"enum": ["XS", "S", "M", "L"]},
-    "risk": {"enum": ["LOW", "MEDIUM", "HIGH"]},
-    "route": {"type": "array", "items": {"type": "string"}},
-    "reason": {"type": "string"},
-    "artifacts": {"type": "string"}
-  }
+    "intent": {
+      "enum": [
+        "BRAINSTORM",
+        "PROJECT",
+        "CODE",
+        "TEST",
+        "DOCS",
+        "DESIGN",
+        "MIXED"
+      ]
+    },
+    "complexity": {
+      "enum": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    "risk": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "workflow": {
+      "type": "string"
+    },
+    "required_context": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "required_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
 }
