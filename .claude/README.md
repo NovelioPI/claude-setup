@@ -1,70 +1,84 @@
-# CLAE v0.1
+# CLAE
 
-Context-Limited Agentic Engineering scaffold for Claude Code.
+CLAE is a context-limited agentic workflow for software projects.
 
-## Directory map
+## What changed from v0.1
 
-```text
-.claude/
-├── CLAUDE.md                    # Always-on, compact project constitution
-├── settings.json                # Verification hooks
-├── agents/                      # 5 isolated roles
-│   ├── repo-scout.md
-│   ├── planner.md
-│   ├── builder.md
-│   ├── verifier.md
-│   └── reviewer.md
-├── skills/
-│   └── task-router/SKILL.md     # Complexity × risk routing
-├── schemas/                     # Machine-readable artifact contracts
-├── templates/                   # Human-readable artifact templates
-├── hooks/
-│   ├── verify_changed_file.py   # Cheap syntax gate after Python edits
-│   └── verify_on_stop.py        # Optional task-level stop gate
-├── scripts/
-│   └── init_task.py             # Create ACTIVE task workspace
-└── work/                        # Per-task artifact bus (keep out of commits as desired)
-```
+### 1. Concise output
 
-## Recommended invocation
+Use `.claude/output-styles/clae-concise.md`.
 
-Start with the task router:
+Recommended personal setup:
 
 ```text
-/task-router <your task>
+cp .claude/output-styles/clae-concise.md ~/.claude/output-styles/
 ```
 
-Then follow the route it emits. Pass artifacts between agents instead of copying transcripts.
-
-### Example
+Then run:
 
 ```text
-.task
-  ↓
-contract.md
-  ↓
-repo-scout → facts.md
-  ↓
-planner    → plan.md
-  ↓
-builder    → changes.md
-  ↓
-verifier   → verification.md
-  ↓
-reviewer   → review.md
+/output-style CLAE Concise
 ```
 
-## Active task
+The style keeps Claude Code's coding instructions and changes only communication style. Because output styles affect the main session system prompt, keep the file short.
 
-`ACTIVE` contains the current task ID and enables the optional Stop verification hook.
-Delete or clear it when the task is fully integrated.
+### 2. Brainstorm before execution
 
-## Hook philosophy
+Use `/brainstorm` when the idea is not mature.
+Long-running ideation lives under `.clae/ideas/` and does not enter every session automatically.
 
-Hooks do deterministic work only. The post-edit hook checks Python syntax. The stop hook is opt-in via `VERIFY_ON_STOP=1` in `ACTIVE` and blocks on `git diff --check` or explicit `COMMAND:` lines found in the task's `verification.md`.
+### 3. Sparse project management
 
-## v0.1 limitations
+Use the `project` skill for task state.
 
-- The router is intentionally prompt-driven rather than a custom daemon.
-- Artifact validation is schema-defined but not automatically enforced by a separate validator yet.
-- The builder does not force worktree isolation by default; use worktrees for genuinely parallel implementation streams.
+The old giant `todo.md` is replaced by:
+
+- `.clae/project.yaml` — tiny index
+- `.clae/tasks/*.yaml` — active tasks
+- `.clae/archive/` — history
+
+Read only the records needed for the current request.
+
+### 4. Lazy language and framework rules
+
+Rules are path-scoped under `.claude/rules/`.
+Python rules load for Python files, TypeScript rules for TypeScript files, and so on.
+This avoids loading every language guide into every builder context.
+
+Keep language rules small. Put mechanically enforceable style in formatters/linters, not prompts.
+
+## Recommended flow
+
+```text
+brainstorm
+   ↓
+project task
+   ↓
+contract
+   ↓
+repo-scout
+   ↓
+plan
+   ↓
+builder
+   ↓
+verify
+   ↓
+review
+   ↓
+simplify
+   ↓
+verify
+   ↓
+archive + learn
+```
+
+## Personal output style setup
+
+For a per-user default, copy the style to `~/.claude/output-styles/` and set:
+
+```json
+{ "outputStyle": "CLAE Concise" }
+```
+
+A project-local example is available at `.claude/settings.local.json.example`.

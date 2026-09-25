@@ -1,4 +1,4 @@
-# CLAE v0.1
+# CLAE
 
 Context-Limited Agentic Engineering for this repository.
 
@@ -16,6 +16,10 @@ Context-Limited Agentic Engineering for this repository.
 10. Treat artifacts in `.claude/work/<task-id>/` as the task memory bus.
 11. Prefer small, reversible changes.
 12. Promote durable lessons into rules/skills/ADRs; do not dump transcripts into memory.
+13. Keep project state out of always-on context; use `.clae/` and read it on demand.
+14. Use path-scoped language/framework rules instead of loading every coding standard into the builder.
+15. Use deterministic formatters, linters, type checkers, and tests for mechanical rules.
+16. Treat brainstorm artifacts as pre-execution knowledge, not implementation instructions.
 
 ## Task lifecycle
 
@@ -33,3 +37,13 @@ An agent should stop when its artifact contract is satisfied. If blocked, write 
 ## Commands
 
 Use the repository's real commands when known. Otherwise inspect `pyproject.toml`, `package.json`, `Makefile`, CI configuration, or equivalent before inventing commands.
+
+## Context loading policy
+
+Always-on context must stay small.
+
+- `.claude/CLAUDE.md`: global project invariants only.
+- `.claude/rules/`: path-scoped engineering rules.
+- `.claude/skills/`: reusable workflows loaded on demand.
+- `.clae/`: project state and ideation; read only when the task needs it.
+- `.claude/work/<task-id>/`: current task memory bus.
