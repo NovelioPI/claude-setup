@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# Local settings override (see .claude/settings.local.json.example)
+.claude/settings.local.json
+
+# graft MCP session cache
+graft/
+
+# Windows zone identifier (WSL)
+*:Zone.Identifier*
+
+# OS
+.DS_Store
