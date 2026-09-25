@@ -70,7 +70,6 @@ You normally **do not copy the example runtime data**. Keep these directories em
 .clae/archive/
 .clae/tasks/
 .clae/ideas/
-.clae/memory/
 .clae/design/
 .claude/work/
 ```
@@ -153,17 +152,16 @@ The command prints a task ID such as:
 TASK-20260925-0915-fix-incorrect-pacing-multiplier
 ```
 
-It creates:
+It creates an empty `.claude/work/TASK-.../` folder and marks it active in `.claude/work/ACTIVE`. Agents write these artifacts into it from `.claude/templates/`:
 
 ```text
-.claude/work/TASK-.../
-├── contract.md
-├── facts.md
-├── plan.md
-├── test-decision.md
-├── changes.md
-├── verification.md
-└── review.md
+contract.md
+facts.md
+plan.md
+test-decision.md
+changes.md
+verification.md
+review.md
 ```
 
 The agent fills these artifacts as the task progresses. They are the **task memory bus**. Do not put the whole conversation into them.
@@ -174,10 +172,16 @@ If you prefer stable human-readable task IDs, create a task record as well:
 python3 .claude/scripts/create_task.py DSP-142 "Fix incorrect pacing multiplier"
 ```
 
-This creates:
+This creates only:
 
 ```text
 .clae/tasks/DSP-142.yaml
+```
+
+To use the same ID for execution state, create the workspace with it:
+
+```bash
+python3 .claude/scripts/init_task.py --id DSP-142 "Fix incorrect pacing multiplier"
 ```
 
 Use the task record for durable project state. Use `.claude/work/DSP-142/` for execution state.
@@ -491,7 +495,7 @@ Useful integrations are documented in:
 
 CLAE uses the community `claude-talk-to-figma-mcp`, not the official Figma MCP.
 
-The project README documents a Node.js + Figma Desktop setup, including starting its WebSocket server, importing its Figma development plugin, and connecting the agent with a channel ID. citeturn0view0
+The project README documents a Node.js + Figma Desktop setup, including starting its WebSocket server, importing its Figma development plugin, and connecting the agent with a channel ID.
 
 CLAE treats Figma as an **optional capability**. Do not enable it for ordinary backend tasks.
 
@@ -553,7 +557,7 @@ This provides lightweight immediate checks.
 .claude/hooks/verify_on_stop.py
 ```
 
-The stop hook is conservative. It always checks:
+The stop hook is conservative. It does nothing unless `.claude/work/ACTIVE` contains `VERIFY_ON_STOP=1` (written by `init_task.py`) or `CLAE_VERIFY_ON_STOP=1` is set. When active, it checks:
 
 ```bash
 git diff --check
@@ -689,14 +693,12 @@ Commit the workflow itself:
 .clae/ideas/       # if using project ideas
 .clae/design/      # if using durable design contracts
 docs/
-docs/
 ```
 
 Do **not** commit generated runtime state:
 
 ```text
 .clae/runtime/
-.clae/cache/
 ```
 
 Check the repository's ignore files before committing.
@@ -838,7 +840,7 @@ Run the failing command manually. Fix the issue or update the verification artif
 
 ### Figma is unavailable
 
-Figma is optional. Check the integration guide and the upstream community MCP setup. The MCP requires Figma Desktop and a running WebSocket connection; its documented workflow also requires importing the plugin into Figma and connecting with the channel ID. citeturn0view0
+Figma is optional. Check the integration guide and the upstream community MCP setup. The MCP requires Figma Desktop and a running WebSocket connection; its documented workflow also requires importing the plugin into Figma and connecting with the channel ID.
 
 ---
 
@@ -856,14 +858,14 @@ choose a workflow
 
 | Need | Read |
 |---|---|
-| Understand the architecture | `docs/architecture/context-gateway-v0.4.md` |
+| Understand the architecture | `docs/architecture/context-gateway.md` |
 | Understand why decisions were made | `docs/adr/` |
 | Start a new idea | `docs/workflows/brainstorming.md` |
 | Manage project state | `docs/workflows/project-management.md` |
 | Decide when to test | `docs/workflows/testing.md` |
 | Write maintainable docs | `docs/workflows/documentation.md` |
 | Build UI systematically | `docs/workflows/design.md` |
-| Understand runtime internals | `docs/implementation/v0.4-runtime.md` |
+| Understand runtime internals | `docs/implementation/runtime.md` |
 | Configure Figma | `docs/integration/figma-talk-to-figma.md` |
 
 ---

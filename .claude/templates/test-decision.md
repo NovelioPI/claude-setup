@@ -1,12 +1,14 @@
 # Test Decision
 
-Strategy: `SKIP | MINIMAL | FOCUSED | REGRESSION | STRONG`
+Strategy: `skip | minimal | focused | regression | strong`
 
 ## Reason
 
 ## Dedicated tests
 
 ## Existing coverage to extend
+
+## New test files
 
 ## Verification
 

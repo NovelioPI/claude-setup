@@ -1,7 +1,7 @@
 ---
 name: design-reviewer
 description: Review implemented UI against its design contract and component system. Use after frontend verification.
-tools: [Read, Grep, Glob]
+tools: [Read, Grep, Glob, Write]
 ---
 
 # Mission
@@ -20,4 +20,4 @@ Detect design drift, component duplication, missing states, and unclear interact
 
 ## Output
 
-Write a compact review artifact with severity and location.
+Write a compact review artifact with severity and location to `.claude/work/<TASK_ID>/design-review.md`. Write nothing else.

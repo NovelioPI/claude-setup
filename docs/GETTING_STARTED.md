@@ -1,4 +1,4 @@
-# CLEA — Getting Started
+# CLAE — Getting Started
 
 This is the operational guide for setting up CLAE in a project and using it correctly.
 
@@ -109,9 +109,7 @@ For manual task control:
 python3 .claude/scripts/init_task.py "Fix incorrect pacing multiplier"
 ```
 
-Use the printed task ID for subsequent commands.
-
-The task workspace contains:
+Use the printed task ID for subsequent commands. The command creates an empty workspace and marks it active in `.claude/work/ACTIVE`. Agents write these artifacts into it from `.claude/templates/`:
 
 ```text
 contract.md
@@ -133,10 +131,16 @@ For a stable project task ID:
 python3 .claude/scripts/create_task.py DSP-142 "Fix incorrect pacing multiplier"
 ```
 
-This creates:
+This creates only:
 
 ```text
 .clae/tasks/DSP-142.yaml
+```
+
+To use the same ID for execution state, create the workspace with it:
+
+```bash
+python3 .claude/scripts/init_task.py --id DSP-142 "Fix incorrect pacing multiplier"
 ```
 
 Use this for durable status. Use `.claude/work/DSP-142/` for execution details.
@@ -243,7 +247,7 @@ Optional tools are loaded only when the task needs them.
 
 ## 14. Figma
 
-The template uses the community `claude-talk-to-figma-mcp` integration. Its documented setup requires Node.js, Figma Desktop, starting the WebSocket server, importing the Figma development plugin, and connecting the agent with the plugin's channel ID. citeturn0view0
+The template uses the community `claude-talk-to-figma-mcp` integration. Its documented setup requires Node.js, Figma Desktop, starting the WebSocket server, importing the Figma development plugin, and connecting the agent with the plugin's channel ID.
 
 Read:
 
@@ -257,7 +261,7 @@ Figma is optional. Backend tasks should not load it.
 
 After file edits, CLAE runs a lightweight changed-file check.
 
-When the agent stops, CLAE runs:
+When the agent stops and `.claude/work/ACTIVE` contains `VERIFY_ON_STOP=1` (written by `init_task.py`), CLAE runs:
 
 ```bash
 git diff --check
@@ -309,7 +313,6 @@ Normally do not commit:
 
 ```text
 .clae/runtime/
-.clae/cache/
 ```
 
 ## 18. The normal loop

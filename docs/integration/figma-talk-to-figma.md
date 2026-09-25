@@ -1,6 +1,6 @@
 # Figma — `claude-talk-to-figma-mcp`
 
-CLEA intentionally does **not** depend on Figma's official MCP server.
+CLAE intentionally does **not** depend on Figma's official MCP server.
 
 Use:
 

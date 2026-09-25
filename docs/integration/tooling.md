@@ -14,7 +14,7 @@ Use the community/local server:
 
 `https://github.com/arinspunk/claude-talk-to-figma-mcp`
 
-The repository describes a local WebSocket server plus a Figma Desktop plugin, and provides Claude Code configuration using `npx`. It is MIT-licensed. See `integration/figma-talk-to-figma.md`.
+The repository describes a local WebSocket server plus a Figma Desktop plugin, and provides Claude Code configuration using `npx`. It is MIT-licensed. See [figma-talk-to-figma.md](figma-talk-to-figma.md).
 
 ### Browser automation
 
@@ -22,7 +22,7 @@ Prefer Playwright CLI + Skills for coding agents. The Playwright MCP project its
 
 ### Storybook
 
-Storybook's MCP project moved into the main Storybook repository. In v0.3, treat Storybook's Skills/plugin direction as optional, version-matched project tooling rather than an always-on MCP dependency.
+Storybook's MCP project moved into the main Storybook repository. Treat Storybook's Skills/plugin direction as optional, version-matched project tooling rather than an always-on MCP dependency.
 
 ### shadcn
 

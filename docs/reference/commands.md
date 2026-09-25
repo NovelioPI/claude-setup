@@ -33,7 +33,7 @@ Options:
 
 - `--task` required task description.
 - `--task-id` optional stable task ID.
-- `--budget` token budget estimate; default `10000`.
+- `--budget` token budget estimate; default from `.clae/gateway/config.json` (`10000`).
 
 Output:
 
@@ -48,11 +48,10 @@ Request a broader context package after evidence shows the current one is insuff
 ```bash
 python3 .clae/scripts/clae.py escalate <task-id> \
   --task "<task>" \
-  --reason <reason> \
-  --level <current-level> \
-  --step <escalation-step> \
-  --budget <budget>
+  --reason <reason>
 ```
+
+`--level`, `--step`, and `--budget` are optional. By default they resume from the saved package, so repeated calls advance one level at a time and stop at `max_escalation_steps` from `config.json`. The budget never exceeds the first package's budget times `max_budget_multiplier`.
 
 Allowed reasons:
 

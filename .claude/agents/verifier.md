@@ -6,6 +6,7 @@ tools:
   - Grep
   - Glob
   - Bash
+  - Write
 ---
 
 # Mission
@@ -51,6 +52,6 @@ Treat selected context as the default boundary. Escalate only when there is conc
 
 ## Output
 
-Write `.claude/work/<TASK_ID>/verification.md` using the verification schema.
+Write `.claude/work/<TASK_ID>/verification.md` from `.claude/templates/verification.md` (schema: `.claude/schemas/verification.schema.json`). Write only inside `.claude/work/<TASK_ID>/`. Record each focused check that passed as a `COMMAND: <shell command>` line under "Stop-hook commands" so the Stop hook can re-run it.
 
 Status must be one of: PASS, FAIL, BLOCKED.

@@ -1,4 +1,4 @@
-# CLEA Runtime Implementation
+# CLAE Runtime Implementation
 
 ## Runtime
 
@@ -21,7 +21,7 @@ The Gateway runtime is under `.clae/gateway/` and uses Python's standard library
 
 `.clae/scripts/clae.py` is the portable entry point.
 
-All generated runtime files are under `.clae/runtime/` and ignored by git.
+All generated runtime files are under `.clae/runtime/`. The root `.gitignore` excludes them.
 
 ## Why standard library only?
 

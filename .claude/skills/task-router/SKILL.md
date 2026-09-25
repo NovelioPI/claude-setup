@@ -3,7 +3,7 @@ name: task-router
 description: Route requests to the smallest CLAE workflow. Use before non-trivial work.
 ---
 
-# Task Router — CLEA
+# Task Router — CLAE
 
 Route first. Load context second. Execute third.
 
@@ -24,8 +24,8 @@ Route first. Load context second. Execute third.
 | XS | low | main → verify |
 | S | low | scout → builder → verify |
 | M | low/medium | scout → planner → test-strategy → builder → verify → review |
-| L | medium/high | parallel focused scouts → planner → test-strategy → builder → specialized review |
-| XL | high | explicit plan → isolated execution → specialized verification |
+| L | medium/high | parallel focused scouts → planner → test-strategy → builder → verify → specialized review |
+| XL | high | explicit plan → isolated execution → specialized verification → review |
 
 ## Risk signals
 

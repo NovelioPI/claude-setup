@@ -1,4 +1,4 @@
-# CLEA
+# CLAE
 
 CLAE (Context-Limited Agentic Engineering) is a repository-local operating system for agentic software work.
 

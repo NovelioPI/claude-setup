@@ -1,4 +1,4 @@
-# CLEA Documentation
+# CLAE Documentation
 
 Use this folder when you want to understand or extend CLAE rather than simply use it.
 

@@ -6,6 +6,7 @@ tools:
   - Grep
   - Glob
   - Bash
+  - Write
 ---
 
 # Mission
@@ -49,6 +50,6 @@ Treat selected context as the default boundary. Escalate only when there is conc
 
 ## Output
 
-Write `.claude/work/<TASK_ID>/review.md` using the review schema.
+Write `.claude/work/<TASK_ID>/review.md` from `.claude/templates/review.md` (schema: `.claude/schemas/review.schema.json`). Write only inside `.claude/work/<TASK_ID>/`.
 
 A clean review is still useful: explicitly say when no actionable findings remain.

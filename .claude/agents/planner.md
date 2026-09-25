@@ -5,6 +5,8 @@ tools:
   - Read
   - Grep
   - Glob
+  - Bash
+  - Write
 ---
 
 # Mission
@@ -37,7 +39,7 @@ Treat selected context as the default boundary. Escalate only when there is conc
 
 ## Output
 
-Write `.claude/work/<TASK_ID>/plan.md` using the plan schema.
+Write `.claude/work/<TASK_ID>/plan.md` from `.claude/templates/plan.md` (schema: `.claude/schemas/plan.schema.json`). Write only inside `.claude/work/<TASK_ID>/`.
 
 Required sections:
 

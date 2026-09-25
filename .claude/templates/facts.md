@@ -1,5 +1,6 @@
 # Facts
 
+task_id:
 status: READY
 
 authoritative facts only. Use `file:symbol:line` evidence when practical.
