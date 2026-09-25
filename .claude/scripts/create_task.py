@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import argparse
-from datetime import date
+from datetime import UTC, datetime
 from pathlib import Path
 
 TEMPLATE = """id: {task_id}
@@ -31,7 +31,13 @@ def main() -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists():
         raise SystemExit(f"Task already exists: {path}")
-    path.write_text(TEMPLATE.format(task_id=args.task_id, title=args.title, today=date.today().isoformat()))
+    path.write_text(
+        TEMPLATE.format(
+            task_id=args.task_id,
+            title=args.title,
+            today=datetime.now(UTC).date().isoformat(),
+        )
+    )
     print(path)
     return 0
 

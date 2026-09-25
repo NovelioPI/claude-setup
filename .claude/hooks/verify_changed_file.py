@@ -4,6 +4,7 @@
 Reads Claude Code hook JSON from stdin. Only performs deterministic, low-cost
 checks. Exit 2 blocks the operation and feeds stderr back to Claude.
 """
+
 from __future__ import annotations
 
 import json
@@ -16,7 +17,7 @@ import sys
 def main() -> int:
     try:
         payload = json.load(sys.stdin)
-    except Exception:
+    except json.JSONDecodeError:
         return 0
 
     tool_input = payload.get("tool_input") or {}
@@ -37,6 +38,7 @@ def main() -> int:
         cwd=str(p.parent),
         text=True,
         capture_output=True,
+        check=False,
     )
     if proc.returncode == 0:
         return 0

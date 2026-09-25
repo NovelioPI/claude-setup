@@ -8,6 +8,7 @@ This hook intentionally stays conservative: it runs `git diff --check` always
 and discovers a focused test command from the active task's verification.md if
 one is recorded. It blocks only when a recorded required check fails.
 """
+
 from __future__ import annotations
 
 import os
@@ -16,13 +17,12 @@ import re
 import subprocess
 import sys
 
-
 ROOT = pathlib.Path(os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()).resolve()
 ACTIVE = ROOT / ".claude" / "work" / "ACTIVE"
 
 
 def run(cmd: list[str]) -> tuple[int, str]:
-    proc = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True)
+    proc = subprocess.run(cmd, cwd=ROOT, text=True, capture_output=True, check=False)
     output = (proc.stdout + "\n" + proc.stderr).strip()
     return proc.returncode, output[-4000:]
 
@@ -36,13 +36,17 @@ def main() -> int:
         return 0
 
     task_id = raw.split("|", 1)[0].strip()
-    verify_enabled = "VERIFY_ON_STOP=1" in raw or os.environ.get("CLAE_VERIFY_ON_STOP") == "1"
+    verify_enabled = (
+        "VERIFY_ON_STOP=1" in raw or os.environ.get("CLAE_VERIFY_ON_STOP") == "1"
+    )
     if not verify_enabled:
         return 0
 
     code, out = run(["git", "diff", "--check"])
     if code != 0:
-        sys.stderr.write("CLAE stop verification failed: `git diff --check`.\n" + out + "\n")
+        sys.stderr.write(
+            "CLAE stop verification failed: `git diff --check`.\n" + out + "\n"
+        )
         return 2
 
     verification = ROOT / ".claude" / "work" / task_id / "verification.md"
@@ -51,10 +55,19 @@ def main() -> int:
         # Optional focused commands recorded as lines: COMMAND: <shell command>
         commands = re.findall(r"^COMMAND:\s*(.+)$", text, flags=re.MULTILINE)
         for command in commands[:5]:
-            proc = subprocess.run(command, cwd=ROOT, shell=True, text=True, capture_output=True)
+            proc = subprocess.run(
+                command,
+                cwd=ROOT,
+                shell=True,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
             if proc.returncode != 0:
                 detail = (proc.stdout + "\n" + proc.stderr).strip()[-4000:]
-                sys.stderr.write(f"CLAE stop verification failed: {command}\n{detail}\n")
+                sys.stderr.write(
+                    f"CLAE stop verification failed: {command}\n{detail}\n"
+                )
                 return 2
 
     return 0
