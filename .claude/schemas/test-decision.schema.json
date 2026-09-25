@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "strategy",
+    "reason",
+    "verification"
+  ],
+  "properties": {
+    "strategy": {
+      "enum": [
+        "skip",
+        "minimal",
+        "focused",
+        "regression",
+        "strong"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "dedicated_tests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "new_test_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "verification": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_override": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}
