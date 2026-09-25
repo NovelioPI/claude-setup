@@ -1,4 +1,4 @@
-# CLAE
+# CLEA
 
 CLAE (Context-Limited Agentic Engineering) is a repository-local operating system for agentic software work.
 
@@ -38,3 +38,15 @@ External/local capabilities
 ```
 
 See `../docs/README.md` for the design record behind this version.
+
+
+## Escalation command
+
+When evidence shows the current context package is insufficient:
+
+```bash
+python3 .clae/scripts/clae.py escalate TASK-142 --task "<task>" --reason missing_symbol --level 1 --step 0
+```
+
+Allowed reasons:
+`missing_symbol`, `dependency_impact`, `conflicting_evidence`, `failed_verification`, `unverifiable_acceptance`.

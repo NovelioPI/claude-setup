@@ -3,7 +3,7 @@ name: task-router
 description: Route requests to the smallest CLAE workflow. Use before non-trivial work.
 ---
 
-# Task Router — CLAE
+# Task Router — CLEA
 
 Route first. Load context second. Execute third.
 

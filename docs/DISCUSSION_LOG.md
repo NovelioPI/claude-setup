@@ -65,3 +65,20 @@ artifact
     ▼
 verification / review
 ```
+
+
+## CLEA — Context Gateway Implementation
+
+The discussion converged on treating context as a managed resource rather than an unlimited prompt. CLEA implements:
+
+- Context Demand for task-specific needs and budgets.
+- Candidate discovery using paths, keywords, lightweight symbols, and task artifacts.
+- Hard vs soft context.
+- Utility/cost-based greedy selection with redundancy and breadth limits.
+- Context Packages and bounded materialization.
+- Context escalation with narrow evidence-based reasons.
+- Capability routing that prefers local artifacts and indexes before external MCPs.
+- Checkpoints and compaction to replace long transcript history.
+- JSONL telemetry to measure context use and escalation.
+
+The first implementation is intentionally deterministic and standard-library-only. Semantic/vector retrieval is deferred until telemetry proves it is needed.

@@ -31,6 +31,16 @@ Run the cheapest useful checks first:
 
 Use repository-native commands discovered from project files.
 
+## Context Gateway
+
+Before broad exploration, use the generated Context Package for the task:
+
+```bash
+python3 .clae/scripts/clae.py package --task "<task>" --task-id <TASK_ID>
+```
+
+Treat selected context as the default boundary. Escalate only when there is concrete evidence that the package is insufficient.
+
 ## Rules
 
 - Prefer executable evidence.

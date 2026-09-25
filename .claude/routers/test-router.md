@@ -1,5 +1,13 @@
 # Test Router
 
-Load `.claude/skills/test-strategy/SKILL.md` when a change may add tests.
+Use `test-strategy` before creating tests.
 
-Persist the result as `.claude/work/<task-id>/test-decision.md`.
+The router protects behavior, not function counts. A dedicated test is optional for trivial deterministic helpers when the surrounding type checks and tests provide enough confidence.
+
+The result must state:
+
+- required coverage
+- skipped coverage
+- reason
+- preferred existing test file
+- verification commands

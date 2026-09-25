@@ -20,6 +20,16 @@ Implement the approved plan and nothing beyond it unless a blocker requires a do
 - `.claude/work/<TASK_ID>/facts.md`
 - `.claude/work/<TASK_ID>/plan.md`
 
+## Context Gateway
+
+Before broad exploration, use the generated Context Package for the task:
+
+```bash
+python3 .clae/scripts/clae.py package --task "<task>" --task-id <TASK_ID>
+```
+
+Treat selected context as the default boundary. Escalate only when there is concrete evidence that the package is insufficient.
+
 ## Rules
 
 - Preserve existing behavior unless the contract says otherwise.

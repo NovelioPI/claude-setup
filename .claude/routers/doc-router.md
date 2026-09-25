@@ -1,5 +1,11 @@
 # Documentation Router
 
-Load `.claude/skills/doc-router/SKILL.md`.
+Before writing substantial docs, classify:
 
-Persist the scope contract before writing substantial documentation.
+- tutorial
+- how-to
+- reference
+- explanation
+- ADR
+
+Then define audience, purpose, scope, and exclusions. Update an existing home when one already exists.

@@ -1,80 +1,129 @@
 # Context Gateway
 
-## Problem
+## Goal
 
-A conventional multi-agent workflow can reduce work in one area while increasing context cost everywhere else. Every new agent, rule, MCP server, or document becomes another possible source of irrelevant context.
+The Context Gateway manages context as a finite resource. It decides what the next agent step needs instead of loading all available project knowledge.
 
-CLAE therefore treats **context as a first-class resource**.
-
-## Core question
-
-For every task, determine:
+## Model
 
 ```text
-What must the model know?
-What capability is needed?
-What must survive the turn?
-What proves the result is correct?
+Task
+ → Demand
+ → Candidate discovery
+ → Utility/cost selection
+ → Context Package
+ → Materialization
+ → Agent
+ → Evidence
+ → Verification
+ → Checkpoint
+ → Escalation if required
 ```
 
-## Context layers
+## Context Package
+
+A package is a plan for context, not the context itself. It contains:
+
+- objective
+- token budget
+- selected candidates
+- deferred candidates
+- forbidden scope
+- escalation level
+
+The materializer turns selected candidates into the small concrete snippets the agent needs.
+
+## Context ladders
+
+Code:
 
 ```text
-L0  current request
-L1  task artifacts
-L2  project rules and Skills
-L3  durable project knowledge
-L4  external tools / services
+L0 metadata
+L1 symbol
+L2 local implementation
+L3 dependencies
+L4 subsystem
+L5 repository
 ```
 
-Load the lowest layer that can answer the question. Escalate only when needed.
+Other domains use the same idea: project state, docs, design, and verification start with local/cheap sources and escalate only when necessary.
 
-## Four routers
+## Candidate scoring
 
-### Task router
-Chooses the smallest execution workflow.
-
-### Test router
-Decides whether dedicated tests add enough protection to justify maintenance cost.
-
-### Documentation router
-Decides whether to update, create, split, merge, or delete a document.
-
-### Design router
-Decides when a design contract, component system, Figma artifact, or visual verification is required.
-
-## Artifact bus
-
-Agents communicate through compact files rather than long hand-offs:
+The initial selector uses a deterministic heuristic:
 
 ```text
-contract.md
-facts.md
-plan.md
-changes.md
-verification.md
-review.md
+utility ≈
+  relevance × authority × freshness × dependency × confidence
+  -----------------------------------------------------------
+                  cost^0.7
 ```
 
-## Capability routing
+A redundancy penalty is applied when a candidate overlaps selected context.
 
-MCPs, CLIs, and external services are capabilities. They are not permanent context.
+The exact formula is intentionally provisional. Telemetry should guide later tuning.
+
+## Hard vs soft context
+
+Hard context cannot be silently dropped. Soft context competes for remaining budget.
+
+Examples of hard context:
+
+- task contract
+- direct implementation
+- mandatory language rules
+- critical acceptance tests
+
+Examples of soft context:
+
+- old ADRs
+- related documentation
+- similar implementations
+- historical incidents
+
+## Escalation
+
+Escalation requires evidence. Valid triggers:
+
+- missing symbol or definition
+- dependency impact
+- conflicting sources
+- failed verification
+- acceptance criteria cannot be proven
+
+Curiosity alone is not a trigger.
+
+## Capability ladder
+
+Use the cheapest available capability:
 
 ```text
-task
- ↓
-capability needed?
- ├── no  → continue
- └── yes → discover/load only that capability
+local task state
+ → local index
+ → git
+ → external MCP
+ → human decision
 ```
 
-## Anti-patterns
+For UI work, for example:
 
-Avoid:
+```text
+design contract
+ → component metadata
+ → Storybook
+ → Figma
+ → human decision
+```
 
-- reading every task history file;
-- loading every language guide into a builder;
-- loading every MCP tool schema at session start;
-- creating a test for every function by default;
-- generating documentation without first deciding its audience and type;
-- letting a frontend builder invent a new visual language per screen.
+## Checkpointing
+
+A checkpoint records enough task state to continue without carrying the full transcript. It keeps objective, completed work, evidence, unresolved items, retained artifacts, and discarded context categories.
+
+## Future evolution
+
+v0.5 can add learned selection weights, semantic retrieval, better code graphs, and automatic context ROI analysis. Those are intentionally not required.
+
+
+## Relationship to CLAE v0.3
+
+v0.3 introduced the Context Gateway as a workflow concept. v0.4 turns that concept into an executable runtime. The five original coding agents remain useful, but they no longer need to decide context policy themselves. They receive or request a package from the Gateway and may escalate only for concrete evidence.

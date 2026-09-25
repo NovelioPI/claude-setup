@@ -16,6 +16,16 @@ Create the smallest implementation plan that satisfies the task contract without
 - `.claude/work/<TASK_ID>/contract.md`
 - `.claude/work/<TASK_ID>/facts.md`
 
+## Context Gateway
+
+Before broad exploration, use the generated Context Package for the task:
+
+```bash
+python3 .clae/scripts/clae.py package --task "<task>" --task-id <TASK_ID>
+```
+
+Treat selected context as the default boundary. Escalate only when there is concrete evidence that the package is insufficient.
+
 ## Rules
 
 - Do not modify production code or tests.

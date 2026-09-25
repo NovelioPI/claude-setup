@@ -1,25 +1,42 @@
-# CLAE Documentation
+# CLEA Documentation
 
-This folder records the reasoning behind CLAE and the workflow decisions made during its design.
+Use this folder when you want to understand or extend CLAE rather than simply use it.
 
-## Documents
+## Start here
 
-- `architecture/context-gateway.md` — why CLAE centers on context routing.
-- `workflows/brainstorming.md` — idea development before execution.
-- `workflows/project-management.md` — sparse project state and external PM boundaries.
-- `workflows/testing.md` — avoiding low-value test files and test sprawl.
-- `workflows/documentation.md` — documentation routing, scope, and compression.
-- `workflows/design.md` — design contracts, Figma, Storybook, and visual verification.
-- `integration/tooling.md` — free/local tooling policy and integration choices.
-- `adr/0001-context-as-a-first-class-resource.md` — durable architecture decision.
+- `../README.md` — complete user-facing setup and usage guide.
+- `GETTING_STARTED.md` — shorter operational setup and daily workflow.
+- `reference/commands.md` — CLI command reference.
+
+## Architecture
+
+- `architecture/context-gateway.md` — Gateway design, why CLAE treats context as a first-class resource.
+- `implementation/runtime.md` — runtime implementation details.
+
+## Workflows
+
+- `workflows/brainstorming.md` — develop an idea before implementation.
+- `workflows/project-management.md` — sparse task/project state.
+- `workflows/testing.md` — behavior/risk-based test decisions.
+- `workflows/documentation.md` — documentation type, scope, grouping, and compression.
+- `workflows/design.md` — design contracts and visual verification.
+
+## Integrations
+
+- `integration/tooling.md` — free/local tooling policy.
+- `integration/figma-talk-to-figma.md` — community Figma MCP setup.
+
+## Decisions
+
+`adr/` contains durable architecture decisions. Read these when changing the design of CLAE itself.
 
 ## Source boundary
 
-These docs summarize the design discussion that produced CLAE. They intentionally distinguish:
+These docs distinguish:
 
-- project design decisions;
+- CLAE design decisions;
 - current external-tool facts;
 - optional integrations;
 - open decisions.
 
-Do not treat third-party tool availability as a permanent guarantee. Re-check the referenced project when upgrading CLAE.
+External tools can change independently of CLAE. Re-check their upstream documentation before upgrading an integration.

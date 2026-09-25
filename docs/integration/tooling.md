@@ -22,7 +22,7 @@ Prefer Playwright CLI + Skills for coding agents. The Playwright MCP project its
 
 ### Storybook
 
-Storybook's MCP project moved into the main Storybook repository. In Clea, treat Storybook's Skills/plugin direction as optional, version-matched project tooling rather than an always-on MCP dependency.
+Storybook's MCP project moved into the main Storybook repository. In v0.3, treat Storybook's Skills/plugin direction as optional, version-matched project tooling rather than an always-on MCP dependency.
 
 ### shadcn
 

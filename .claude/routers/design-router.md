@@ -1,5 +1,11 @@
 # Design Router
 
-Load `.claude/skills/design-router/SKILL.md`.
+For UI work, load the design contract and existing component vocabulary before implementation.
 
-Use a design contract before implementing a new UI direction.
+Prefer:
+
+```text
+design contract → local tokens/components → Storybook → Figma capability
+```
+
+Use `.clae/design/` for durable visual language such as design DNA and references.
