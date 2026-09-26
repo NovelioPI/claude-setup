@@ -133,7 +133,7 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | Scope | `scripts/contract-check.sh`, `tests/contract/` |
 | Non-goals | Validating the text inside a field |
 | Acceptance | `bash scripts/contract-check.sh --self-test` |
-| Hints | `gh issue view <n> --json body,labels,updatedAt` |
+| Hints | `gh issue view <n> --json body,labels` |
 | Unknowns | none |
 | Depends on | W6 |
 
@@ -150,7 +150,7 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | Unknowns | none |
 | Depends on | W7 |
 
-### W9 — Record the issue's `updatedAt` value at dispatch
+### W9 — Record the contract fingerprint at dispatch
 
 | Field | Value |
 |---|---|
@@ -158,7 +158,7 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | Goal | A mid-run edit to the issue body is detected before the verdict (D5) |
 | Scope | `scripts/contract-check.sh` |
 | Non-goals | Blocking edits on GitHub |
-| Acceptance | `bash scripts/contract-check.sh --self-test` covers a changed `updatedAt` |
+| Acceptance | `bash scripts/contract-check.sh --self-test` covers an edited body and an edited label (D31) |
 | Hints | `scripts/contract-check.sh` from W7 |
 | Unknowns | none |
 | Depends on | W7 |

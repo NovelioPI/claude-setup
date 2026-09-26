@@ -57,18 +57,25 @@ self_test() {
   local sample="$FIXTURES/pass-script.json" recorded
   recorded=$(report <"$sample" | cut -d' ' -f3)
   report "$recorded" <"$sample" >/dev/null || { echo "self-test failed: same fingerprint rejected"; failures=$((failures + 1)); }
-  ! report "stale" <"$sample" >/dev/null || { echo "self-test failed: changed fingerprint accepted"; failures=$((failures + 1)); }
+  ! report "$recorded" < <(jq '.body += " edited"' "$sample") >/dev/null || { echo "self-test failed: body edit not detected"; failures=$((failures + 1)); }
+  ! report "$recorded" < <(jq '.labels[0].name = "value:2"' "$sample") >/dev/null || { echo "self-test failed: label edit not detected"; failures=$((failures + 1)); }
   [ "$failures" -eq 0 ] && echo "self-test ok"
 }
 
 usage="usage: contract-check.sh <issue> | --json <file> [--since <fingerprint>] | --self-test"
+
+usage_error() {
+  echo "$usage" >&2
+  exit 2
+}
+
 issue="" json_file="" since=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --self-test) self_test; exit ;;
-    --json) json_file="${2:?$usage}"; shift 2 ;;
-    --since) since="${2:?$usage}"; shift 2 ;;
-    -*) echo "$usage" >&2; exit 2 ;;
+    --json) [ -n "${2:-}" ] || usage_error; json_file="$2"; shift 2 ;;
+    --since) [ -n "${2:-}" ] || usage_error; since="$2"; shift 2 ;;
+    -*) usage_error ;;
     *) issue="$1"; shift ;;
   esac
 done
@@ -77,6 +84,5 @@ if [ -n "$json_file" ]; then
 elif [ -n "$issue" ]; then
   gh issue view "$issue" --json body,labels | report "$since"
 else
-  echo "$usage" >&2
-  exit 2
+  usage_error
 fi
