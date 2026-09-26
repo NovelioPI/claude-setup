@@ -40,8 +40,8 @@ skills/*
 !skills/brainstorming/**
 !skills/milestone-run/
 !skills/milestone-run/**
-!skills/todo-plan/
-!skills/todo-plan/**
+!skills/issue-plan/
+!skills/issue-plan/**
 !skills/todo-update/
 !skills/todo-update/**
 

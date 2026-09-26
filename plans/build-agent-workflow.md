@@ -273,3 +273,4 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | D18 | Migration and the Action workflow move to v3. This overrides the migration part of D10 |
 | D26 | The issue form has no value, effort, or risk fields. The human sets the labels after filing, and the contract check fails when one is missing |
 | D31 | W9 detects a contract change by a fingerprint of the body and labels, not by `updatedAt`. This overrides the `updatedAt` part of D5 |
+| D37 | `TODO.md`'s project facts and invariants move to `PROJECT.md` at the repo root. `issue-plan` creates it, and an issue touching an invariant gets `risk:ask` |

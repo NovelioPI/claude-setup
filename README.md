@@ -57,7 +57,7 @@ so take it without asking.
 | `rules/code-quality.md` and its language files | yes | nothing |
 | `output-styles/plain-style.md` | yes | one key in `settings.json` |
 | `hooks/block-dangerous-git.sh` | yes | `jq` |
-| `skills/todo-plan`, `skills/todo-update` | yes | nothing |
+| `skills/issue-plan`, `skills/todo-update` | yes | nothing |
 | The approval protocol in `CLAUDE.md` | yes | your patience |
 | `skills/milestone-run` | no | the full skill chain and an acceptance command per row |
 
@@ -162,7 +162,7 @@ Three skills chain into one workflow.
 |---|---|---|
 | 1 | `brainstorming` | Widen a raw idea into features, grounded facts, and open decisions |
 | 2 | `grilling` | Close those decisions, one round of questions at a time |
-| 3 | `todo-plan` | Write `TODO.md`: rows, milestones, invariants |
+| 3 | `issue-plan` | Write `PROJECT.md` and draft, then create, a milestone and its issues |
 
 Then the loop runs.
 
@@ -176,7 +176,7 @@ Then the loop runs.
 its exit command returns 0.
 
 This repo tracks only the four skills written here: `brainstorming`,
-`milestone-run`, `todo-plan`, and `todo-update`. The rest are other people's
+`milestone-run`, `issue-plan`, and `todo-update`. The rest are other people's
 work, so they are not redistributed. `scripts/install.sh` fetches them.
 
 | Skill | Source |
