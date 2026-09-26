@@ -14,11 +14,10 @@ style to that part.
 
 ## Memory
 
-Before you make changes, read MEMORY.md for the project in
-`$HOME/.claude/projects/`. MEMORY.md is an index, with one line for each memory
-file. Open a listed file only when its line is applicable to the current task.
-The memory files contain project conventions, tool references, and format
-preferences.
+The harness loads the project's MEMORY.md at session start, up to 200 lines.
+It is an index, with one line for each memory file. Open a listed file only
+when its line is applicable to the current task. The memory files contain
+project conventions, tool references, and format preferences.
 
 ## Approval Protocol
 
