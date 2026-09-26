@@ -1,7 +1,7 @@
 # claude-setup
 
-My global Claude Code config, living at `~/.claude/`. I am publishing it
-because most of it is decisions, not settings.
+My Claude Code setup: a plugin, plus the rules and config it works with. I am
+publishing it because most of it is decisions, not settings.
 
 ## Why it looks like this
 
@@ -56,7 +56,7 @@ so take it without asking.
 | `rules/plain-words.md` | yes | nothing |
 | `rules/code-quality.md` and its language files | yes | nothing |
 | `output-styles/plain-style.md` | yes | one key in `settings.json` |
-| `hooks/block-dangerous-git.sh` | yes | `jq` |
+| `plugin/hooks/block-dangerous-git.sh` | yes | `jq` |
 | `skills/issue-plan`, `skills/issue-update` | yes | nothing |
 | The approval protocol in `CLAUDE.md` | yes | your patience |
 | `skills/milestone-run` | no | the full skill chain and an acceptance command per row |
@@ -89,9 +89,9 @@ so take it without asking.
 | `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
 | `agents/implementer.md` | Subagent that builds one GitHub issue and returns a verdict |
 | `agents/reviewer.md` | Subagent that reviews a diff and returns ranked findings |
-| `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
-| `hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on Python |
-| `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
+| `plugin/hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
+| `plugin/hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on Python |
+| `plugin/hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `statusline-command.sh` | Status line: model, effort, graft, cache, usage bars |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
@@ -108,21 +108,22 @@ An output style file does nothing on its own. `settings.json` activates one with
 
 ## Setup on a new device
 
-This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
+The repo lives anywhere. `~/.claude` stays Claude Code's own folder, and the
+skills, agents, and hooks reach it as a plugin from this repo's marketplace.
 
-1. Install Claude Code and run it once, so `~/.claude/` exists.
-2. Move the generated directory aside and clone in its place:
+1. Clone the repo:
    ```bash
-   mv ~/.claude ~/.claude.bak
-   git clone git@github.com:NovelioPI/claude-setup.git ~/.claude
-   cp -r ~/.claude.bak/projects ~/.claude/ 2>/dev/null
+   git clone git@github.com:NovelioPI/claude-setup.git ~/claude-setup
    ```
-3. Run the installer, which checks every tool and installs what needs no sudo:
+2. Run the installer, which checks every tool and installs what needs no sudo:
    ```bash
-   ~/.claude/scripts/install.sh
+   ~/claude-setup/scripts/install.sh
    ```
-4. Fix anything it reports as a blocker, then run it again.
-5. Restart Claude Code so it loads the settings, `CLAUDE.md`, the rules, and the style.
+3. Fix anything it reports as a blocker, then run it again.
+4. Run the two plugin commands it prints, then restart Claude Code.
+
+`CLAUDE.md`, `rules/`, and the `permissions.ask` list cannot travel in a plugin.
+Until the rule sync lands, they load only in a session opened in this repo.
 
 ### What the installer needs
 
@@ -195,7 +196,7 @@ Several of them tell the agent to dispatch a subagent or to not block, and
 
 Two layers guard the destructive commands, and the overlap is on purpose.
 
-`hooks/block-dangerous-git.sh` runs as a `PreToolUse` hook on every Bash call and
+`plugin/hooks/block-dangerous-git.sh` runs as a `PreToolUse` hook on every Bash call and
 exits 2 to block. It guards `git reset --hard`, `git clean` with a force flag,
 `git branch -D`, and a whole-tree `git checkout` or `git restore`. It matches each
 chained segment at its own start, so a guarded string quoted inside another
@@ -215,7 +216,7 @@ that list is the only guard left.
 
 - `settings.json` carries no secrets and no tokens. Machine-local settings live
   in `settings.local.json`, which is not tracked.
-- `hooks/notify.sh` sends a WinRT toast under the registered Windows PowerShell
+- `plugin/hooks/notify.sh` sends a WinRT toast under the registered Windows PowerShell
   AppId. A `NotifyIcon` balloon does not work: Windows 11 accepts the call,
   returns success, and shows nothing.
 - This repo excludes `~/.claude/projects/*/memory/`. Those memory files are tied

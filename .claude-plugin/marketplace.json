@@ -1,0 +1,14 @@
+{
+  "name": "noveliopi",
+  "description": "Personal Claude Code plugins",
+  "owner": {
+    "name": "NovelioPI"
+  },
+  "plugins": [
+    {
+      "name": "claude-setup",
+      "source": "./plugin",
+      "description": "Issue-based agent workflow: skills, agents, output styles, and safety hooks"
+    }
+  ]
+}

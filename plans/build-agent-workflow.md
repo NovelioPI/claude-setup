@@ -289,3 +289,4 @@ Split by D53 into three issues, run in this order:
 | D50 | graft becomes optional: agents search Hints, then `git grep`, then `sed -n`. The graft preflight check and `graft stats` go |
 | D52 | milestone-run adds `status:next` before the fingerprint, closes failed tasks too, and sends a branched issue out of the loop |
 | D53 | W14 splits into #18, #14, #19. The hooks go first, because the git guard is off since the config moved. Rules stay out of the plugin |
+| D55 | The repo is a plugin source and a local marketplace, not `~/.claude`. `install.sh` prints the install commands. `CLAUDE.md`, `rules/`, and permissions wait for W15 |

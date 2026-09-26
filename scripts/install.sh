@@ -24,12 +24,6 @@ pkg() {
   fi
 }
 
-if [ "$REPO" != "$HOME/.claude" ]; then
-  echo "This repo must live at ~/.claude, not $REPO." >&2
-  echo "Claude Code reads ~/.claude directly; a copy elsewhere drifts." >&2
-  exit 1
-fi
-
 echo "Tools"
 for t in git jq; do
   have "$t" && say "$t" "present" || block "$t" "$(pkg "$t")"
@@ -72,7 +66,7 @@ echo
 echo "Skills"
 if have npx; then
   for s in "${SKILLS[@]}"; do
-    if [ -f "$REPO/skills/$s/SKILL.md" ]; then
+    if [ -f "$HOME/.claude/skills/$s/SKILL.md" ]; then
       say "$s" "present"
     else
       npx -y skills add "mattpocock/skills@$s" -g -y >/dev/null 2>&1 \
@@ -85,7 +79,7 @@ fi
 
 echo
 echo "Permissions"
-chmod +x hooks/*.sh statusline-command.sh scripts/*.sh 2>/dev/null
+chmod +x plugin/hooks/*.sh statusline-command.sh scripts/*.sh 2>/dev/null
 say "chmod +x" "hooks, status line, scripts"
 
 echo
@@ -129,16 +123,28 @@ fi
 echo
 echo "Check"
 if have jq; then
-  out=$(printf '%s' '{"tool_input":{"command":"ls"}}' | ./hooks/block-dangerous-git.sh 2>&1; echo "rc=$?")
+  out=$(printf '%s' '{"tool_input":{"command":"ls"}}' | ./plugin/hooks/block-dangerous-git.sh 2>&1; echo "rc=$?")
   case "$out" in
     *rc=0*) say "git guard" "allows a safe command" ;;
     *)      say "git guard" "FAILED: $out"; BLOCKERS=$((BLOCKERS + 1)) ;;
   esac
-  out=$(printf '%s' '{"tool_input":{"command":"git reset --hard"}}' | ./hooks/block-dangerous-git.sh 2>&1; echo "rc=$?")
+  out=$(printf '%s' '{"tool_input":{"command":"git reset --hard"}}' | ./plugin/hooks/block-dangerous-git.sh 2>&1; echo "rc=$?")
   case "$out" in
     *rc=2*) say "git guard" "blocks git reset --hard" ;;
     *)      say "git guard" "FAILED to block: $out"; BLOCKERS=$((BLOCKERS + 1)) ;;
   esac
+fi
+
+echo
+echo "Plugin"
+if have claude && claude plugin validate . >/dev/null 2>&1; then
+  say "validate" "plugin and marketplace pass"
+  say "install" "run these two commands once:"
+  echo "      claude plugin marketplace add $REPO"
+  echo "      claude plugin install claude-setup@noveliopi"
+else
+  say "validate" "FAILED -> run 'claude plugin validate .' for the reason"
+  BLOCKERS=$((BLOCKERS + 1))
 fi
 
 echo
@@ -150,7 +156,7 @@ esac
 
 echo
 if [ "$BLOCKERS" -eq 0 ]; then
-  echo "Ready. Restart Claude Code so it loads settings, CLAUDE.md, rules, and the style."
+  echo "Ready. Install the plugin as printed above, then restart Claude Code."
 else
   echo "$BLOCKERS blocker(s) above. Fix them, then re-run this script."
   exit 1

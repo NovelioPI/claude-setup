@@ -1,0 +1,7 @@
+{
+  "name": "claude-setup",
+  "description": "Issue-based agent workflow: skills, agents, output styles, and safety hooks",
+  "author": {
+    "name": "NovelioPI"
+  }
+}

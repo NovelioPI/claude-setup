@@ -144,7 +144,7 @@ See @rules/doc-style.md for the style of a document a human reads.
 
 ## Forbidden Without Explicit Per-Use Approval
 
-Two layers enforce this, and neither replaces asking. `hooks/block-dangerous-git.sh`
+Two layers enforce this, and neither replaces asking. `plugin/hooks/block-dangerous-git.sh`
 blocks the unrecoverable git commands before they run. The `permissions.ask` list in
 `settings.json` prompts for the rest, including `rm` on a file that you did not
 create in this session.
