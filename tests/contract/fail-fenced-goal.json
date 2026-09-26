@@ -1,0 +1,14 @@
+{
+  "body": "## Scope\n\n```\n## Goal\nfoo\n```\n\n## Non-goals\n\nNothing else.\n\n## Acceptance\n\n`true`\n\n## Unknowns\n\nnone\n",
+  "labels": [
+    {
+      "name": "value:1"
+    },
+    {
+      "name": "effort:S"
+    },
+    {
+      "name": "risk:auto"
+    }
+  ]
+}

@@ -11,8 +11,9 @@ list_problems() {
   body=$(jq -r '.body' <<<"$json" | tr -d '\r')
   for section in "${REQUIRED_SECTIONS[@]}"; do
     content=$(awk -v name="$section" '
-      /^###? / { inside = ($0 ~ "^###? " name "[[:space:]]*$"); next }
-      /^---/   { inside = 0 }
+      /^(```|~~~)/        { fenced = !fenced; if (inside) print; next }
+      !fenced && /^###? / { inside = ($0 ~ "^###? " name "[[:space:]]*$"); next }
+      !fenced && /^---/   { inside = 0 }
       inside' <<<"$body" | grep -v -e '^[[:space:]]*$' -e '^_No response_$' || true)
     [ -n "$content" ] || echo "missing section: $section"
   done
