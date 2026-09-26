@@ -171,7 +171,7 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | Goal | A cheap read-only agent writes path and symbol hints into the issue body (D9) |
 | Scope | `agents/scout.md` |
 | Non-goals | Replacing graft, which is milestone M2 |
-| Acceptance | `test -f agents/scout.md && ! grep -qE "^tools:.*\b(Write\|Edit)\b" agents/scout.md` (D47) |
+| Acceptance | `grep -qx "tools: Read, Bash" agents/scout.md` (D47). It also fails when the `tools:` line is gone, which would grant every tool |
 | Hints | `agents/implementer.md` as the format model |
 | Unknowns | none. Haiku scored 0.81 mean path recall on #9, #11, #12 (D48), an upper bound, because the scouts could read this plan |
 | Depends on | W7 |
