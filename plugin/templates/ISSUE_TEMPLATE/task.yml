@@ -1,0 +1,50 @@
+name: Task
+description: One task with a contract an agent can run.
+body:
+  - type: markdown
+    attributes:
+      value: After filing, set one value, one effort, and one risk label.
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: One sentence. What is true when this is done.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: Paths the agent may edit, one per line.
+    validations:
+      required: true
+  - type: textarea
+    id: non-goals
+    attributes:
+      label: Non-goals
+    validations:
+      required: true
+  - type: input
+    id: acceptance
+    attributes:
+      label: Acceptance
+      description: One shell command. Exit code 0 means done.
+    validations:
+      required: true
+  - type: textarea
+    id: hints
+    attributes:
+      label: Hints
+      description: Path and symbol, no line numbers. The scout fills this for effort M.
+  - type: textarea
+    id: unknowns
+    attributes:
+      label: Unknowns
+      description: Write "none" if there are none.
+    validations:
+      required: true
+  - type: input
+    id: depends-on
+    attributes:
+      label: Depends on
+      description: Issue numbers, such as "#7, #12".

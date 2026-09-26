@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+repo="${1:?usage: labels.sh <owner/repo>}"
+while IFS='|' read -r name color description; do
+  gh label create "$name" --repo "$repo" --color "$color" \
+    --description "$description" --force
+done <<'EOF'
+value:1|b60205|Prevents a loss
+value:2|d93f0b|Finds an edge
+value:3|fbca04|Saves effort
+effort:S|c2e0c6|Under an hour, one file
+effort:M|0e8a16|Half a day, one behaviour
+effort:L|006b75|A day or more; split before it runs
+risk:auto|bfdadc|Reversible; the acceptance command decides
+risk:ask|f9d0c4|Touches an invariant; human per issue
+risk:human|5319e7|No recovery path; human always
+EOF
