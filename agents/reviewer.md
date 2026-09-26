@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: Reviews a diff for correctness bugs and returns a verdict block with ranked findings. Dispatched by the milestone-run loop only when a review trigger fires. Use for a milestone diff, an invariant change, or an exported symbol change.
-tools: Read, Bash, Glob, Grep, mcp__graft__graft_find_code, mcp__graft__graft_trace_calls, mcp__graft__graft_file_api
+tools: Read, Bash, mcp__graft__graft_find_code, mcp__graft__graft_trace_calls, mcp__graft__graft_file_api
 model: inherit
 effort: high
 maxTurns: 25
