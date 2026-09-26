@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-repo="${1:?usage: labels.sh <owner/repo>}"
+repo="${1:?usage: issue-labels <owner/repo>}"
 while IFS='|' read -r name color description; do
   gh label create "$name" --repo "$repo" --color "$color" \
     --description "$description" --force

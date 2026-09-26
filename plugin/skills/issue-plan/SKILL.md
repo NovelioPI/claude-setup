@@ -55,10 +55,10 @@ oracle: a command, never a sentence.
 
 ## 3. Create, after a token
 
-1. `bash scripts/labels.sh <owner/repo>` when the labels are missing.
+1. `issue-labels <owner/repo>` when the labels are missing.
 2. Create the milestone with `gh api repos/<owner>/<repo>/milestones`, the goal
    and exit command in its description.
 3. Create issues in dependency order, replacing each `W<n>` in Depends on with
    the issue number it got:
    `gh issue create --milestone <m> --label value:<v>,effort:<e>,risk:<r>`.
-4. Run `scripts/contract-check.sh <n>` on each. Fix a failure before the next.
+4. Run `contract-check <n>` on each. Fix a failure before the next.

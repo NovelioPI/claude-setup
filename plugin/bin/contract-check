@@ -62,7 +62,7 @@ self_test() {
   [ "$failures" -eq 0 ] && echo "self-test ok"
 }
 
-usage="usage: contract-check.sh <issue> | --json <file> [--since <fingerprint>] | --self-test"
+usage="usage: contract-check <issue> | --json <file> [--since <fingerprint>] | --self-test"
 
 usage_error() {
   echo "$usage" >&2

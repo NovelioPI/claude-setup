@@ -37,7 +37,7 @@ run to attempt.
 |---|---|
 | The milestone description holds an exit command | Add it to the description |
 | The exit command is a command, not prose | Rewrite it |
-| Every open issue passes `~/.claude/scripts/contract-check.sh <n>` | Fix the body or the labels |
+| Every open issue passes `contract-check <n>` | Fix the body or the labels |
 | `git check-ignore -q .claude/work/` succeeds | Add `.claude/work/` to `.gitignore` |
 | The working tree is clean | Commit or stash first |
 
@@ -66,7 +66,7 @@ For each issue, in this order:
 1. When the effort is `M` and Hints is empty, dispatch `claude-setup:scout`, then write
    its block into Hints with `gh issue edit <n> --body-file -`.
 2. `gh issue edit <n> --add-label status:next`.
-3. Record the fingerprint from `~/.claude/scripts/contract-check.sh <n>`.
+3. Record the fingerprint from `contract-check <n>`.
 4. Send `claude-setup:implementer` these lines and nothing more.
 
 ```
@@ -86,7 +86,7 @@ and `M` issues before it runs at all.
 
 ## 4. Gate
 
-First run `~/.claude/scripts/contract-check.sh <n> --since <fingerprint>`. A
+First run `contract-check <n> --since <fingerprint>`. A
 failure means the contract changed mid-run: stop and report.
 
 Then read the verdict block. Act on `VERDICT` and `EXIT`, never on the prose.
@@ -95,7 +95,7 @@ Then read the verdict block. Act on `VERDICT` and `EXIT`, never on the prose.
 |---|---|
 | `pass`, exit 0 | Continue to step 5 |
 | `pass`, exit non-zero | Treat as `fail`; the agent misreported |
-| `fail` | Run `~/.claude/scripts/task-close.sh <n>`, move the issue to `status:blocked` with a comment naming the blocker, take the next issue |
+| `fail` | Run `task-close <n>`, move the issue to `status:blocked` with a comment naming the blocker, take the next issue |
 | No verdict block | Treat as `fail`; do not infer success from a summary |
 
 ## 5. Review, when a trigger fires
@@ -115,7 +115,7 @@ commit, and name it in the message or leave it unstaged.
 End the subject with `(#<n>)` and put `Fixes #<n>` in the body, as
 `rules/commit-style.md` states.
 
-After the push, run `~/.claude/scripts/task-close.sh <n>`. It posts the reports
+After the push, run `task-close <n>`. It posts the reports
 from `.claude/work/<n>/` to the issue and deletes the folder.
 
 ## 7. Close or repeat
