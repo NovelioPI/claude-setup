@@ -3,6 +3,9 @@
 The working core for a subagent dispatched on one TODO.md row. The orchestrator
 names this file; the agent reads it once and keeps it.
 
+You act under the milestone token the orchestrator holds. It covers your one
+issue and nothing else. Do not wait for "Go".
+
 ### Scope
 
 Work the one row you were given. Its acceptance command is your completion
