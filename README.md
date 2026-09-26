@@ -21,8 +21,8 @@ these files will look like too much process.
 token `Go` or `Execute`. One token approves one plan, and the token dies when
 the plan changes. `CLAUDE.md` calls this failing closed.
 
-**A milestone closes on an exit code.** `TODO.md` carries versions, and each
-version names a command. The loop stops when that command returns 0. It never
+**A milestone closes on an exit code.** Each GitHub milestone
+names a command in its description. The loop stops when that command returns 0. It never
 stops because the agent decided it was finished.
 
 **Comments are off by default.** A comment earns its place by naming a hidden
@@ -57,7 +57,7 @@ so take it without asking.
 | `rules/code-quality.md` and its language files | yes | nothing |
 | `output-styles/plain-style.md` | yes | one key in `settings.json` |
 | `hooks/block-dangerous-git.sh` | yes | `jq` |
-| `skills/issue-plan`, `skills/todo-update` | yes | nothing |
+| `skills/issue-plan`, `skills/issue-update` | yes | nothing |
 | The approval protocol in `CLAUDE.md` | yes | your patience |
 | `skills/milestone-run` | no | the full skill chain and an acceptance command per row |
 
@@ -168,7 +168,7 @@ Then the loop runs.
 
 | Skill | Job |
 |---|---|
-| `todo-update` | Move a row, file new scope, recount, decide when to review |
+| `issue-update` | Move an issue between statuses, file new scope, close a milestone, decide when to review |
 | `milestone-run` | Run a whole version: dispatch, gate on the acceptance command, commit, repeat |
 
 `milestone-run` dispatches `agents/implementer.md` per row, and
@@ -176,7 +176,7 @@ Then the loop runs.
 its exit command returns 0.
 
 This repo tracks only the four skills written here: `brainstorming`,
-`milestone-run`, `issue-plan`, and `todo-update`. The rest are other people's
+`milestone-run`, `issue-plan`, and `issue-update`. The rest are other people's
 work, so they are not redistributed. `scripts/install.sh` fetches them.
 
 | Skill | Source |

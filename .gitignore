@@ -42,8 +42,8 @@ skills/*
 !skills/milestone-run/**
 !skills/issue-plan/
 !skills/issue-plan/**
-!skills/todo-update/
-!skills/todo-update/**
+!skills/issue-update/
+!skills/issue-update/**
 
 # Third-party agents that belong to the `impeccable` skill, which is not tracked.
 agents/impeccable-*.md

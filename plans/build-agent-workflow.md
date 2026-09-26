@@ -195,11 +195,11 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 |---|---|
 | Labels | `value:1` `effort:M` `risk:auto` |
 | Goal | Status moves become label and state changes through `gh` (D10) |
-| Scope | `skills/issue-update/`, `skills/todo-update/` removed, `.gitignore`, `README.md` |
+| Scope | `skills/issue-update/`, `skills/todo-update/` removed, `scripts/labels.sh`, `.gitignore`, `README.md` |
 | Non-goals | The scoreboard `awk` command, which GitHub's milestone view replaces |
 | Acceptance | `test -f skills/issue-update/SKILL.md && test ! -e skills/todo-update` |
 | Hints | `skills/todo-update/SKILL.md`, sections `## Triggers` and `## Review triggers` |
-| Unknowns | How to show `blocked` and `parked`: labels or closed-as-not-planned |
+| Unknowns | none. D42 settles `blocked` and `parked` |
 | Depends on | W11 |
 
 ### W13 — Point `milestone-run`, the agents, and the brief at issues
@@ -262,6 +262,7 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 |---|---|
 | The GitHub Action workflow template and the `@claude` token rule | v3, checked by actionlint (D17), after W14 and W15 prove the plugin and the sync |
 | Migrating the 5 old `TODO.md` files | v3. It needs W12's answer on `blocked` and `parked` |
+| A Projects board as a view over the `status:*` labels | v3 idea, no issue yet. Labels stay the source of truth, because cloud runs and `gh issue list` read them without the `project` scope (D42) |
 | Code navigation, routing, memory | Milestones M2, M3, M4 in the brainstorm |
 
 ## Decisions taken on this plan
@@ -274,3 +275,4 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | D26 | The issue form has no value, effort, or risk fields. The human sets the labels after filing, and the contract check fails when one is missing |
 | D31 | W9 detects a contract change by a fingerprint of the body and labels, not by `updatedAt`. This overrides the `updatedAt` part of D5 |
 | D37 | `TODO.md`'s project facts and invariants move to `PROJECT.md` at the repo root. `issue-plan` creates it, and an issue touching an invariant gets `risk:ask` |
+| D42 | `next` and `blocked` are `status:*` labels on open issues. `parked` is closed as not planned. A Projects board was rejected as the source of truth: it needs the `project` scope, and cloud runs may lack it |

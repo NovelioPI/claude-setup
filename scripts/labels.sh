@@ -14,4 +14,6 @@ effort:L|006b75|A day or more; split before it runs
 risk:auto|bfdadc|Reversible; the acceptance command decides
 risk:ask|f9d0c4|Touches an invariant; human per issue
 risk:human|5319e7|No recovery path; human always
+status:next|1d76db|Work in flight; at most 3 open
+status:blocked|e4e669|Waiting on a named external input
 EOF
