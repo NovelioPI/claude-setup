@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
+export LC_ALL=C.utf8
 
 COMMENT_LIMIT=60000
 GH="${GH:-gh}"
@@ -17,7 +18,7 @@ compose_comment() {
   echo "Task reports for #$(basename "$dir"):"
   for report in "${reports[@]}"; do
     printf '\n### %s\n\n' "$(basename "$report")"
-    content=$(cat "$report")
+    content=$(cat "$report") || return 1
     if [ "${#content}" -gt "$share" ]; then
       content="(cut to the last $share characters)"$'\n'"${content: -share}"
     fi
@@ -26,15 +27,16 @@ compose_comment() {
 }
 
 close_task() {
-  local dir="$1" issue
+  local dir="$1" issue comment
   issue=$(basename "$dir")
   [ -d "$dir" ] || { echo "no task folder: $dir" >&2; return 1; }
   compgen -G "$dir/*" >/dev/null || { echo "no reports in $dir" >&2; return 1; }
-  if [ -n "$(find "$dir" -mindepth 1 \( -type d -o -name '.*' \) -print -quit)" ]; then
-    echo "refused: $dir holds a subfolder or a dotfile, which would not be posted" >&2
+  if [ -n "$(find "$dir" -mindepth 1 \( ! -type f -o ! -readable -o -name '.*' \) -print -quit)" ]; then
+    echo "refused: $dir holds a subfolder, dotfile, link, or unreadable file, which would not be posted" >&2
     return 1
   fi
-  compose_comment "$dir" | "$GH" issue comment "$issue" --body-file - >/dev/null || return 1
+  comment=$(compose_comment "$dir") || return 1
+  printf '%s\n' "$comment" | "$GH" issue comment "$issue" --body-file - >/dev/null || return 1
   rm -rf -- "$dir"
   echo "closed #$issue"
 }
@@ -83,6 +85,20 @@ self_test() {
   rm -rf -- "$dir" "$root/gh.log" && mkdir -p "$dir" && echo "a" >"$dir/a.md" && echo "x" >"$dir/.secret"
   ! close_task "$dir" >/dev/null 2>&1 && [ -e "$dir/.secret" ] && [ ! -e "$root/gh.log" ] \
     || { echo "self-test failed: dotfile not refused"; failures=$((failures + 1)); }
+
+  rm -rf -- "$dir" "$root/gh.log" "$root/elsewhere" && mkdir -p "$dir" "$root/elsewhere" && echo "a" >"$dir/a.md"
+  ln -s "$root/elsewhere" "$dir/logs"
+  ! close_task "$dir" >/dev/null 2>&1 && [ -L "$dir/logs" ] && [ ! -e "$root/gh.log" ] \
+    || { echo "self-test failed: symlinked folder not refused"; failures=$((failures + 1)); }
+
+  rm -rf -- "$dir" "$root/gh.log" && mkdir -p "$dir" && echo "a" >"$dir/a.md" && echo "b" >"$dir/b.md" && chmod 000 "$dir/b.md"
+  ! close_task "$dir" >/dev/null 2>&1 && [ -e "$dir/b.md" ] && [ ! -e "$root/gh.log" ] \
+    || { echo "self-test failed: unreadable report not refused"; failures=$((failures + 1)); }
+
+  rm -rf -- "$dir" "$root/gh.log" && mkdir -p "$dir"
+  { printf '€%.0s' $(seq 70000); printf 'x'; } >"$dir/implementer.md"
+  close_task "$dir" >/dev/null && iconv -f UTF-8 -t UTF-8 "$root/gh.log" >/dev/null 2>&1 \
+    || { echo "self-test failed: cut split a multibyte character"; failures=$((failures + 1)); }
 
   ! "$0" ../.. >/dev/null 2>&1 \
     || { echo "self-test failed: non-number accepted"; failures=$((failures + 1)); }
