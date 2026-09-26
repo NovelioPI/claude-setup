@@ -87,7 +87,7 @@ so take it without asking.
 | `guides/agent-brief.md` | The compact working core a dispatched subagent reads |
 | `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
 | `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
-| `agents/implementer.md` | Subagent that builds one `TODO.md` row and returns a verdict |
+| `agents/implementer.md` | Subagent that builds one GitHub issue and returns a verdict |
 | `agents/reviewer.md` | Subagent that reviews a diff and returns ranked findings |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
 | `hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on Python |

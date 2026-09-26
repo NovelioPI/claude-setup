@@ -208,7 +208,7 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 |---|---|
 | Labels | `value:1` `effort:M` `risk:auto` |
 | Goal | The loop reads contracts from issues and runs the check from W7 in preflight |
-| Scope | `skills/milestone-run/SKILL.md`, `skills/brainstorming/SKILL.md`, `agents/`, `guides/agent-brief.md` |
+| Scope | `skills/milestone-run/SKILL.md`, `skills/brainstorming/SKILL.md`, `agents/`, `guides/agent-brief.md`, and `README.md` for the implementer row (D50) |
 | Non-goals | Parallel dispatch changes |
 | Acceptance | `! grep -rn 'TODO.md' skills agents guides` |
 | Hints | `grep -rln 'TODO.md\|todo-plan\|todo-update' skills agents guides` lists the files |
@@ -280,3 +280,4 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | D45 | W4 measures a double load by input tokens across three temporary config dirs, not by a canary. Its acceptance drops "exits 0", because the pointer check needs W15 |
 | D47 | W10's scout returns hints and the orchestrator writes them. Its acceptance becomes a frontmatter check that runs now |
 | D48 | Haiku stays the scout model: mean path recall 0.81 over three pre-fix worktrees, with Scope and Hints hidden |
+| D50 | graft becomes optional: agents search Hints, then `git grep`, then `sed -n`. The graft preflight check and `graft stats` go |

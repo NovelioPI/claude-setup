@@ -1,15 +1,15 @@
 ---
 name: milestone-run
-description: Run a TODO.md milestone to completion as an agent loop, dispatching one implementer per row, gating on each row's acceptance command, and stopping when the milestone's exit command returns 0. Use when a version is approved and its rows carry acceptance commands. To change one row by hand, use `todo-update`.
+description: Run a GitHub milestone to completion as an agent loop, dispatching one implementer per issue, gating on each issue's acceptance command, and stopping when the milestone's exit command returns 0. Use when a milestone is approved and its issues pass the contract check. To change one issue by hand, use `issue-update`.
 ---
 
 # Run a milestone
 
-You are the orchestrator. You pick rows, dispatch agents, gate on verdicts,
+You are the orchestrator. You pick issues, dispatch agents, gate on verdicts,
 commit, and stop when the milestone's exit command passes.
 
-Router: this skill runs a whole version. A single row change belongs to
-`todo-update`. Creating the Milestones section belongs to `todo-plan`.
+Router: this skill runs a whole milestone. A single issue change belongs to
+`issue-update`. Creating a milestone and its issues belongs to `issue-plan`.
 
 ## Context discipline
 
@@ -17,15 +17,15 @@ Read verdict blocks. Leave diffs to the reviewer.
 
 | You read | You never read |
 |---|---|
-| `TODO.md` rows and the Milestones table | a diff |
+| `gh issue view <n> --json body,labels` and the milestone description | a diff |
 | An implementer's verdict block | an implementer's transcript |
 | A reviewer's finding lines | a whole source file |
 | An exit code | a test log |
 
 Reason: the orchestrator lives for the whole milestone, so every token it spends
-on a diff is a row it cannot reach later.
+on a diff is an issue it cannot reach later.
 
-Risk: if the orchestrator reads diffs, then its context fills after a few rows
+Risk: if the orchestrator reads diffs, then its context fills after a few issues
 and the loop dies mid-milestone.
 
 ## 0. Preflight
@@ -35,89 +35,95 @@ run to attempt.
 
 | Check | Fix when it fails |
 |---|---|
-| The milestone has an exit command | Write one with `todo-update` |
+| The milestone description holds an exit command | Add it to the description |
 | The exit command is a command, not prose | Rewrite it |
-| Every row in the milestone has an acceptance command in its Note | Write them |
+| Every open issue passes `~/.claude/scripts/contract-check.sh <n>` | Fix the body or the labels |
+| `git check-ignore -q .claude/work/` succeeds | Add `.claude/work/` to `.gitignore` |
 | The working tree is clean | Commit or stash first |
-| `graft` is built for this repo | Run `graft build` |
 
 ## 1. Get the token
 
-Show the milestone as the plan: the version, its goal, its exit command, and
-every row ID it ships. Then wait for "Go" or "Execute".
+Show the milestone as the plan: its name, its goal, its exit command, and every
+issue number it ships. Then wait for "Go" or "Execute".
 
-One token covers the listed rows. A row outside that list is new scope: stop the
-loop, report it, and get a second token.
+One token covers the listed issues. An issue outside that list is new scope: stop
+the loop, report it, and get a second token.
 
-## 2. Pick the eligible rows
+## 2. Pick the eligible issues
 
-A row is eligible when its Milestone cell matches the running version, its status
-is `plan`, and every ID in `Depends on` is `done`.
+Follow "Pick the next issue" in `issue-update`. Dispatch in parallel only when
+the eligible issues share no path in Scope.
 
-Order by Value, then by Effort, as `todo-update` states. Dispatch in parallel
-only when the eligible rows share no file.
-
-Cap `next` at 3 rows, which caps concurrent implementers at 3.
+Cap `status:next` at 3 issues, which caps concurrent implementers at 3.
 
 ## 3. Dispatch
 
-Send each implementer four things and nothing more.
+For each issue, in this order:
+
+1. When the effort is `M` and Hints is empty, dispatch the `scout`, then write
+   its block into Hints with `gh issue edit <n> --body-file -`.
+2. Record the fingerprint from `~/.claude/scripts/contract-check.sh <n>`.
+3. `gh issue edit <n> --add-label status:next`.
+4. Send the implementer these lines and nothing more.
 
 ```
-ROW        <id>
-FEATURE    <the Feature cell, verbatim>
+ISSUE      <n>
 ACCEPTANCE <the acceptance command>
 BRIEF      ~/.claude/guides/agent-brief.md
 ```
 
+Reason: writing hints edits the body, so a fingerprint taken before step 1 fails
+the gate for no reason.
+
 Paste no rule text, no file content, and no repository background. The agent
-reads the brief itself, and the brief names the rest.
+reads the issue and the brief itself.
 
-Reason: a pasted rule costs the same tokens on every dispatch, while a path
-costs one line.
-
-Pick the model by Effort: `S` runs on haiku, `M` on sonnet, `L` splits into `S`
-and `M` rows before it runs at all.
+Pick the model by effort: `S` runs on haiku, `M` on sonnet, `L` splits into `S`
+and `M` issues before it runs at all.
 
 ## 4. Gate
 
-Read the verdict block. Act on `VERDICT` and `EXIT`, never on the prose.
+First run `~/.claude/scripts/contract-check.sh <n> --since <fingerprint>`. A
+failure means the contract changed mid-run: stop and report.
+
+Then read the verdict block. Act on `VERDICT` and `EXIT`, never on the prose.
 
 | Verdict | Action |
 |---|---|
 | `pass`, exit 0 | Continue to step 5 |
 | `pass`, exit non-zero | Treat as `fail`; the agent misreported |
-| `fail` | Set the row `blocked`, put the blocker in the Note, take the next row |
+| `fail` | Move the issue to `status:blocked` with a comment naming the blocker, take the next issue |
 | No verdict block | Treat as `fail`; do not infer success from a summary |
 
 ## 5. Review, when a trigger fires
 
-Read the review trigger table in `todo-update`. Skip the review when no row
-fires, which is the common case for an `S` row.
+Read the review trigger table in `issue-update`. Skip the review when no row
+fires, which is the common case for an `S` issue.
 
-Dispatch the `reviewer` agent with the diff range and nothing else. Apply its
-findings yourself, or dispatch the implementer again with the finding lines.
+Dispatch the `reviewer` agent with the issue number and the diff range, nothing
+else. Apply its findings yourself, or dispatch the implementer again with the
+finding lines.
 
 ## 6. Commit
 
 Stage the files the verdict named. Check every other changed file before you
 commit, and name it in the message or leave it unstaged.
 
-Write the subject in the imperative and cite the closed IDs, as
+End the subject with `(#<n>)` and put `Fixes #<n>` in the body, as
 `rules/commit-style.md` states.
 
-Move the row to `done`, replace the Note with the evidence, and recount the
-scoreboard with the command in `todo-update`.
+After the push, run `~/.claude/scripts/task-close.sh <n>`. It posts the reports
+from `.claude/work/<n>/` to the issue and deletes the folder.
 
 ## 7. Close or repeat
 
-Run the milestone's exit command.
+When every issue in the milestone is closed, run the milestone's exit command.
 
 | Result | Action |
 |---|---|
-| Exit 0, every row `done` | Set the milestone `done`, run the milestone-exit review, report and stop |
-| Exit non-zero, every row `done` | The milestone is underspecified; file the missing work as a row and stop for a token |
-| Rows remain | Return to step 2 |
+| Exit 0, every issue closed | Close the milestone as `issue-update` states, run the milestone-exit review, report and stop |
+| Exit non-zero, every issue closed | The milestone is underspecified; draft the missing work as an issue and stop for a token |
+| Issues remain | Return to step 2 |
 
 The loop ends on an exit code, never on your own judgment that the goal is met.
 
@@ -126,5 +132,3 @@ The loop ends on an exit code, never on your own judgment that the goal is met.
 Each implementer stops itself at `maxTurns: 40`, from its frontmatter, so a
 stuck agent cannot run forever. A run started with `claude -p` can also pass
 `--max-budget-usd`. An interactive session has no dollar cap.
-
-Report `graft stats` at the end, so the next milestone has a cost baseline.

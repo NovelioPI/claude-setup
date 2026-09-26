@@ -1,6 +1,6 @@
 ## Agent Brief
 
-The working core for a subagent dispatched on one TODO.md row. The orchestrator
+The working core for a subagent dispatched on one GitHub issue. The orchestrator
 names this file; the agent reads it once and keeps it.
 
 You act under the milestone token the orchestrator holds. It covers your one
@@ -8,25 +8,25 @@ issue and nothing else. Do not wait for "Go".
 
 ### Scope
 
-Work the one row you were given. Its acceptance command is your completion
-criterion, and nothing else closes the row.
+Read your contract with `gh issue view <n> --json body`. Edit only the paths in
+its Scope. Its acceptance command is your completion criterion, and nothing
+else closes the issue.
+
+Leave `git` and every `gh` write to the orchestrator.
 
 New scope you find belongs to the orchestrator. Report it in one line and leave
-the running row at its original edge.
+the running issue at its original edge.
 
 ### Search order
 
 | Need | Command |
 |---|---|
-| Find code by intent | `graft ask "<task>" --source` |
-| See a file's API surface | `graft skeleton <file>` |
+| Find the code | Start at the paths and symbols in Hints |
+| Find more by name | `git grep -n '<name>'` |
 | Read a known span | `sed -n '<a>,<b>p' <file>` |
 
-Reach for `grep` and a whole-file read after `graft ask` misses. The graph
-already reflects uncommitted edits.
-
-Reason: a `graft ask` call replaces several file reads, so it decides the token
-cost of the whole run.
+Use `graft ask "<task>" --source` instead of `git grep` only when the repo has a
+graft index. Read a whole file only after these miss.
 
 ### Code
 
@@ -40,10 +40,11 @@ a subtle invariant, labelled `Reason:` or `Risk:`.
 
 ### Verdict
 
-End with a verdict block and nothing after it.
+End with a verdict block and nothing after it. Write the same block to
+`.claude/work/<n>/<your agent name>.md`, so the close step posts it on the issue.
 
 ```
-ROW      <id>
+ISSUE    <n>
 VERDICT  pass | fail
 COMMAND  <the acceptance command you ran>
 EXIT     <its exit code>
