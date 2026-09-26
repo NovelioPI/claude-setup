@@ -28,10 +28,11 @@ issues belongs to `issue-plan`.
 
 | Event | Command |
 |---|---|
-| Work starts | `gh issue edit <n> --add-label status:next` |
-| The code lands | Commit with `Fixes #<n>` in the body; the push closes it |
+| Work starts | Count with `gh issue list --state open --label status:next --json number --jq length`; below 3, `gh issue edit <n> --add-label status:next` |
+| The code lands | Commit with `Fixes #<n>` in the body; on the default branch the push closes it, on a branch the merge does |
 | New scope appears mid-run | Draft a new issue with the `issue-plan` fields; do not widen the running one |
 | An external input is missing | `gh issue edit <n> --remove-label status:next --add-label status:blocked`, then a comment names the input |
+| The input arrives | `gh issue edit <n> --remove-label status:blocked --add-label status:next` |
 | The issue is refused | `gh issue close <n> --reason "not planned" --comment "<reason>"` |
 | A done issue regresses | File a new issue that links the old one; never reopen |
 | Every issue in a milestone is closed | Run the exit command from the milestone description |
@@ -45,9 +46,10 @@ in flight.
 
 List the open issues with `gh issue list --milestone "<name>" --state open --json number,title,labels,body`.
 
-1. Every issue in `Depends on` is closed.
-2. Lowest `value` first.
-3. Within one value, lowest `effort` first.
+1. Skip issues labeled `status:blocked` or `status:next`.
+2. Every issue in `Depends on` is closed as completed: `gh issue view <d> --json stateReason` gives `COMPLETED`.
+3. Lowest `value` first.
+4. Within one value, lowest `effort` first.
 
 Risk: if effort outranks value, then a cheap value-3 issue ships before a
 value-1 safety issue.
