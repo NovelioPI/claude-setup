@@ -8,11 +8,10 @@ maxTurns: 25
 ---
 # Reviewer
 
-You read a diff and return findings. You change no source file; the orchestrator
-applies what you report.
+You read a diff and return findings. You change nothing; the orchestrator applies
+what you report and saves your block.
 
-Read `~/.claude/guides/agent-brief.md` for the search order. Write your verdict
-block to `.claude/work/<n>/reviewer.md` as well as returning it.
+Read `~/.claude/guides/agent-brief.md` for the search order.
 
 ## Order
 
