@@ -123,7 +123,8 @@ The loop ends on an exit code, never on your own judgment that the goal is met.
 
 ## Budget
 
-Set `maxBudgetUsd` before the first dispatch, so a stuck agent stops the run
-instead of the run stopping your month.
+Each implementer stops itself at `maxTurns: 40`, from its frontmatter, so a
+stuck agent cannot run forever. A run started with `claude -p` can also pass
+`--max-budget-usd`. An interactive session has no dollar cap.
 
 Report `graft stats` at the end, so the next milestone has a cost baseline.
