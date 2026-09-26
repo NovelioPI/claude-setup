@@ -171,9 +171,9 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | Goal | A cheap read-only agent writes path and symbol hints into the issue body (D9) |
 | Scope | `agents/scout.md` |
 | Non-goals | Replacing graft, which is milestone M2 |
-| Acceptance | `claude plugin validate ./plugin` after W14; before that, the frontmatter check in W16 |
+| Acceptance | `test -f agents/scout.md && ! grep -qE "^tools:.*\b(Write\|Edit)\b" agents/scout.md` (D47) |
 | Hints | `agents/implementer.md` as the format model |
-| Unknowns | Whether haiku is strong enough. Measure on three real issues |
+| Unknowns | none. Haiku scored 0.81 mean path recall on #9, #11, #12 (D48), an upper bound, because the scouts could read this plan |
 | Depends on | W7 |
 
 ### W11 — Rewrite `todo-plan` as `issue-plan`
@@ -212,6 +212,7 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | Non-goals | Parallel dispatch changes |
 | Acceptance | `! grep -rn 'TODO.md' skills agents guides` |
 | Hints | `grep -rln 'TODO.md\|todo-plan\|todo-update' skills agents guides` lists the files |
+| Order | Run the scout before dispatch records the contract fingerprint, because writing hints edits the body (D47) |
 | Unknowns | none |
 | Depends on | W7, W8, W10, W12 |
 
@@ -277,3 +278,5 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | D37 | `TODO.md`'s project facts and invariants move to `PROJECT.md` at the repo root. `issue-plan` creates it, and an issue touching an invariant gets `risk:ask` |
 | D42 | `next` and `blocked` are `status:*` labels on open issues. `parked` is closed as not planned. A Projects board was rejected as the source of truth: it needs the `project` scope, and cloud runs may lack it |
 | D45 | W4 measures a double load by input tokens across three temporary config dirs, not by a canary. Its acceptance drops "exits 0", because the pointer check needs W15 |
+| D47 | W10's scout returns hints and the orchestrator writes them. Its acceptance becomes a frontmatter check that runs now |
+| D48 | Haiku stays the scout model: mean path recall 0.81 over three pre-fix worktrees, with Scope and Hints hidden |
