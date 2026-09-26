@@ -272,3 +272,4 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | D17 | yamllint checks W6's issue form. actionlint checks v3's workflow |
 | D18 | Migration and the Action workflow move to v3. This overrides the migration part of D10 |
 | D26 | The issue form has no value, effort, or risk fields. The human sets the labels after filing, and the contract check fails when one is missing |
+| D31 | W9 detects a contract change by a fingerprint of the body and labels, not by `updatedAt`. This overrides the `updatedAt` part of D5 |
