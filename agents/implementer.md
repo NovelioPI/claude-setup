@@ -1,7 +1,7 @@
 ---
 name: implementer
 description: Implements one TODO.md row end to end and returns a verdict block. Dispatched by the milestone-run loop, one agent per row. Use when a row is approved and its acceptance command is written.
-tools: Read, Write, Edit, Bash, Glob, Grep, mcp__graft__graft_find_code, mcp__graft__graft_find_all, mcp__graft__graft_trace_calls, mcp__graft__graft_file_api, mcp__graft__graft_repo_map
+tools: Read, Write, Edit, Bash, mcp__graft__graft_find_code, mcp__graft__graft_find_all, mcp__graft__graft_trace_calls, mcp__graft__graft_file_api, mcp__graft__graft_repo_map
 model: inherit
 effort: medium
 maxTurns: 40
