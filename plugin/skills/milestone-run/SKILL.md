@@ -63,16 +63,16 @@ loop: stop and report, because its merge needs its own token.
 
 For each issue, in this order:
 
-1. When the effort is `M` and Hints is empty, dispatch the `scout`, then write
+1. When the effort is `M` and Hints is empty, dispatch `claude-setup:scout`, then write
    its block into Hints with `gh issue edit <n> --body-file -`.
 2. `gh issue edit <n> --add-label status:next`.
 3. Record the fingerprint from `~/.claude/scripts/contract-check.sh <n>`.
-4. Send the implementer these lines and nothing more.
+4. Send `claude-setup:implementer` these lines and nothing more.
 
 ```
 ISSUE      <n>
 ACCEPTANCE <the acceptance command>
-BRIEF      ~/.claude/guides/agent-brief.md
+BRIEF      ${CLAUDE_PLUGIN_ROOT}/guides/agent-brief.md
 ```
 
 Reason: the fingerprint hashes the body and the labels, so an edit after step 3
@@ -103,7 +103,7 @@ Then read the verdict block. Act on `VERDICT` and `EXIT`, never on the prose.
 Read the review trigger table in `issue-update`. Skip the review when no row
 fires, which is the common case for an `S` issue.
 
-Dispatch the `reviewer` agent with the diff range, nothing else. Write the
+Dispatch `claude-setup:reviewer` with the diff range, nothing else. Write the
 block it returns to `.claude/work/<n>/reviewer.md`. Apply its findings yourself, or dispatch the implementer again with the
 finding lines.
 

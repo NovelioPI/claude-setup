@@ -55,11 +55,11 @@ so take it without asking.
 |---|---|---|
 | `rules/plain-words.md` | yes | nothing |
 | `rules/code-quality.md` and its language files | yes | nothing |
-| `output-styles/plain-style.md` | yes | one key in `settings.json` |
+| `plugin/output-styles/plain-style.md` | yes | one key in `settings.json` |
 | `plugin/hooks/block-dangerous-git.sh` | yes | `jq` |
-| `skills/issue-plan`, `skills/issue-update` | yes | nothing |
+| `plugin/skills/issue-plan`, `plugin/skills/issue-update` | yes | nothing |
 | The approval protocol in `CLAUDE.md` | yes | your patience |
-| `skills/milestone-run` | no | the full skill chain and an acceptance command per row |
+| `plugin/skills/milestone-run` | no | the full skill chain and an acceptance command per row |
 
 ## Not for you if
 
@@ -84,11 +84,12 @@ so take it without asking.
 | `guides/code-quality-cpp.md` | C and C++ form |
 | `guides/code-quality-kotlin.md` | Kotlin form, with coroutine and flow rules |
 | `guides/code-quality-dart.md` | Dart form, with Flutter rules |
-| `guides/agent-brief.md` | The compact working core a dispatched subagent reads |
-| `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
-| `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
-| `agents/implementer.md` | Subagent that builds one GitHub issue and returns a verdict |
-| `agents/reviewer.md` | Subagent that reviews a diff and returns ranked findings |
+| `plugin/guides/agent-brief.md` | The compact working core a dispatched subagent reads |
+| `plugin/output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
+| `plugin/output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
+| `plugin/agents/implementer.md` | Subagent that builds one GitHub issue and returns a verdict |
+| `plugin/agents/reviewer.md` | Subagent that reviews a diff and returns ranked findings |
+| `plugin/agents/scout.md` | Read-only haiku subagent that returns path and symbol hints for an issue |
 | `plugin/hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
 | `plugin/hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on Python |
 | `plugin/hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
@@ -104,7 +105,7 @@ it, and a pointer in `rules/code-quality.md` sends the agent there on its first
 edit in that language. That split is worth about 5,500 words per context.
 
 An output style file does nothing on its own. `settings.json` activates one with
-`"outputStyle": "plain-style"`.
+`"outputStyle": "claude-setup:plain-style"`, the name the plugin gives it.
 
 ## Setup on a new device
 
@@ -172,8 +173,8 @@ Then the loop runs.
 | `issue-update` | Move an issue between statuses, file new scope, close a milestone, decide when to review |
 | `milestone-run` | Run a whole version: dispatch, gate on the acceptance command, commit, repeat |
 
-`milestone-run` dispatches `agents/implementer.md` per row, and
-`agents/reviewer.md` only when a review trigger fires. A milestone closes when
+`milestone-run` dispatches `claude-setup:implementer` per issue, and
+`claude-setup:reviewer` only when a review trigger fires. A milestone closes when
 its exit command returns 0.
 
 This repo tracks only the four skills written here: `brainstorming`,
@@ -185,8 +186,8 @@ work, so they are not redistributed. `scripts/install.sh` fetches them.
 | `grilling`, `writing-for-agents`, `diagnosing-bugs`, `handoff`, `research`, `resolving-merge-conflicts` | [mattpocock/skills](https://github.com/mattpocock/skills), through the Skills CLI at https://skills.sh/ |
 | `impeccable`, and the `agents/impeccable-*.md` it dispatches | installed separately, not tracked here |
 
-`~/.claude/skills/` is otherwise excluded, with a negation for each tracked
-skill. Every entry is a real directory, never a symlink.
+The skills written here live in `plugin/skills/`. A `skills/` folder at the repo
+root is ignored, so a fetched skill there is never committed.
 
 A skill's own instructions never override the approval protocol in `CLAUDE.md`.
 Several of them tell the agent to dispatch a subagent or to not block, and

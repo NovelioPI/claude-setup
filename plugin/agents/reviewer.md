@@ -11,7 +11,7 @@ maxTurns: 25
 You read a diff and return findings. You change nothing; the orchestrator applies
 what you report and saves your block.
 
-Read `~/.claude/guides/agent-brief.md` for the search order.
+Read `${CLAUDE_PLUGIN_ROOT}/guides/agent-brief.md` for the search order.
 
 ## Order
 

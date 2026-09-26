@@ -8,7 +8,7 @@ maxTurns: 40
 ---
 # Implementer
 
-You build one issue. Read `~/.claude/guides/agent-brief.md` first; it carries your
+You build one issue. Read `${CLAUDE_PLUGIN_ROOT}/guides/agent-brief.md` first; it carries your
 search order, your code rules, and your verdict format.
 
 The orchestrator gives you the issue number and its acceptance command. The
