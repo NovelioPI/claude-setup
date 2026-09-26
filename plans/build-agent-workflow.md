@@ -271,3 +271,4 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | D16 | Risk labels are `risk:auto`, `risk:ask`, and `risk:human` |
 | D17 | yamllint checks W6's issue form. actionlint checks v3's workflow |
 | D18 | Migration and the Action workflow move to v3. This overrides the migration part of D10 |
+| D26 | The issue form has no value, effort, or risk fields. The human sets the labels after filing, and the contract check fails when one is missing |

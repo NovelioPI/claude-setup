@@ -1,0 +1,14 @@
+{
+  "body": "### Goal\r\n\r\nDo one thing.\r\n\r\n### Scope\r\n\r\n`scripts/x.sh`\r\n\r\n### Non-goals\r\n\r\nNothing else.\r\n\r\n### Acceptance\r\n\r\n`bash scripts/x.sh --self-test`\r\n\r\n### Hints\r\n\r\n_No response_\r\n\r\n### Unknowns\r\n\r\nnone\r\n",
+  "labels": [
+    {
+      "name": "value:1"
+    },
+    {
+      "name": "effort:S"
+    },
+    {
+      "name": "risk:auto"
+    }
+  ]
+}
