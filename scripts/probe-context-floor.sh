@@ -43,8 +43,42 @@ CANARY="$REPO/guides/zz-canary.md"
 cleanup() { rm -rf "$TMP" "$CANARY"; }
 trap cleanup EXIT
 
+input_tokens() {
+  (cd "$TMP/work" && run 180 env CLAUDE_CONFIG_DIR="$1" claude -p "Answer only OK." \
+    --model haiku --output-format json 2>/dev/null) |
+    jq '.usage | .input_tokens + .cache_creation_input_tokens + .cache_read_input_tokens' 2>/dev/null
+}
+
+make_config() {
+  local cfg="$TMP/config-$1"
+  mkdir -p "$cfg"
+  ln -s "$REPO/.credentials.json" "$cfg/.credentials.json"
+  echo "$cfg"
+}
+
+mkdir -p "$TMP/work"
+baseline=$(make_config baseline)
+sed 's#@rules/#rules/#g' "$REPO/CLAUDE.md" > "$baseline/CLAUDE.md"
+autoload=$(make_config autoload)
+cp "$baseline/CLAUDE.md" "$autoload/CLAUDE.md" && cp -r "$REPO/rules" "$autoload/"
+imported=$(make_config imported)
+cp "$REPO/CLAUDE.md" "$imported/CLAUDE.md" && cp -r "$REPO/rules" "$imported/"
+tokens_c=$(input_tokens "$baseline"); tokens_a=$(input_tokens "$autoload"); tokens_b=$(input_tokens "$imported")
+if [[ "$tokens_c$tokens_a$tokens_b" =~ ^[0-9]+$ ]] && [[ -n "$tokens_c" && -n "$tokens_a" && -n "$tokens_b" ]] && [ "$tokens_a" -gt "$tokens_c" ]; then
+  rules_size=$((tokens_a - tokens_c))
+  extra=$((tokens_b - tokens_a))
+  say "tokens" "baseline $tokens_c, auto-load $tokens_a, auto-load plus @ import $tokens_b"
+  if [ $((extra * 2)) -ge "$rules_size" ]; then
+    say "duplicate-load" "yes, the @ import adds $extra of $rules_size rule tokens again"
+  else
+    say "duplicate-load" "no, the @ import adds $extra of $rules_size rule tokens"
+  fi
+else
+  fail "duplicate" "no usable token counts: [$tokens_c] [$tokens_a] [$tokens_b]"
+fi
+
 printf '## Canary\nMarker: %s\n' "$MARKER" > "$CANARY"
-ans=$(cd "$TMP" && run 180 claude -p \
+ans=$(cd "$TMP" && run 180 env CLAUDE_CONFIG_DIR="$REPO" claude -p \
   "Without using any tool, answer from your instructions alone. Do you see the string $MARKER in your context? Answer only YES or NO." \
   --model haiku 2>/dev/null | tr -d '[:space:]')
 case "$ans" in
@@ -55,7 +89,7 @@ esac
 rm -f "$CANARY"
 
 printf 'def add(a, b):\n    return a + b\n' > "$TMP/sample.py"
-ans=$(cd "$TMP" && run 240 claude -p \
+ans=$(cd "$TMP" && run 240 env CLAUDE_CONFIG_DIR="$REPO" claude -p \
   "Edit sample.py so add() rejects an argument that is not a number. Then output one final line, exactly: READ=<basename of the language guide you opened>, or READ=NONE if you opened none." \
   --model haiku --allowedTools "Read,Edit,Write" --permission-mode acceptEdits 2>/dev/null)
 case "$ans" in

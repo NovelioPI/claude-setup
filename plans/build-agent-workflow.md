@@ -93,7 +93,7 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | Goal | Find out if `rules/` loads twice: once by auto-load, once by `@` import (X5) |
 | Scope | `scripts/probe-context-floor.sh`, `CLAUDE.md` |
 | Non-goals | Moving rules, which W15 does |
-| Acceptance | `bash scripts/probe-context-floor.sh` exits 0 and prints a duplicate-load line |
+| Acceptance | `bash scripts/probe-context-floor.sh \| grep -q "^  duplicate-load"`. The pointer check cannot pass until W15 fixes the `~/.claude/guides` paths (D45) |
 | Hints | `scripts/probe-context-floor.sh`, the `MARKER` canary |
 | Unknowns | Whether a canary can detect a double load |
 | Depends on | — |
@@ -276,3 +276,4 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | D31 | W9 detects a contract change by a fingerprint of the body and labels, not by `updatedAt`. This overrides the `updatedAt` part of D5 |
 | D37 | `TODO.md`'s project facts and invariants move to `PROJECT.md` at the repo root. `issue-plan` creates it, and an issue touching an invariant gets `risk:ask` |
 | D42 | `next` and `blocked` are `status:*` labels on open issues. `parked` is closed as not planned. A Projects board was rejected as the source of truth: it needs the `project` scope, and cloud runs may lack it |
+| D45 | W4 measures a double load by input tokens across three temporary config dirs, not by a canary. Its acceptance drops "exits 0", because the pointer check needs W15 |
