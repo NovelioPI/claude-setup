@@ -137,7 +137,9 @@ fi
 
 echo
 echo "Plugin"
-if have claude && claude plugin validate . >/dev/null 2>&1; then
+if ! have claude; then
+  block "claude" "install Claude Code, then re-run"
+elif claude plugin validate . >/dev/null 2>&1; then
   say "validate" "plugin and marketplace pass"
   say "install" "run these two commands once:"
   echo "      claude plugin marketplace add $REPO"
