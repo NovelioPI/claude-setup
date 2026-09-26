@@ -229,7 +229,13 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | Unknowns | How the local `~/.claude` loads the plugin without a duplicate copy of each skill |
 | Depends on | W13 |
 
-`L` means this issue splits before it runs. The split waits until W13 shows the final file set.
+Split by D53 into three issues, run in this order:
+
+| Issue | Title | Effort |
+|---|---|---|
+| #18 | Package the safety hooks and the marketplace entry | M |
+| #14 | Move skills, agents, styles, and the brief into the plugin | M |
+| #19 | Ship the contract and close scripts as plugin commands | S |
 
 ### W15 — Sync rules into each repo and warn on drift
 
@@ -281,3 +287,5 @@ The risk scale reuses the gate ladder from `research-loop-engineering.md` §3 (D
 | D47 | W10's scout returns hints and the orchestrator writes them. Its acceptance becomes a frontmatter check that runs now |
 | D48 | Haiku stays the scout model: mean path recall 0.81 over three pre-fix worktrees, with Scope and Hints hidden |
 | D50 | graft becomes optional: agents search Hints, then `git grep`, then `sed -n`. The graft preflight check and `graft stats` go |
+| D52 | milestone-run adds `status:next` before the fingerprint, closes failed tasks too, and sends a branched issue out of the loop |
+| D53 | W14 splits into #18, #14, #19. The hooks go first, because the git guard is off since the config moved. Rules stay out of the plugin |
