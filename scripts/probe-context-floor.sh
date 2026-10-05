@@ -55,8 +55,10 @@ esac
 rm -f "$CANARY"
 
 printf 'def add(a, b):\n    return a + b\n' > "$TMP/sample.py"
+# Reason: CLAUDE.md asks for an approval token, so without this the agent asks and never edits.
 ans=$(cd "$TMP" && run 240 claude -p \
   "Edit sample.py so add() rejects an argument that is not a number. Then output one final line, exactly: READ=<basename of the language guide you opened>, or READ=NONE if you opened none." \
+  --append-system-prompt "This is an automated, non-interactive check. No user is present to answer questions or give an approval token. Treat this prompt as an approved plan and carry it out." \
   --model haiku --allowedTools "Read,Edit,Write" --permission-mode acceptEdits 2>/dev/null)
 case "$ans" in
   *READ=code-quality-python.md*) say  "pointer" "the agent read the Python guide" ;;
