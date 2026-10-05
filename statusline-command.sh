@@ -9,6 +9,9 @@ transcript_path=$(printf '%s' "$input" | jq -r '.transcript_path // empty')
 effort_level=$(printf '%s' "$input" | jq -r '.effort.level // empty')
 
 used_ctx=$(printf '%s' "$input" | jq -r '.context_window.used_percentage // empty')
+used_tokens=$(printf '%s' "$input" | jq -r '.context_window.total_input_tokens // empty')
+# Reason: quality drops with the token count, not the share of the window, so the hint uses tokens.
+HANDOFF_TOKENS=150000
 five_pct=$(printf '%s' "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 week_pct=$(printf '%s' "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 five_reset=$(printf '%s' "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
@@ -75,7 +78,7 @@ if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
       secs=$((remaining % 60))
       cache_indicator="${DIM}◶ cache ${mins}m ${secs}s${RESET}"
     else
-      cache_indicator="\033[1;38;5;209m◶ cache expired — run /compact${RESET}"
+      cache_indicator="\033[1;38;5;209m◶ cache expired${RESET}"
     fi
   fi
 fi
@@ -101,9 +104,13 @@ lines=""
 if [ -n "$used_ctx" ]; then
   color=$(color_for "$used_ctx")
   bar=$(make_bar "$used_ctx")
-  lines="${lines}${DIM}▢ Ctx [${RESET}${color}${bar}${RESET}${DIM}] $(awk -v p="$used_ctx" 'BEGIN{printf "%.0f", p}')%${RESET}\n"
-  if awk -v p="$used_ctx" 'BEGIN{exit !(p > 35)}'; then
-    lines="${lines}${DIM}  ↳ consider running /compact${RESET}\n"
+  token_str=""
+  if [ -n "$used_tokens" ]; then
+    token_str=" · $((used_tokens / 1000))k"
+  fi
+  lines="${lines}${DIM}▢ Ctx [${RESET}${color}${bar}${RESET}${DIM}] $(awk -v p="$used_ctx" 'BEGIN{printf "%.0f", p}')%${token_str}${RESET}\n"
+  if [ -n "$used_tokens" ] && [ "$used_tokens" -gt "$HANDOFF_TOKENS" ]; then
+    lines="${lines}${DIM}  ↳ at a breakpoint: /handoff → /clear${RESET}\n"
   fi
 fi
 
