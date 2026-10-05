@@ -53,6 +53,56 @@ else
   block "uv" "curl -LsSf https://astral.sh/uv/install.sh | sh"
 fi
 
+rtk_asset() {
+  case "$1/$2" in
+    Linux/x86_64)                 echo rtk-x86_64-unknown-linux-musl.tar.gz ;;
+    Linux/aarch64 | Linux/arm64)  echo rtk-aarch64-unknown-linux-gnu.tar.gz ;;
+    Darwin/x86_64)                echo rtk-x86_64-apple-darwin.tar.gz ;;
+    Darwin/arm64)                 echo rtk-aarch64-apple-darwin.tar.gz ;;
+    MINGW*/x86_64 | MSYS*/x86_64 | CYGWIN*/x86_64) echo rtk-x86_64-pc-windows-msvc.zip ;;
+    *) return 1 ;;
+  esac
+}
+
+sha256() {
+  if have sha256sum; then sha256sum "$1"
+  elif have shasum;  then shasum -a 256 "$1"
+  else return 1
+  fi | cut -d' ' -f1
+}
+
+# Reason: the subshell runs the EXIT trap, so the temp folder is removed on every path.
+install_rtk() (
+  asset=$(rtk_asset "$(uname -s)" "$(uname -m)") || exit 1
+  url=https://github.com/rtk-ai/rtk/releases/latest/download
+  tmp=$(mktemp -d) || exit 1
+  trap 'rm -rf "$tmp"' EXIT
+  curl -fsSL "$url/$asset" -o "$tmp/$asset" || exit 1
+  curl -fsSL "$url/checksums.txt" -o "$tmp/checksums.txt" || exit 1
+  want=$(awk -v a="$asset" '$2 == a { print $1 }' "$tmp/checksums.txt")
+  [ -n "$want" ] && [ "$want" = "$(sha256 "$tmp/$asset")" ] || exit 1
+  case "$asset" in
+    *.zip) unzip -oq "$tmp/$asset" -d "$tmp" && bin=rtk.exe ;;
+    *)     tar -xzf "$tmp/$asset" -C "$tmp" && bin=rtk ;;
+  esac || exit 1
+  mkdir -p "$HOME/.local/bin" && install -m 755 "$tmp/$bin" "$HOME/.local/bin/$bin"
+)
+
+# Reason: crates.io `rtk` is a different tool, and only the right one has `rtk gain`.
+if have rtk && rtk gain >/dev/null 2>&1; then
+  say "rtk" "present"
+elif have rtk; then
+  block "rtk" "a different program named rtk is on PATH; remove it, then re-run"
+elif have brew; then
+  say "rtk" "installing with brew..."
+  brew install rtk >/dev/null 2>&1 && say "rtk" "installed" || block "rtk" "brew install rtk"
+elif have curl && install_rtk; then
+  have rtk && say "rtk" "installed to ~/.local/bin" ||
+    block "rtk" "installed to ~/.local/bin, which is not on PATH; add it to PATH"
+else
+  block "rtk" "download a build from https://github.com/rtk-ai/rtk/releases into ~/.local/bin"
+fi
+
 if have notify-send || have powershell.exe; then
   say "notify" "present"
 else
@@ -76,6 +126,13 @@ if have jq; then
   case "$out" in
     *rc=2*) say "git guard" "blocks git reset --hard" ;;
     *)      say "git guard" "FAILED to block: $out"; BLOCKERS=$((BLOCKERS + 1)) ;;
+  esac
+fi
+if have rtk; then
+  out=$(printf '%s' '{"tool_input":{"command":"git status"}}' | rtk hook claude 2>&1)
+  case "$out" in
+    *'rtk git status'*) say "rtk hook" "rewrites git status" ;;
+    *)                  say "rtk hook" "FAILED: $out"; BLOCKERS=$((BLOCKERS + 1)) ;;
   esac
 fi
 

@@ -118,6 +118,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 | `jq` | the hooks and the status line | no, needs sudo |
 | `node`, `npm` | `npx skills` | no |
 | `uv` | `check-complexity.sh`, which runs `complexipy` and `ruff` through `uvx` | yes |
+| `rtk` | the `PreToolUse` hook in `settings.json` that shortens Bash output | yes, by brew or a checked GitHub release |
 | `gh`, `rg` | optional convenience | no |
 
 ## Skills
