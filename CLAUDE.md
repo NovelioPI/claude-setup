@@ -12,14 +12,6 @@ CLAUDE.md is the workflow contract. Style modes control presentation only.
 If a style rule and a CLAUDE.md rule do not agree, obey CLAUDE.md. Do not apply the
 style to that part.
 
-## Memory
-
-Before you make changes, read MEMORY.md for the project in
-`$HOME/.claude/projects/`. MEMORY.md is an index, with one line for each memory
-file. Open a listed file only when its line is applicable to the current task.
-The memory files contain project conventions, tool references, and format
-preferences.
-
 ## Approval Protocol
 
 - Read-only tools (Read, Grep, Glob, git status/diff/log, ls, and test, build, and
