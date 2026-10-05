@@ -1,0 +1,25 @@
+{
+  "name": "local-lsp",
+  "description": "Language servers with no official Claude Code plugin",
+  "owner": {
+    "name": "NovelioPI"
+  },
+  "plugins": [
+    {
+      "name": "dart-lsp",
+      "description": "Dart and Flutter language server (dart language-server) for code intelligence",
+      "version": "1.0.0",
+      "source": "./dart-lsp",
+      "strict": false,
+      "lspServers": {
+        "dart": {
+          "command": "dart",
+          "args": ["language-server", "--protocol=lsp", "--client-id=claude-code"],
+          "extensionToLanguage": {
+            ".dart": "dart"
+          }
+        }
+      }
+    }
+  ]
+}
