@@ -17,7 +17,8 @@ the approval protocol. Do not copy them into the project file.
 2. Read the build files and scripts that exist, such as `package.json`,
    `pyproject.toml`, `requirements*.txt`, `Makefile`, `justfile`, `go.mod`,
    `Cargo.toml`, `CMakeLists.txt`, `pom.xml`, `build.gradle*`,
-   `pubspec.yaml`, and `scripts/`. List the top-level folders.
+   `pubspec.yaml`, and `scripts/`. List the top-level folders. Draft
+   `./CLAUDE.md` from the Template section below.
 3. Ask the user in one message: the current goal in one sentence, and,
    only if step 5 runs, any hard conventions. Leave Conventions empty if
    none.
