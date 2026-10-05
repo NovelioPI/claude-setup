@@ -87,13 +87,22 @@
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
-    "gopls-lsp@claude-plugins-official": true
+    "gopls-lsp@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": true,
+    "kotlin-lsp@claude-plugins-official": true,
+    "dart-lsp@local-lsp": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
       "source": {
         "source": "github",
         "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "local-lsp": {
+      "source": {
+        "source": "directory",
+        "path": "/home/noveliopi/.claude/lsp-plugins"
       }
     }
   },
