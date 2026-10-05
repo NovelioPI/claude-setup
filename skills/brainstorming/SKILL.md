@@ -1,11 +1,12 @@
 ---
 name: brainstorming
-description: Widen a raw idea into a feature space, grounded tech facts, and a numbered list of open decisions, written to plans/. Use before a project starts, or when a request is one sentence and the work is not. To close the decisions this produces, use `grilling`.
+description: Widen a raw idea into a feature space, grounded tech facts, and a numbered list of open decisions, written to plans/. Use before a project starts, or when a request is one sentence and the work is not. The user closes the decisions it produces with AskUserQuestion.
 ---
 
 # Brainstorm an idea
 
-Router: this skill widens. `grilling` closes the decisions it finds.
+Router: this skill widens. AskUserQuestion closes the decisions it finds, per
+the Tool Preferences section of CLAUDE.md.
 
 ## Classify first
 
@@ -92,8 +93,8 @@ Write the decisions that block the work.
 A question with one surviving answer is a fact. Record it in pass 2 and leave it
 out of this table.
 
-Order the rows so a row's `Depends on` sits above it. `grilling` asks in rounds,
-and that order is the first round.
+Order the rows so a row's `Depends on` sits above it. Decisions close in rounds
+of up to four, and that order is the first round.
 
 Done when every open decision has an ID, two or more options, and a
 recommendation.
@@ -105,9 +106,10 @@ Fix them inline.
 
 End with the file path, the count of open decisions, and this offer:
 
-    Grill these <n> decisions? Go or Execute.
+    Close these <n> decisions? Go or Execute.
 
-On a token, run `grilling` against the pass 3 table.
+On a token, close the pass 3 table with AskUserQuestion, up to four rows each
+round, in the table order.
 
-Risk: if a brainstorm ends without a decision table, then `grilling` has no
-frontier and the chain stops here.
+Risk: if a brainstorm ends without a decision table, then nothing is left to
+close and the work has no plan.

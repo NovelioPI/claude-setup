@@ -111,7 +111,6 @@ source to confirm before you propose changes.
 
 ## Process
 
-- A symptom is reported: use the `diagnosing-bugs` skill.
 - Work is done: propose the commit.
 - The change is security-sensitive: run `security-review` before the merge.
 - A code change invalidates a doc: update the doc in the same turn as the code.
@@ -127,18 +126,6 @@ When compacting, always keep:
 - The current hypothesis and what has been ruled out
 - Decisions made and the reason for each
 Discard: full file contents, raw grep/ls output, passing test logs.
-
-## Code Quality
-
-See @rules/code-quality.md for coding, commenting, typing, testing, and
-file-layout rules.
-
-## Writing
-
-See @rules/plain-words.md for the word replacements used in chat text and
-in commit messages.
-See @rules/commit-style.md for commit subject, body, and trailer rules.
-See @rules/doc-style.md for the style of a document a human reads.
 
 ## Forbidden Without Explicit Per-Use Approval
 

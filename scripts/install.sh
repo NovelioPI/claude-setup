@@ -6,7 +6,6 @@ set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 REPO=$(pwd)
 BLOCKERS=0
-SKILLS=(diagnosing-bugs grilling research resolving-merge-conflicts writing-for-agents)
 
 say()   { printf '  %-12s %s\n' "$1" "$2"; }
 block() { say "$1" "MISSING  -> $2"; BLOCKERS=$((BLOCKERS + 1)); }
@@ -58,21 +57,6 @@ if have notify-send || have powershell.exe; then
   say "notify" "present"
 else
   say "notify" "absent — the hook falls back to a terminal bell"
-fi
-
-echo
-echo "Skills"
-if have npx; then
-  for s in "${SKILLS[@]}"; do
-    if [ -f "$REPO/skills/$s/SKILL.md" ]; then
-      say "$s" "present"
-    else
-      npx -y skills add "mattpocock/skills@$s" -g -y >/dev/null 2>&1 \
-        && say "$s" "installed" || say "$s" "FAILED  -> npx skills add mattpocock/skills@$s -g -y"
-    fi
-  done
-else
-  block "npx" "install Node, then re-run"
 fi
 
 echo

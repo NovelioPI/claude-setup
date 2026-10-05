@@ -5,9 +5,6 @@
 These rules cover a document a human reads: `README.md`, a file under
 `plans/`, and any doc file the user asks for.
 
-A file an agent reads as instructions follows the `writing-for-agents`
-skill instead: `SKILL.md`, `CLAUDE.md`, and a file under `rules/`.
-
 ### Shape
 
 Start with a title.

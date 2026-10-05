@@ -119,13 +119,11 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 
 ## Skills
 
-This repo tracks only the skill written here: `brainstorming`. The rest are
-other people's work, so they are not redistributed. `scripts/install.sh` fetches
-them.
+This repo tracks only the skill written here: `brainstorming`. Other skills are
+other people's work, so they are not redistributed.
 
 | Skill | Source |
 |---|---|
-| `grilling`, `writing-for-agents`, `diagnosing-bugs`, `research`, `resolving-merge-conflicts` | [mattpocock/skills](https://github.com/mattpocock/skills), through the Skills CLI at https://skills.sh/ |
 | `impeccable`, and the `agents/impeccable-*.md` it dispatches | installed separately, not tracked here |
 
 `~/.claude/skills/` is otherwise excluded, with a negation for each tracked
