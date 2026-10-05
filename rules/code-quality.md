@@ -35,8 +35,6 @@ two cases:
 
 Use simple English. See @rules/plain-words.md for the word tables.
 Do not use a figure of speech.
-Write a TODO with a plan ID: `TODO(H5): ...`. A bare TODO competes with
-TODO.md.
 
 ### Functions
 

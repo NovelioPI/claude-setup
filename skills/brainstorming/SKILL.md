@@ -1,15 +1,11 @@
 ---
 name: brainstorming
-description: Widen a raw idea into a feature space, grounded tech facts, and a numbered list of open decisions, written to plans/. Use before a project starts, when a request is one sentence and the work is not, or when a TODO.md row reads `L`. To close the decisions this produces, use `grilling`. To turn closed decisions into rows, use `todo-plan`.
+description: Widen a raw idea into a feature space, grounded tech facts, and a numbered list of open decisions, written to plans/. Use before a project starts, or when a request is one sentence and the work is not. To close the decisions this produces, use `grilling`.
 ---
 
 # Brainstorm an idea
 
-Router: this skill widens. `grilling` closes the decisions it finds. `todo-plan`
-turns the closed set into rows and milestones.
-
-`todo-update` owns the triggers that send you here. Read its "When to
-brainstorm" table for those; this file owns the procedure.
+Router: this skill widens. `grilling` closes the decisions it finds.
 
 ## Classify first
 
@@ -68,12 +64,12 @@ Turn each assumption the idea rests on into a checked fact.
 
 | Source | Reach it with |
 |---|---|
-| This repo | `graft ask "<assumption>" --source` |
+| This repo | `grep` and a read of the file |
 | The environment | `package.json`, a config file, `--help` output |
 | An external contract | the owner's own documentation |
 
 Mark a claim you could not check as `unverified`. An unverified claim is an
-honest row; a guessed one is a defect that survives into `TODO.md`.
+honest row; a guessed one is a defect that survives into the plan.
 
 Propose a research subagent for one case only: an `unverified` claim that blocks
 a decision in pass 3. Name the claim, the decision it blocks, and the source you
@@ -83,7 +79,7 @@ Done when every assumption carries a source link or the label `unverified`.
 
 ## Pass 3 — Narrow
 
-Write the decisions that block `todo-plan`.
+Write the decisions that block the work.
 
 | Column | Content |
 |---|---|
@@ -111,12 +107,7 @@ End with the file path, the count of open decisions, and this offer:
 
     Grill these <n> decisions? Go or Execute.
 
-On a token, run `grilling` against the pass 3 table. When `grilling` returns,
-offer `todo-plan` the same way:
-
-    Write TODO.md from these decisions? Go or Execute.
-
-Each stage takes its own token. One token never covers two stages.
+On a token, run `grilling` against the pass 3 table.
 
 Risk: if a brainstorm ends without a decision table, then `grilling` has no
 frontier and the chain stops here.

@@ -14,9 +14,6 @@
     ]
   },
   "model": "opus",
-  "env": {
-    "GRAFT_NO_STATUSLINE": "1"
-  },
   "hooks": {
     "PreToolUse": [
       {
@@ -48,57 +45,26 @@
             "command": "bash ~/.claude/hooks/check-complexity.sh"
           }
         ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" post-edit; fi",
-            "timeout": 10000
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|mcp__graft__|Read|Grep|Glob",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" tool-savings; fi",
-            "timeout": 8000
-          }
-        ]
       }
     ],
-    "UserPromptSubmit": [
+    "PreCompact": [
       {
+        "matcher": "auto",
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" prompt; fi",
-            "timeout": 15000
+            "command": "bash ~/.claude/hooks/pre-compact.sh"
           }
         ]
       }
     ],
     "SessionStart": [
       {
+        "matcher": "startup|compact|clear",
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" session-start; fi",
-            "timeout": 8000
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ -f \"$HOME/.claude/helpers/graft-hooks.cjs\" ]; then node \"$HOME/.claude/helpers/graft-hooks.cjs\" stop; fi",
-            "timeout": 8000
+            "command": "bash ~/.claude/hooks/session-start.sh"
           }
         ]
       }

@@ -7,8 +7,6 @@ Start with a capital letter.
 Do not add a prefix. Do not use `feat:`, `fix:`, or a scope.
 Do not end with a period.
 Cap the subject at 60 characters.
-Cite closed TODO IDs at the end, when `todo-update` applies:
-`Settle the paper book on an off day (H5, H6)`.
 
 ### Body
 

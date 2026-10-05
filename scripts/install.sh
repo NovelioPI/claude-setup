@@ -6,7 +6,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 REPO=$(pwd)
 BLOCKERS=0
-SKILLS=(diagnosing-bugs grilling handoff research resolving-merge-conflicts writing-for-agents)
+SKILLS=(diagnosing-bugs grilling research resolving-merge-conflicts writing-for-agents)
 
 say()   { printf '  %-12s %s\n' "$1" "$2"; }
 block() { say "$1" "MISSING  -> $2"; BLOCKERS=$((BLOCKERS + 1)); }
@@ -54,14 +54,6 @@ else
   block "uv" "curl -LsSf https://astral.sh/uv/install.sh | sh"
 fi
 
-if have graft; then
-  say "graft" "present  $(graft -v 2>/dev/null)"
-elif have npm; then
-  say "graft" "installing..."
-  npm install -g @nanonets/graft >/dev/null 2>&1
-  have graft && say "graft" "installed" || block "graft" "npm install -g @nanonets/graft"
-fi
-
 if have notify-send || have powershell.exe; then
   say "notify" "present"
 else
@@ -87,44 +79,6 @@ echo
 echo "Permissions"
 chmod +x hooks/*.sh statusline-command.sh scripts/*.sh 2>/dev/null
 say "chmod +x" "hooks, status line, scripts"
-
-echo
-echo "Graft wiring"
-if [ -f "$HOME/.claude/helpers/graft-hooks.cjs" ]; then
-  say "shim" "present"
-else
-  say "shim" "absent -> run 'graft init' inside your first project, then re-run this script"
-  BLOCKERS=$((BLOCKERS + 1))
-fi
-grep -q 'GRAFT_NO_STATUSLINE' settings.json \
-  && say "statusline" "protected by GRAFT_NO_STATUSLINE" \
-  || say "statusline" "GRAFT_NO_STATUSLINE missing from settings.json"
-
-# Risk: if graft init runs at user level, then it rewrites these commands with an
-# absolute /home/<user> path, which breaks on the next device.
-if grep -q '"command": "node \\"/home/' settings.json; then
-  python3 - <<'PY'
-import json, collections, os
-p = "settings.json"
-s = json.load(open(p), object_pairs_hook=collections.OrderedDict)
-home = os.path.expanduser("~")
-def fix(o):
-    if isinstance(o, dict):
-        for k, v in o.items():
-            if k == "command" and isinstance(v, str) and home in v:
-                o[k] = v.replace(home, "$HOME")
-            else:
-                fix(v)
-    elif isinstance(o, list):
-        for v in o:
-            fix(v)
-fix(s)
-open(p, "w").write(json.dumps(s, indent=2) + "\n")
-PY
-  say "paths" "rewrote absolute paths to \$HOME"
-else
-  say "paths" "no absolute paths in settings.json"
-fi
 
 echo
 echo "Check"
