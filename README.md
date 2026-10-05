@@ -119,6 +119,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 | `node`, `npm` | `npx skills` | no |
 | `uv` | `check-complexity.sh`, which runs `complexipy` and `ruff` through `uvx` | yes |
 | `rtk` | the `PreToolUse` hook in `settings.json` that shortens Bash output | yes, by brew or a checked GitHub release |
+| `pyright`, `typescript-language-server`, `gopls` | the LSP plugins in `enabledPlugins`, which give the `LSP` tool to `explorer` | no; `npm install -g pyright typescript-language-server typescript`, `go install golang.org/x/tools/gopls@latest` |
 | `gh`, `rg` | optional convenience | no |
 
 ## Skills
