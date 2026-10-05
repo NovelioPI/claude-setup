@@ -70,6 +70,7 @@ so take it without asking.
 | `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
 | `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
+| `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` agent only: allows read-only Bash commands |
 | `hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on Python |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/pre-compact.sh` | `PreCompact` hook: saves git state and the transcript to `.agent/` |
@@ -77,6 +78,7 @@ so take it without asking.
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
 | `commands/reflect.md` | `/reflect`: proposes lessons for `.agent/lessons.md` |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
+| `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
