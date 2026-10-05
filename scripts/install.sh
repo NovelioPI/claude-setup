@@ -23,6 +23,36 @@ pkg() {
   fi
 }
 
+ALL_LANGS="python typescript go cpp kotlin dart"
+
+usage() {
+  cat <<EOF
+Usage: scripts/install.sh [--lsp LANGS]
+
+  --lsp LANGS   Install language servers and their Claude Code plugins.
+                LANGS is a comma list of: ${ALL_LANGS// /, }; or "all".
+                Without --lsp, no language server is installed.
+EOF
+}
+
+LSP_LANGS=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --lsp)     [ $# -ge 2 ] || { usage >&2; exit 1; }; LSP_LANGS=$2; shift 2 ;;
+    --lsp=*)   LSP_LANGS=${1#--lsp=}; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *)         echo "Unknown argument: $1" >&2; usage >&2; exit 1 ;;
+  esac
+done
+[ "$LSP_LANGS" = all ] && LSP_LANGS=$ALL_LANGS
+LSP_LANGS=${LSP_LANGS//,/ }
+for lang in $LSP_LANGS; do
+  case " $ALL_LANGS " in
+    *" $lang "*) ;;
+    *) echo "Unknown language: $lang" >&2; usage >&2; exit 1 ;;
+  esac
+done
+
 if [ "$REPO" != "$HOME/.claude" ]; then
   echo "This repo must live at ~/.claude, not $REPO." >&2
   echo "Claude Code reads ~/.claude directly; a copy elsewhere drifts." >&2
@@ -107,6 +137,154 @@ if have notify-send || have powershell.exe; then
   say "notify" "present"
 else
   say "notify" "absent — the hook falls back to a terminal bell"
+fi
+
+# Prints "<os> <arch>" in Go's naming, or fails on a platform with no builds.
+platform() {
+  case "$(uname -s)/$(uname -m)" in
+    Linux/x86_64)                echo "linux amd64" ;;
+    Linux/aarch64 | Linux/arm64) echo "linux arm64" ;;
+    Darwin/x86_64)               echo "darwin amd64" ;;
+    Darwin/arm64)                echo "darwin arm64" ;;
+    MINGW*/x86_64 | MSYS*/x86_64 | CYGWIN*/x86_64) echo "windows amd64" ;;
+    *) return 1 ;;
+  esac
+}
+
+# Downloads $1 to $3 and fails unless its SHA256 equals $2.
+fetch_checked() {
+  [ -n "$2" ] && curl -fsSL "$1" -o "$3" && [ "$2" = "$(sha256 "$3")" ]
+}
+
+unpack() {
+  case "$1" in
+    *.zip) unzip -oq "$1" -d "$2" ;;
+    *)     tar -xzf "$1" -C "$2" ;;
+  esac
+}
+
+install_go() (
+  plat=$(platform) || exit 1
+  read -r os arch <<< "$plat"
+  [ "$os" != windows ] || exit 1
+  json=$(curl -fsSL 'https://go.dev/dl/?mode=json') || exit 1
+  pick='.[0].files[] | select(.os == $o and .arch == $a and .kind == "archive")'
+  file=$(jq -r --arg o "$os" --arg a "$arch" "$pick | .filename" <<< "$json")
+  sum=$(jq -r --arg o "$os" --arg a "$arch" "$pick | .sha256" <<< "$json")
+  tmp=$(mktemp -d) || exit 1
+  trap 'rm -rf "$tmp"' EXIT
+  fetch_checked "https://go.dev/dl/$file" "$sum" "$tmp/$file" || exit 1
+  mkdir -p "$HOME/.local/bin" && unpack "$tmp/$file" "$HOME/.local" &&
+    ln -sf "$HOME/.local/go/bin/go" "$HOME/.local/bin/go"
+)
+
+# Reason: the Windows build needs its own folder on PATH, so only Linux and macOS get a link.
+install_clangd() (
+  plat=$(platform) || exit 1
+  read -r os _ <<< "$plat"
+  [ "$os" != windows ] || exit 1
+  [ "$os" = darwin ] && os=mac
+  release=$(curl -fsSL https://api.github.com/repos/clangd/clangd/releases/latest) || exit 1
+  version=$(jq -r .tag_name <<< "$release")
+  file="clangd-$os-$version.zip"
+  sum=$(jq -r --arg f "$file" '.assets[] | select(.name == $f) | .digest' <<< "$release")
+  tmp=$(mktemp -d) || exit 1
+  trap 'rm -rf "$tmp"' EXIT
+  url="https://github.com/clangd/clangd/releases/download/$version/$file"
+  fetch_checked "$url" "${sum#sha256:}" "$tmp/$file" || exit 1
+  mkdir -p "$HOME/.local/bin" && unpack "$tmp/$file" "$HOME/.local" &&
+    ln -sf "$HOME/.local/clangd_$version/bin/clangd" "$HOME/.local/bin/clangd"
+)
+
+# Reason: JetBrains ships macOS as a .sit archive, which this script cannot unpack.
+install_kotlin() (
+  plat=$(platform) || exit 1
+  read -r os arch <<< "$plat"
+  [ "$os" = linux ] || exit 1
+  tag=$(curl -fsSL https://api.github.com/repos/Kotlin/kotlin-lsp/releases/latest | jq -r .tag_name) || exit 1
+  version=${tag#kotlin-lsp/v}
+  suffix=""
+  [ "$arch" = arm64 ] && suffix="-aarch64"
+  file="kotlin-server-$version$suffix.tar.gz"
+  url="https://download.jetbrains.com/language-server/kotlin-server/$version/$file"
+  sum=$(curl -fsSL "$url.sha256" | cut -d' ' -f1)
+  tmp=$(mktemp -d) || exit 1
+  trap 'rm -rf "$tmp"' EXIT
+  fetch_checked "$url" "$sum" "$tmp/$file" || exit 1
+  mkdir -p "$HOME/.local/bin" && unpack "$tmp/$file" "$HOME/.local" &&
+    ln -sf "$HOME/.local/kotlin-server-$version/bin/intellij-server" "$HOME/.local/bin/kotlin-lsp"
+)
+
+npm_server() {
+  local bin=$1
+  shift
+  if have "$bin"; then say "$bin" "present"; return 0; fi
+  have npm || { block "$bin" "install Node and npm, then re-run"; return 1; }
+  npm install -g "$@" >/dev/null 2>&1 && have "$bin" && say "$bin" "installed" ||
+    { block "$bin" "npm install -g $*"; return 1; }
+}
+
+lsp_python()     { npm_server pyright-langserver pyright; }
+lsp_typescript() { npm_server typescript-language-server typescript-language-server typescript; }
+
+lsp_go() {
+  if have gopls; then say "gopls" "present"; return 0; fi
+  if ! have go; then
+    if have brew; then brew install go >/dev/null 2>&1
+    else install_go
+    fi
+    have go || { block "go" "install Go from https://go.dev/dl, then re-run"; return 1; }
+  fi
+  GOBIN="$HOME/.local/bin" go install golang.org/x/tools/gopls@latest >/dev/null 2>&1 &&
+    have gopls && say "gopls" "installed" ||
+    { block "gopls" "go install golang.org/x/tools/gopls@latest"; return 1; }
+}
+
+lsp_cpp() {
+  if have clangd; then say "clangd" "present"; return 0; fi
+  install_clangd && have clangd && say "clangd" "installed" ||
+    { block "clangd" "download from https://github.com/clangd/clangd/releases and put clangd on PATH"; return 1; }
+}
+
+lsp_kotlin() {
+  if have kotlin-lsp; then say "kotlin-lsp" "present"; return 0; fi
+  install_kotlin && have kotlin-lsp && say "kotlin-lsp" "installed" ||
+    { block "kotlin-lsp" "download from https://github.com/Kotlin/kotlin-lsp/releases and put it on PATH"; return 1; }
+}
+
+lsp_dart() {
+  have dart && { say "dart" "present"; return 0; }
+  block "dart" "install the Flutter or Dart SDK"
+  return 1
+}
+
+plugin_for() {
+  case "$1" in
+    python)     echo pyright-lsp@claude-plugins-official ;;
+    typescript) echo typescript-lsp@claude-plugins-official ;;
+    go)         echo gopls-lsp@claude-plugins-official ;;
+    cpp)        echo clangd-lsp@claude-plugins-official ;;
+    kotlin)     echo kotlin-lsp@claude-plugins-official ;;
+    dart)       echo dart-lsp@local-lsp ;;
+  esac
+}
+
+if [ -n "$LSP_LANGS" ]; then
+  echo
+  echo "Language servers"
+  # Reason: both commands do nothing when the marketplace or plugin is already present.
+  if have claude; then
+    claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1
+    claude plugin marketplace add "$REPO/lsp-plugins" >/dev/null 2>&1
+  else
+    say "plugins" "claude CLI not found; plugins are not installed"
+  fi
+  for lang in $LSP_LANGS; do
+    "lsp_$lang" && have claude || continue
+    plugin=$(plugin_for "$lang")
+    claude plugin install "$plugin" >/dev/null 2>&1 && say "plugin" "$plugin" ||
+      block "plugin" "claude plugin install $plugin"
+  done
 fi
 
 echo
