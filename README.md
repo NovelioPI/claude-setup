@@ -76,6 +76,7 @@ so take it without asking.
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
 | `commands/reflect.md` | `/reflect`: proposes lessons for `.agent/lessons.md` |
+| `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
@@ -119,7 +120,8 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 
 ## Skills
 
-This repo tracks only the skill written here: `brainstorming`. Other skills are
+This repo tracks only the skills written here: `brainstorming` and
+`project-init`. Other skills are
 other people's work, so they are not redistributed.
 
 | Skill | Source |
