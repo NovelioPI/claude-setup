@@ -33,10 +33,6 @@ chat text and commit messages. Write "use", not "leverage". Write "start", not
 unrecoverable commands. `git push` is not blocked, on purpose. A guardrail you
 hit every day teaches you to route around it.
 
-**Reviews are triggered, not routine.** `/code-review` and `/simplify` run when
-a change touches an invariant, an exported symbol, or five files. A one-file fix
-with a green suite runs neither.
-
 ## Take what you want
 
 Most of this works in pieces. Copy one file and ignore the rest. MIT licensed,

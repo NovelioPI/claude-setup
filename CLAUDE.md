@@ -120,7 +120,7 @@ source to confirm before you propose changes.
 ## Process
 
 - A symptom is reported: use the `diagnosing-bugs` skill.
-- Work is done: run `/simplify`, then `/code-review`, then propose the commit.
+- Work is done: propose the commit.
 - The change is security-sensitive: run `security-review` before the merge.
 - A code change invalidates a doc: update the doc in the same turn as the code.
 - A test fails or is skipped: do not mark the task done without saying so.
