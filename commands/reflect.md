@@ -3,6 +3,8 @@ description: Distill reusable lessons from the task just finished
 ---
 
 Review this session. Propose at most 5 new bullets for .agent/lessons.md.
+If the file does not exist, create it with three headings: Traps, Commands,
+Patterns that work.
 
 Rules:
 - Each bullet is one line, specific and actionable:

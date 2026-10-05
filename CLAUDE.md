@@ -113,7 +113,7 @@ source to confirm before you propose changes.
 
 ## Process
 
-- Work is done: propose the commit.
+- Work is done: propose the commit. After the commit, offer `/reflect`.
 - The change is security-sensitive: run `security-review` before the merge.
 - A code change invalidates a doc: update the doc in the same turn as the code.
 - A test fails or is skipped: do not mark the task done without saying so.
