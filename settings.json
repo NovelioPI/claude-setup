@@ -84,6 +84,19 @@
     "command": "bash ~/.claude/statusline-command.sh",
     "refreshInterval": 1
   },
+  "enabledPlugins": {
+    "pyright-lsp@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "gopls-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    }
+  },
   "outputStyle": "plain-style",
   "effortLevel": "medium",
   "modelSettings": {
