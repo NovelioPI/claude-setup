@@ -124,7 +124,17 @@ source to confirm before you propose changes.
 - The change is security-sensitive: run `security-review` before the merge.
 - A code change invalidates a doc: update the doc in the same turn as the code.
 - A test fails or is skipped: do not mark the task done without saying so.
-- Context pressure is high: offer the `handoff` skill. It cannot start itself.
+- Context pressure is high: offer `/handoff`. Typing `/handoff` approves the
+  writes it lists.
+
+## Compact instructions
+
+When compacting, always keep:
+- Exact file paths created or changed, and why
+- Failing test names and the exact error lines
+- The current hypothesis and what has been ruled out
+- Decisions made and the reason for each
+Discard: full file contents, raw grep/ls output, passing test logs.
 
 ## Code Quality
 
