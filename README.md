@@ -75,7 +75,7 @@ so take it without asking.
 | `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, then runs the stop gate |
 | `hooks/protected-paths.sh` | Shared path check for the two guards above |
 | `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` and `reviewer` agents: allows read-only Bash commands |
-| `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
+| `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/pre-compact.sh` | `PreCompact` hook: saves git state and the transcript to `.agent/` |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
@@ -86,7 +86,7 @@ so take it without asking.
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `agents/reviewer.md` | Read-only subagent that reviews a diff and returns ranked findings |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
-| `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python complexity, nesting, parameter count, and silent errors; type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
+| `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `LICENSE` | MIT |
@@ -149,7 +149,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 | `git` | the clone | no, needs sudo |
 | `jq` | the hooks and the status line | no, needs sudo |
 | `node`, `npm` | `npx skills` | no |
-| `uv` | `post-edit.sh`, which runs `ruff` and `complexipy` through `uvx` | yes |
+| `uv` | `scripts/quality.sh`, which runs `ruff`, `complexipy`, and `lizard` through `uvx` | yes |
 | `rtk` | the `PreToolUse` hook in `settings.json` that shortens Bash output | yes, by brew or a checked GitHub release |
 | `pyright`, `typescript-language-server`, `gopls` | the LSP plugins in `enabledPlugins`, which give the `LSP` tool to `explorer` | with `--lsp`; Go itself too, if missing |
 | `clangd`, `kotlin-lsp`, `dart` | the C/C++, Kotlin, and Dart LSP plugins; Dart uses `lsp-plugins/`, a local marketplace | with `--lsp`: clangd on Linux and macOS, kotlin-lsp on Linux; `dart` comes with Flutter |

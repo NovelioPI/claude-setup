@@ -5,6 +5,8 @@
 # lint and check print problems and exit 1. A missing tool is not a problem.
 
 MAX_COGNITIVE=15
+MAX_NESTING=5
+MAX_PARAMETERS=4
 
 cd "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
 
@@ -18,6 +20,21 @@ has_config() {
 }
 
 has_biome() { has_config biome.json biome.jsonc && [ -x node_modules/.bin/biome ]; }
+
+# Reason: -C 1000 turns off the cyclomatic limit, which rules/code-quality.md forbids.
+check_limits() {
+  local result
+  have uvx || return 0
+  # Reason: -L 100000 turns off lizard's default length limit, which the rules do not set.
+  result=$(uvx lizard@1.24.1 -Ecognitive -ENS -C 1000 -L 100000 -w \
+           -T cognitive_complexity="$MAX_COGNITIVE" -T max_nested_structures="$MAX_NESTING" \
+           -T parameter_count="$MAX_PARAMETERS" "$1" 2>&1) && return 0
+  # Reason: an offline uvx fails with no warning line, and a missing tool must not block.
+  grep -q 'warning:' <<< "$result" || return 0
+  printf '%s\n' "$result"
+  printf 'Limits: cognitive complexity %s, nesting %s, parameters %s.\n' \
+    "$MAX_COGNITIVE" "$MAX_NESTING" "$MAX_PARAMETERS"
+}
 
 # Reason: uvx has no project libraries, so only the project's own tools run.
 project_tool() {
@@ -60,7 +77,8 @@ lint_file() {
       result=$(uvx complexipy --plain --failed --max-complexity-allowed "$MAX_COGNITIVE" \
                "$1" 2>&1) || printf '%s\n' "$result"
       result=$(uvx ruff check --isolated --preview --select PLR1702,PLR0913,BLE001,S110 \
-               --config 'lint.pylint.max-args = 4' "$1" 2>&1) || printf '%s\n' "$result"
+               --config "lint.pylint.max-args = $MAX_PARAMETERS" \
+               --config "lint.pylint.max-nested-blocks = $MAX_NESTING" "$1" 2>&1) || printf '%s\n' "$result"
       ;;
     *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs)
       if has_biome; then
@@ -69,10 +87,16 @@ lint_file() {
       elif [ -x node_modules/.bin/eslint ]; then
         result=$(node_modules/.bin/eslint --fix "$1" 2>&1) || printf '%s\n' "$result"
       fi
+      check_limits "$1"
       ;;
     *.kt|*.kts)
-      have ktlint || return 0
-      result=$(ktlint -F "$1" 2>&1) || printf '%s\n' "$result"
+      if have ktlint; then
+        result=$(ktlint -F "$1" 2>&1) || printf '%s\n' "$result"
+      fi
+      check_limits "$1"
+      ;;
+    *.c|*.h|*.cc|*.cpp|*.hpp)
+      check_limits "$1"
       ;;
     *.dart)
       have dart || return 0
