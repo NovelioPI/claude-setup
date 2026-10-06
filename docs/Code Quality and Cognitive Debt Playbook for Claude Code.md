@@ -636,17 +636,11 @@ Cognitive debt is repaid through deliberate practice: rebuilding understanding b
 | --- | --- | --- |
 | Weekly | Theory session: sketch one Core or Important module from memory (flow, invariants, failure modes), then compare with the code and note the gaps | \~30 min |
 | Weekly | Work through .agent/understanding-gaps.md; ask Claude conceptual questions about each, without editing | \~20 min |
-| Monthly | One unaided task: fix a small Core bug or add a small feature without the agent | 1–2 h |
+| Monthly | One unaided diagnosis: find the root cause of a small Core bug yourself, from the code, without the agent; then Claude writes the fix | 1–2 h |
 | Monthly | Run `scripts/debt-report.sh` and review the numbers from Step 11 | 15 min |
 | Per milestone | Refresh the architecture doc and ownership map; collapse finished specs into decision records in docs/decisions/ | \~1 h |
 
-Theory-session prompt, to use after sketching from memory:
-
-```text
-I just described <module> from memory: <my description>.
-Compare it with the actual code. List what I got wrong or missed, most
-important first, with file:line. Do not change any files.
-```
+After sketching from memory, run `/theory <module> <your description>`. It compares your description with the code and lists what you got wrong or missed, with file:line. It changes no files.
 
 On a team, rotate who reviews and who runs theory sessions on each Core area, so understanding never sits with only one person.
 
