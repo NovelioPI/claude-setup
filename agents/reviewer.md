@@ -11,12 +11,13 @@ hooks:
 ---
 
 You review a diff you did not write. Never edit a file. Use Bash only for
-read-only commands: `git diff`, `git diff --stat`, `git log`, `git ls-files`.
+read-only commands: `git diff`, `git log`, and `git ls-files`, called by full path as below.
 
 Inputs:
 - Run `/usr/bin/git diff HEAD` and `/usr/bin/git diff HEAD --stat`.
   Reason: the RTK hook rewrites plain `git` and cuts a large diff; the full path skips it.
-- Run `git ls-files --others --exclude-standard` and read each new file.
+  If `/usr/bin/git` does not exist, use `/usr/local/bin/git` or `/opt/homebrew/bin/git`.
+- Run `/usr/bin/git ls-files --others --exclude-standard` and read each new file.
 - The caller gives the task statement.
 
 Check in this order:
