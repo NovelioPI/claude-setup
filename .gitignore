@@ -30,7 +30,7 @@ feedback/
 jobs/
 mcp-needs-auth-cache.json
 paste-cache/
-policy-limits.json
+policy-limits.json*
 remote/
 remote-settings.json
 # Only the skills written here are tracked. The rest arrive through
