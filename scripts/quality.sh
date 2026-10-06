@@ -86,9 +86,25 @@ run() {
   result=$("$@" 2>&1) || printf '\n$ %s\n%s\n' "$*" "$(printf '%s' "$result" | tail -40)"
 }
 
+check_python_types() {
+  local mypy pyright
+  local -a interpreter=()
+  mypy=$(project_tool mypy)
+  if [ -n "$mypy" ]; then
+    run "$mypy" "$@"
+    return
+  fi
+  # Reason: pyright with no config reports every project import as missing.
+  has_config pyrightconfig.json || grep -q '^\[tool\.pyright' pyproject.toml 2>/dev/null || return 0
+  pyright=$(project_tool pyright)
+  [ -n "$pyright" ] || return 0
+  [ -x .venv/bin/python ] && interpreter=(--pythonpath .venv/bin/python)
+  run "$pyright" "${interpreter[@]}" "$@"
+}
+
 check_files() {
   local -a py=() ts=() dart=()
-  local file mypy pytest
+  local file pytest
   for file in "$@"; do
     case "$file" in
       *.py) py+=("$file") ;;
@@ -98,9 +114,8 @@ check_files() {
   done
 
   if [ "${#py[@]}" -gt 0 ]; then
-    mypy=$(project_tool mypy)
+    check_python_types "${py[@]}"
     pytest=$(project_tool pytest)
-    [ -n "$mypy" ] && run "$mypy" "${py[@]}"
     # Reason: pytest exits 5 when no test file exists, which is not a failure.
     if [ -n "$pytest" ] && [ -n "$(find tests/unit -name 'test_*.py' 2>/dev/null | head -1)" ]; then
       run "$pytest" -q -x tests/unit
@@ -109,6 +124,10 @@ check_files() {
 
   if [ "${#ts[@]}" -gt 0 ] && [ -f tsconfig.json ] && [ -x node_modules/.bin/tsc ]; then
     run node_modules/.bin/tsc --noEmit
+  fi
+  if [ "${#ts[@]}" -gt 0 ] && [ -x node_modules/.bin/vitest ]; then
+    # Reason: held-out tests must stay unseen, like the Python path that runs only tests/unit.
+    run node_modules/.bin/vitest run --changed --passWithNoTests --exclude 'tests/holdout/**'
   fi
 
   if [ "${#dart[@]}" -gt 0 ] && have dart; then

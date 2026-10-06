@@ -703,7 +703,7 @@ Roll out over about three weeks, cheapest and highest-impact first, and check ea
 Verification checklist:
 
 - [x] quality.sh has a branch for every language in the repo, and an unused import added by Claude is removed automatically after the edit
-- [ ] A type error blocks the end of the turn once, and Claude fixes it
+- [x] A type error blocks the end of the turn once, and Claude fixes it
 - [ ] Editing a file under tests/ is blocked in a normal session and allowed with TASK\_MODE=tests
 - [ ] Hypothesis invariants exist for your Core functions
 - [ ] Mutation score on core modules is measured, and surviving mutants have become tests
