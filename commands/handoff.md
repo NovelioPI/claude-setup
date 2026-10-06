@@ -3,7 +3,7 @@ description: Write current working state to disk before clearing or stopping
 ---
 
 1. If `.agent/` does not exist, create it, and create `.agent/.gitignore` with
-   three lines: `snapshots/`, `snapshot.md` and `.skip-gate`.
+   one line: `.skip-gate`.
 2. Rewrite `.agent/progress.md`. Use the existing section headings, or the
    template below if the file does not exist. Be exact: file paths, test names,
    error lines, commit hashes. Max 60 lines.

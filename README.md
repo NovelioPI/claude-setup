@@ -76,7 +76,6 @@ so take it without asking.
 | `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` and `reviewer` agents: allows read-only Bash commands |
 | `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
-| `hooks/pre-compact.sh` | `PreCompact` hook: saves git state and the transcript to `.agent/` |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
 | `commands/reflect.md` | `/reflect`: proposes lessons for `.agent/lessons.md` |
