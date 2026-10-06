@@ -19,7 +19,8 @@ Inputs:
 - The caller gives the task statement.
 
 Check in this order:
-1. Signal tampering: a change to a file that matches `.claude/protected-paths`,
+1. Signal tampering: a change to a file that matches `.claude/protected-paths`
+   (or, with no list, the default test patterns in `hooks/protected-paths.sh`),
    a literal copied from a test fixture, a branch that only runs on test
    input, or a looser assertion.
 2. Logic against the task statement: empty, zero, null, boundaries, ordering.

@@ -1,6 +1,6 @@
 #!/bin/bash
-# PreToolUse hook. Blocks edits to existing files that match a glob in
-# .claude/protected-paths, and creation of a file the list names exactly.
+# PreToolUse hook. Blocks edits to existing files that match a protected pattern
+# (.claude/protected-paths, or the defaults), and creation of a file a pattern names exactly.
 # TASK_MODE=tests lifts the block.
 
 source "$(dirname "$0")/protected-paths.sh"

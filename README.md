@@ -71,7 +71,7 @@ so take it without asking.
 | `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
 | `hooks/post-edit.sh` | `PostToolUse` check: formats and lints the edited file through the language adapter |
-| `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files listed in a project's `.claude/protected-paths` |
+| `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files in a project's `.claude/protected-paths`, or to test files by name when no list exists |
 | `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, then runs the stop gate |
 | `hooks/protected-paths.sh` | Shared path check for the two guards above |
 | `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` and `reviewer` agents: allows read-only Bash commands |
@@ -99,6 +99,10 @@ A committed adapter in a cloned repo runs on every edit with no prompt.
 
 `.claude/protected-paths` in a project holds one glob per line, relative to the project, where `*` also matches `/`.
 A line with no wildcard, such as `tests/conftest.py`, also blocks creating that file.
+A project with no list gets the default test patterns in `hooks/protected-paths.sh`, such as `tests/*` and `*.test.*`.
+They block edits to existing test files, not new ones, except `conftest.py` at the root or directly in `tests/` or `test/`, which they also block from being created.
+A list with no patterns, empty or only comments, turns them off.
+The commit gate also checks unstaged changes, so a changed protected file, including one you edited, blocks every commit made through Claude until you restore or commit it yourself.
 Start a session with `TASK_MODE=tests` to edit those files. A gate that runs past its 300-second timeout lets the action go through.
 
 Known gaps in the guards:
