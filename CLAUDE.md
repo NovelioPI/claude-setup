@@ -111,9 +111,19 @@ The primary source is the code or the configuration that you modify. Memory,
 cache, and prior assumptions are not primary sources. Always read or grep the
 source to confirm before you propose changes.
 
+## Execution Rules
+
+- A test, spec, or threshold looks wrong: stop and report. Never edit a test,
+  special-case an input, or weaken an assertion to make it pass.
+- Keep a task diff under 300 changed lines. Split a larger one.
+- Ask before a new dependency, a public API change, or a schema change.
+- End each task with: what changed, why, and what you were unsure about.
+
 ## Process
 
-- Work is done: propose the commit. After the commit, offer `/reflect`.
+- Work is done: offer `/check-task`, then propose the commit. Typing
+  `/check-task` approves the reviewer subagent and the Critical and Major fixes
+  it lists. After the commit, offer `/reflect`.
 - The change is security-sensitive: run `security-review` before the merge.
 - A code change invalidates a doc: update the doc in the same turn as the code.
 - A test fails or is skipped: do not mark the task done without saying so.
