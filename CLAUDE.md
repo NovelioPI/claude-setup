@@ -105,6 +105,20 @@ show the plan and get approval. That is the required exit.
 This rule sets the channel, not the gate. "Discussion first" does not mean
 "approval is optional".
 
+## Workflow tiers
+
+- Tier 0: the change touches 3 files or fewer and fits one session.
+  Make no plan file and no task list.
+- Tier 1: the approach is unclear, or more than 3 files change. Ask me to
+  switch on plan mode. Keep the plan in chat.
+- Tier 2: the work spans several sessions or needs parallel subagents.
+  Propose /plan-feature and wait for a token.
+- Never create a plan file or a shared task list for single-session work.
+- On a feature, read only the spec section that your task names, plus Decisions.
+- The tier decides the planning files. Ownership levels decide my involvement.
+  A Tier 0 fix in Core still follows the Core rules.
+- The tier never skips the Approval Protocol. Tier 0 still needs a token.
+
 ## Verification
 
 The primary source is the code or the configuration that you modify. Memory,
