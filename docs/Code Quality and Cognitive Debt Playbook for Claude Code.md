@@ -522,10 +522,12 @@ Core (User decide; Claude write all code):
 - src/domain/, src/core/
 - I choose the approach before any task starts (in /plan-feature, or from
   2 options you give me first). If it does not fit, stop and ask me.
-- Tests session: ask me for the invariants in plain words and write
-  property tests from them.
-- Impl session: write all the code; do not edit tests. End with
-  /walkthrough; do not commit on GAPS.
+- Tests session (TASK_MODE=tests): ask me for the invariants in plain
+  words and write property tests from them. Write no source code.
+- Impl session (TASK_MODE empty or impl): write all the code; do not write
+  or edit tests. If the task has no tests yet, list the invariants it needs
+  and ask me to restart with TASK_MODE=tests first. End with /walkthrough;
+  do not commit on GAPS.
 Important (you write; I review every line):
 - src/pipelines/, src/integrations/, src/eval/
 - Always end the task with /walkthrough; do not commit on GAPS.
@@ -665,7 +667,7 @@ Verification checklist:
 - [ ] The metric gate fails on a deliberately degraded build or model
 - [ ] import-linter fails on a deliberately wrong-direction import
 - [x] /check-task finds a planted bug (e.g. a swallowed exception)
-- [ ] Ownership levels are in CLAUDE.md, and Claude offers 2 approaches before Core code
+- [x] Ownership levels are in CLAUDE.md, and Claude offers 2 approaches before Core code
 - [ ] /walkthrough asks for a prediction first and logs each result to .agent/understanding-gaps.md
 - [ ] Fix commits include a "Root cause:" line
 - [ ] `debt-report.sh` runs in a real project and shows the walkthrough log
