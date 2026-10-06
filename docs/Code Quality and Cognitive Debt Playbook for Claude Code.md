@@ -709,7 +709,7 @@ Verification checklist:
 - [ ] Mutation score on core modules is measured, and surviving mutants have become tests
 - [ ] The metric gate fails on a deliberately degraded build or model
 - [ ] import-linter fails on a deliberately wrong-direction import
-- [ ] /check-task finds a planted bug (e.g. a swallowed exception)
+- [x] /check-task finds a planted bug (e.g. a swallowed exception)
 - [ ] Ownership levels are in CLAUDE.md, and Claude leaves TODO(human) markers in Core
 - [ ] /walkthrough asks for a prediction first and logs GAPS to .agent/understanding-gaps.md
 - [ ] Fix commits include a "Root cause:" line
