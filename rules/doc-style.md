@@ -3,7 +3,7 @@
 ### Scope
 
 These rules cover a document a human reads: `README.md`, a file under
-`plans/`, and any doc file the user asks for.
+`docs/plans/`, and any doc file the user asks for.
 
 ### Shape
 

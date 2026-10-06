@@ -1,40 +1,39 @@
 ---
 name: brainstorming
-description: Widen a raw idea into a feature space, grounded tech facts, and a numbered list of open decisions, written to plans/. Use before a project starts, or when a request is one sentence and the work is not. The user closes the decisions it produces with AskUserQuestion.
+description: Widen a raw idea into a feature space, grounded tech facts, and a numbered list of open decisions, written to docs/plans/. Use before a project starts, or when a request is one sentence and the work is not. The user closes the decisions it produces with AskUserQuestion.
 ---
 
 # Brainstorm an idea
 
-Router: this skill widens. AskUserQuestion closes the decisions it finds, per
+This skill widens an idea. AskUserQuestion closes the decisions it finds, per
 the Tool Preferences section of CLAUDE.md.
 
 ## Classify first
 
 Say the path out loud before the first question, so the user can override it.
 
-| Path | Trigger | Output | Passes |
-|---|---|---|---|
-| `probe` | a feasibility question, where the answer is the deliverable | an answer in chat | none |
-| `bounded` | a change to a flow that already exists in this repo | a decision list in chat | Narrow |
-| `project` | a new project, a new subsystem, or a changed interface others depend on | a file in `plans/` | all three |
+| Path | Trigger | Output | Passes | Tier |
+|---|---|---|---|---|
+| `probe` | a feasibility question, where the answer is the deliverable | an answer in chat | none | 0 |
+| `bounded` | a change to a flow that already exists in this repo | a decision list in chat | Narrow | 1 |
+| `project` | a new project, a new subsystem, or a changed interface others depend on | a file in `docs/plans/` | all three | 3 |
 
 `bounded` measures the repo, not your familiarity. A flow you cannot open and
 read is not bounded.
 
-Take the heavier path when two fit. Hidden complexity found mid-run upgrades the
-path: say so and step up. The ratchet turns one way.
+Take the heavier path when two fit. If you find hidden complexity during the
+run, say so and move to the heavier path. Never move to a lighter path.
 
 ## Output
 
-The `project` path writes one file: `plans/brainstorm-<slug>.md`, following
-`rules/doc-style.md`.
+The `project` path writes one file: `docs/plans/brainstorm-<slug>.md`,
+following `rules/doc-style.md`.
 
-Write each pass into the file as you finish it. A brainstorm held only in the
-transcript dies at the next compaction, and the next skill in the chain reads
-the file, not your memory.
+Run the three passes in chat. Then show the slug and the full file, and wait
+for "Go" or "Execute". Write the file once, after the token.
 
-Show the slug and the three passes, then wait for "Go" or "Execute" before the
-first write.
+Risk: if the context compacts before the write, then the passes are lost.
+Offer `/handoff` when context pressure is high.
 
 `probe` and `bounded` stay in chat and write no file.
 
@@ -57,7 +56,8 @@ why this pass exists.
 A `refused` row carries its reason. The refusals are the pass's real output: a
 list that only grows has told you nothing.
 
-Done when every feature is marked, and at least one is `refused`.
+Done when every feature is marked. Expect at least one `refused` row, but do
+not invent one.
 
 ## Pass 2 — Ground
 
@@ -65,7 +65,7 @@ Turn each assumption the idea rests on into a checked fact.
 
 | Source | Reach it with |
 |---|---|
-| This repo | `grep` and a read of the file |
+| This repo | `grep` and a read of the file; the `explorer` agent for more than 3 files |
 | The environment | `package.json`, a config file, `--help` output |
 | An external contract | the owner's own documentation |
 
@@ -84,7 +84,7 @@ Write the decisions that block the work.
 
 | Column | Content |
 |---|---|
-| ID | `D1`, `D2`, counting up |
+| ID | `D<n>`, counting up from the highest ID in this conversation |
 | Decision | The choice, as a question |
 | Options | Two or more, each with what it costs |
 | Recommendation | Your pick, with the reason |
@@ -110,6 +110,9 @@ End with the file path, the count of open decisions, and this offer:
 
 On a token, close the pass 3 table with AskUserQuestion, up to four rows each
 round, in the table order.
+
+Next: add the milestones to `docs/roadmap.md`, then run `/plan-feature` for
+each feature of the first milestone.
 
 Risk: if a brainstorm ends without a decision table, then nothing is left to
 close and the work has no plan.
