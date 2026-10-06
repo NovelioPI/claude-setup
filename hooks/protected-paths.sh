@@ -1,6 +1,6 @@
 #!/bin/bash
-# Sourced by protect-signal.sh and commit-gate.sh. Matches a path against the
-# globs in <project>/.claude/protected-paths.
+# Sourced by protect-signal.sh, commit-gate.sh, post-edit.sh, and stop-gate.sh.
+# Matches a path against <project>/.claude/protected-paths, and finds a trusted project adapter.
 
 # Prints an absolute path with `.`, `..`, and repeated slashes removed.
 normalize() {
@@ -21,6 +21,8 @@ normalize() {
 # Prints the patterns of project $1, one per line, without comments or blank lines.
 protected_patterns() {
   local list="$1/.claude/protected-paths" pattern
+  # Reason: the project adapter decides what the gates check, so it is always protected.
+  echo .claude/quality.sh
   [ -f "$list" ] || return 0
   while IFS= read -r pattern || [ -n "$pattern" ]; do
     # Reason: a list saved on Windows ends each line with \r, which no path matches.
@@ -38,6 +40,18 @@ is_protected() {
     case "$2" in $pattern) return 0 ;; esac
   done < <(protected_patterns "$1")
   return 1
+}
+
+# Prints the adapter of project $1 when it is executable and its content equals HEAD.
+# Reason: a shell write skips protect-signal.sh, so an untracked or edited adapter is not trusted.
+# Reason: `git diff` skips assume-unchanged files, so the content hashes are compared.
+project_adapter() {
+  local committed current
+  [ -x "$1/.claude/quality.sh" ] || return 1
+  committed=$(git -C "$1" rev-parse -q --verify HEAD:./.claude/quality.sh 2>/dev/null) || return 1
+  current=$(git -C "$1" hash-object -- .claude/quality.sh 2>/dev/null) || return 1
+  [ "$committed" = "$current" ] || return 1
+  echo "$1/.claude/quality.sh"
 }
 
 # Succeeds when new path $2 equals a pattern with no wildcard.

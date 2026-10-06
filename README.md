@@ -70,12 +70,12 @@ so take it without asking.
 | `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
 | `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
-| `hooks/post-edit.sh` | `PostToolUse` check: lint by language, format only when the project has a formatter config, plus Python complexity, nesting depth, parameter count, and silent errors |
+| `hooks/post-edit.sh` | `PostToolUse` check: formats and lints the edited file through the language adapter |
 | `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files listed in a project's `.claude/protected-paths` |
 | `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, then runs the stop gate |
 | `hooks/protected-paths.sh` | Shared path check for the two guards above |
 | `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` and `reviewer` agents: allows read-only Bash commands |
-| `hooks/stop-gate.sh` | `Stop` check: type-checks changed files and runs `tests/unit`; blocks a turn once, and a commit every time |
+| `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; blocks a turn once, and a commit every time |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/pre-compact.sh` | `PreCompact` hook: saves git state and the transcript to `.agent/` |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
@@ -86,9 +86,16 @@ so take it without asking.
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `agents/reviewer.md` | Read-only subagent that reviews a diff and returns ranked findings |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
+| `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python complexity, nesting, parameter count, and silent errors; type-checks and runs `tests/unit` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `LICENSE` | MIT |
+
+An executable `.claude/quality.sh` in a project replaces `scripts/quality.sh` for that project.
+The hooks use it only when git tracks it and it is unchanged from HEAD.
+It must give all three subcommands: `format <file>`, `lint <file>`, and `check <files...>`.
+Both guards always protect it, so Claude cannot edit or commit it outside `TASK_MODE=tests`.
+A committed adapter in a cloned repo runs on every edit with no prompt.
 
 `.claude/protected-paths` in a project holds one glob per line, relative to the project, where `*` also matches `/`.
 A line with no wildcard, such as `tests/conftest.py`, also blocks creating that file.
@@ -99,7 +106,7 @@ Known gaps in the guards:
 - `commit-gate.sh` matches commit commands by pattern. Forms such as `{ git commit; }`, `timeout 60 git commit`, a git alias, `merge`, and `rebase` get past it.
 - Both guards check the project in `CLAUDE_PROJECT_DIR`, not a repo named by `git -C` or `cd`.
 - On a case-insensitive drive such as `/mnt/c`, a path with different letter case gets past `protect-signal.sh`.
-- `post-edit.sh` runs `ruff check --fix` and `ktlint -F` even with no project config.
+- `scripts/quality.sh` runs `ruff check --fix` and `ktlint -F` even with no project config.
 
 Claude Code auto-loads every file under `rules/` into every session and every
 subagent, with no import line needed. `guides/` is the opposite: nothing loads
