@@ -90,6 +90,7 @@ so take it without asking.
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/debt-report.sh` | Print the Step 11 cognitive debt numbers: fix commits without a root cause, walkthrough results |
+| `scripts/shell.zsh` | Shell launchers: `cct` starts a `TASK_MODE=tests` session; `ccf <feature> [mode]` adds a shared task list |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `LICENSE` | MIT |
