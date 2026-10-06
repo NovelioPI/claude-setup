@@ -84,6 +84,7 @@ so take it without asking.
 | `commands/check-task.md` | `/check-task`: reviews the diff, fixes Critical and Major findings, reports the rest |
 | `commands/walkthrough.md` | `/walkthrough`: checks that I understand a change before the commit; logs PASS or GAPS |
 | `commands/plan-feature.md` | `/plan-feature`: drafts a spec and a task graph, writes after a token |
+| `commands/next-task.md` | `/next-task`: picks the next task for the session mode; asks for a token before the work and before the commit |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `agents/reviewer.md` | Read-only subagent that reviews a diff and returns ranked findings |
