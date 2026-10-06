@@ -618,48 +618,15 @@ No tool measures understanding directly, so track a few proxies monthly and watc
 | Indicator | How to get it | Warning sign |
 | --- | --- | --- |
 | Explain-without-opening | Pick a Core module; describe its flow and invariants from memory, then check | You can't name its invariants |
-| Unowned hotspots | `scripts/unowned_hotspots.py` (below) | Core or Important files on the list |
-| Fix-without-diagnosis | `fix:` commits lacking a "Root cause:" line | Rising share |
+| Fix-without-diagnosis | `Fix` commits lacking a "Root cause:" line | Rising share |
 | Walkthrough pass rate | PASS vs GAPS entries in .agent/understanding-gaps.md | Falling, or the same gaps recurring |
 | Time to diagnose | Rough hours from a Core bug report to the root cause | Rising over months |
 
-`scripts/unowned_hotspots.py` lists files changed in agent co-authored commits but never in a commit without that trailer. Claude Code adds a Co-Authored-By trailer by default; if you remove it, this script cannot tell the difference.
+`scripts/debt-report.sh` prints the three automatic numbers for the current repo: `Fix` commits with and without a "Root cause:" line, the walkthrough PASS and GAPS counts, and the gap topics that come back. Run it from the project root; the optional argument sets the time window (default "30 days ago").
 
-```python
-# usage: python scripts/unowned_hotspots.py ["90 days ago"]
-import collections, subprocess, sys
+It counts a commit as a fix only when its subject starts with `Fix`. A bug fix under another verb is not counted.
 
-since = sys.argv[1] if len(sys.argv) > 1 else "90 days ago"
-log = subprocess.run(
-    ["git", "log", f"--since={since}", "--name-only", "--format=\x01%B\x02"],
-    capture_output=True, text=True, check=True).stdout
-
-agent, human = collections.Counter(), set()
-for entry in log.split("\x01")[1:]:
-    msg, _, files = entry.partition("\x02")
-    by_agent = "co-authored-by: claude" in msg.lower()
-    for f in (line.strip() for line in files.splitlines()):
-        if not f:
-            continue
-        if by_agent:
-            agent[f] += 1
-        else:
-            human.add(f)
-
-for f, n in agent.most_common():
-    if f not in human:
-        print(f"{n:4d}  {f}")
-```
-
-Count fix-without-diagnosis with git:
-
-```bash
-fixes=$(git log --since="30 days ago" --oneline --grep='^fix' | wc -l)
-diagnosed=$(git log --since="30 days ago" --oneline --grep='^fix' --grep='Root cause:' --all-match | wc -l)
-echo "fix commits: $fixes, with root cause: $diagnosed"
-```
-
-A file on the hotspot list is not automatically a problem: Plumbing is supposed to be delegated. Act on Core and Important files, through the repayment routine in Step 12.
+This setup has no unowned-hotspot list. Claude writes all code, Core included, so every file would be on it and the list would say nothing.
 
 ## Step 12: Scheduled repayment
 
@@ -670,7 +637,7 @@ Cognitive debt is repaid through deliberate practice: rebuilding understanding b
 | Weekly | Theory session: sketch one Core or Important module from memory (flow, invariants, failure modes), then compare with the code and note the gaps | \~30 min |
 | Weekly | Work through .agent/understanding-gaps.md; ask Claude conceptual questions about each, without editing | \~20 min |
 | Monthly | One unaided task: fix a small Core bug or add a small feature without the agent | 1–2 h |
-| Monthly | Review the hotspot and fix-without-diagnosis numbers from Step 11 | 15 min |
+| Monthly | Run `scripts/debt-report.sh` and review the numbers from Step 11 | 15 min |
 | Per milestone | Refresh the architecture doc and ownership map; collapse finished specs into decision records in docs/decisions/ | \~1 h |
 
 Theory-session prompt, to use after sketching from memory:
@@ -708,4 +675,4 @@ Verification checklist:
 - [ ] Ownership levels are in CLAUDE.md, and Claude offers 2 approaches before Core code
 - [ ] /walkthrough asks for a prediction first and logs each result to .agent/understanding-gaps.md
 - [ ] Fix commits include a "Root cause:" line
-- [ ] The first monthly debt review (hotspots, fix-without-diagnosis) is done
+- [ ] The first monthly debt review (`debt-report.sh`) is done
