@@ -550,15 +550,16 @@ Add to the root CLAUDE.md:
 ```markdown
 ## Working with me
 - When I ask why or how, explain first. Do not edit until I ask.
-- Before a non-trivial change in Core or Important code, give 2 alternatives
-  with trade-offs in <=5 lines and let me choose.
-- When you write non-obvious code, add a one-line comment on WHY, not what.
+- Before a hard change in Important code, give 2 alternatives with
+  trade-offs in <=5 lines and let me choose. Core follows Ownership levels.
 ```
+
+In this setup, the global CLAUDE.md approval protocol already covers this block, so a project needs no copy. The comment rules in `rules/code-quality.md` replace a general WHY-comment rule: a comment marks only a hidden constraint, an invariant or a workaround.
 
 Personal habits that make the difference:
 
 - Ask "why this approach?" after Claude proposes one, even when it looks right.
-- When learning an unfamiliar library or area, ask conceptual questions and write the first version yourself.
+- When learning an unfamiliar library outside the project, ask conceptual questions and write the first version yourself. Inside the project, Core code stays with Claude.
 
 ## Step 9: Hypothesis-first debugging
 
