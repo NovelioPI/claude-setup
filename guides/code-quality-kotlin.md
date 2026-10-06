@@ -176,6 +176,11 @@ signatures.
 Write `0..<n`, not `0..n - 1`.
 Build a string with a template, not with `+`.
 
+### Tests
+
+Write property tests with Kotest property testing.
+Run mutation testing with PIT, on one core module at a time.
+
 ### Linting
 
 Run `ktlint` and `detekt`. They enforce the formatting and the complexity

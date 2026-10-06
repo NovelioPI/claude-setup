@@ -214,6 +214,11 @@ Return an empty array rather than a null pointer.
 Detect and handle an error that a standard library function reports.
 Do not call a deprecated or an obsolescent library function.
 
+### Tests
+
+Write property tests with RapidCheck.
+Run mutation testing with Mull, on one core module at a time.
+
 ### Linting
 
 Run these three commands. They enforce the mechanics this file does not

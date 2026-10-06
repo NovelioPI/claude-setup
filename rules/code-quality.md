@@ -96,6 +96,8 @@ Risk: if a check is an assertion, then an optimized build strips it and
 the check disappears without a message.
 Reserve an assertion for an internal invariant, never for external input.
 Report a failure with an exception, not with a returned error code.
+Do not swallow an error: no bare `except`, no empty `catch`, no default value
+that hides a failure.
 
 ### Logging
 
@@ -189,6 +191,12 @@ Write a test at a behavior boundary: one test per observable behavior.
 Skip a test for a trivial function with no branch and no edge case.
 A bug fix ships together with a regression test that reproduces the
 bug first.
+Write a property test for a function with a stated invariant: a bound, an
+ordering, or a round trip. A hardcoded output cannot satisfy it.
+Run mutation testing per feature on a core module, never in a hook.
+Treat each surviving mutant as a missing test. Aim for about 70% killed.
+Fix every random seed, so a changed result means changed code.
+Keep held-out tests in `tests/holdout/`. Do not read them.
 
 ### File and folder size
 

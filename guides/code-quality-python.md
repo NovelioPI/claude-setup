@@ -119,6 +119,11 @@ Do not add `__slots__` unless the program creates very many instances.
 Use `@dataclass(slots=True)` instead of a hand-written `__slots__`.
 Apply `functools.wraps` in every decorator you write.
 
+### Tests
+
+Write property tests with `hypothesis`.
+Run mutation testing with `mutmut`, on one core module at a time.
+
 ### Linting
 
 Run `ruff`. It enforces the PEP 8 mechanics this file does not repeat.

@@ -153,6 +153,11 @@ value.
 Bind a method or wrap it in an arrow function before you pass it as a
 callback.
 
+### Tests
+
+Write property tests with `fast-check`.
+Run mutation testing with Stryker, on one core module at a time.
+
 ### Linting
 
 Run `npx tsc --noEmit`, `npx eslint .`, and `npx prettier --check .`.

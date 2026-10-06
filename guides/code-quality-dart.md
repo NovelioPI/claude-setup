@@ -140,6 +140,11 @@ Leave `operator ==` off a widget class.
 Risk: if a widget defines `==`, then the element walk costs O(n squared).
 Build a string with a `StringBuffer` inside a loop.
 
+### Tests
+
+Write property tests with `glados`.
+Dart has no standard mutation tool, so review each core test by hand.
+
 ### Linting
 
 Run `dart analyze` and `dart format`. Turn on `flutter_lints` in
