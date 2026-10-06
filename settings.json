@@ -4,6 +4,9 @@
     "pr": ""
   },
   "permissions": {
+    "deny": [
+      "Read(./tests/holdout/**)"
+    ],
     "ask": [
       "Bash(git stash*)",
       "Bash(git clean*)",
@@ -30,7 +33,21 @@
           },
           {
             "type": "command",
+            "command": "bash ~/.claude/hooks/commit-gate.sh",
+            "timeout": 300
+          },
+          {
+            "type": "command",
             "command": "command -v rtk >/dev/null 2>&1 && rtk hook claude || true"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/protect-signal.sh"
           }
         ]
       }
@@ -47,11 +64,11 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit",
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/check-complexity.sh"
+            "command": "bash ~/.claude/hooks/post-edit.sh"
           }
         ]
       }
@@ -74,6 +91,17 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/stop-gate.sh",
+            "timeout": 300
           }
         ]
       }

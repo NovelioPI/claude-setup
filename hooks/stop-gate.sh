@@ -9,14 +9,14 @@ input=$(cat)
 
 cd "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
 git rev-parse --git-dir >/dev/null 2>&1 || exit 0
-# Reason: /handoff runs with red tests, so its skip file lets one turn end.
-if [ -f .agent/.skip-gate ]; then
+# Reason: /handoff runs with red tests, so its skip file lets one turn end, never a commit.
+if [ "${GATE_CONTEXT:-stop}" != commit ] && [ -f .agent/.skip-gate ]; then
   rm -f .agent/.skip-gate
   exit 0
 fi
 
 changed() {
-  git diff --name-only --diff-filter=d HEAD -- "$@" 2>/dev/null
+  git diff --relative --name-only --diff-filter=d HEAD -- "$@" 2>/dev/null
   git ls-files --others --exclude-standard -- "$@"
 }
 
@@ -59,5 +59,5 @@ fi
 
 [ -z "$out" ] && exit 0
 
-printf 'Quality gate failed. Fix before finishing; do not edit tests to pass.\n%s\n' "$out" >&2
+printf 'Quality gate failed. Report this failure; fix it only inside an approved plan. Do not edit tests to pass.\n%s\n' "$out" >&2
 exit 2

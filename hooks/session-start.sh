@@ -5,6 +5,7 @@
 INPUT=$(cat)
 cd "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
 [ -d .agent ] || exit 0
+rm -f .agent/.skip-gate
 
 # Reason: an uncapped print refills the context that /clear just freed.
 echo "=== Restored working state ==="

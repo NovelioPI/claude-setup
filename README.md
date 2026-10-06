@@ -70,19 +70,36 @@ so take it without asking.
 | `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
 | `output-styles/technical-style.md` | Older ASD-STE100 style, kept as a fallback |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
-| `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` agent only: allows read-only Bash commands |
-| `hooks/check-complexity.sh` | `PostToolUse` check: cognitive complexity and nesting depth on Python |
+| `hooks/post-edit.sh` | `PostToolUse` check: lint by language, format only when the project has a formatter config, plus Python complexity, nesting depth, parameter count, and silent errors |
+| `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files listed in a project's `.claude/protected-paths` |
+| `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, then runs the stop gate |
+| `hooks/protected-paths.sh` | Shared path check for the two guards above |
+| `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` and `reviewer` agents: allows read-only Bash commands |
+| `hooks/stop-gate.sh` | `Stop` check: type-checks changed files and runs `tests/unit`; blocks a turn once, and a commit every time |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/pre-compact.sh` | `PreCompact` hook: saves git state and the transcript to `.agent/` |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
 | `commands/reflect.md` | `/reflect`: proposes lessons for `.agent/lessons.md` |
+| `commands/check-task.md` | `/check-task`: reviews the diff, fixes Critical and Major findings, reports the rest |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
+| `agents/reviewer.md` | Read-only subagent that reviews a diff and returns ranked findings |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `LICENSE` | MIT |
+
+`.claude/protected-paths` in a project holds one glob per line, relative to the project, where `*` also matches `/`.
+A line with no wildcard, such as `tests/conftest.py`, also blocks creating that file.
+Start a session with `TASK_MODE=tests` to edit those files. A gate that runs past its 300-second timeout lets the action go through.
+
+Known gaps in the guards:
+
+- `commit-gate.sh` matches commit commands by pattern. Forms such as `{ git commit; }`, `timeout 60 git commit`, a git alias, `merge`, and `rebase` get past it.
+- Both guards check the project in `CLAUDE_PROJECT_DIR`, not a repo named by `git -C` or `cd`.
+- On a case-insensitive drive such as `/mnt/c`, a path with different letter case gets past `protect-signal.sh`.
+- `post-edit.sh` runs `ruff check --fix` and `ktlint -F` even with no project config.
 
 Claude Code auto-loads every file under `rules/` into every session and every
 subagent, with no import line needed. `guides/` is the opposite: nothing loads
@@ -120,7 +137,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 | `git` | the clone | no, needs sudo |
 | `jq` | the hooks and the status line | no, needs sudo |
 | `node`, `npm` | `npx skills` | no |
-| `uv` | `check-complexity.sh`, which runs `complexipy` and `ruff` through `uvx` | yes |
+| `uv` | `post-edit.sh`, which runs `ruff` and `complexipy` through `uvx` | yes |
 | `rtk` | the `PreToolUse` hook in `settings.json` that shortens Bash output | yes, by brew or a checked GitHub release |
 | `pyright`, `typescript-language-server`, `gopls` | the LSP plugins in `enabledPlugins`, which give the `LSP` tool to `explorer` | with `--lsp`; Go itself too, if missing |
 | `clangd`, `kotlin-lsp`, `dart` | the C/C++, Kotlin, and Dart LSP plugins; Dart uses `lsp-plugins/`, a local marketplace | with `--lsp`: clangd on Linux and macOS, kotlin-lsp on Linux; `dart` comes with Flutter |

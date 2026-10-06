@@ -1,9 +1,9 @@
 #!/bin/bash
-# PreToolUse hook for the explorer agent: allow only read-only Bash commands.
+# PreToolUse hook for read-only agents (explorer, reviewer): allow only read-only Bash commands.
 # Exit 2 blocks the call. A command not on the allowlist is blocked.
 
 block() {
-  echo "explorer is read-only: $1" >&2
+  echo "this agent is read-only: $1" >&2
   exit 2
 }
 
@@ -21,6 +21,8 @@ IFS='|' read -ra stages <<< "$cmd"
 for stage in "${stages[@]}"; do
   read -ra words <<< "$stage"
   [ "${#words[@]}" -gt 0 ] || block "empty pipe stage"
+  # Reason: a full path to the system git skips the RTK rewrite, which hides detail.
+  case "${words[0]}" in /usr/bin/git | /bin/git | /usr/local/bin/git | /opt/homebrew/bin/git) words[0]=git ;; esac
   # Reason: bash removes quotes and backslashes before it runs, so check the text without them.
   plain=" ${stage//[\'\"\\]/} "
   case "${words[0]}" in
