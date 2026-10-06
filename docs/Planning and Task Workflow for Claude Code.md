@@ -39,25 +39,28 @@ Built-in Tasks (Claude Code v2.1.16 and later) replace todo.md for tracking. The
 
 Four pieces: a tier rule in CLAUDE.md, a way to launch sessions on a shared task list, and two commands.
 
-1. Add the workflow block to the root CLAUDE.md:
+1. Add the workflow block to CLAUDE.md (global `~/.claude/CLAUDE.md` in this setup):
 
 ```markdown
 ## Workflow tiers
-- Default: just implement. No plan, no task list, for changes touching <=3 files
-  that fit in one session.
-- Approach unclear or >3 files: use plan mode first; keep the plan in chat.
-- Spans multiple sessions: suggest /plan-feature and wait for my OK.
-  Never create plan files or shared task lists for single-session work.
-- When working on a feature, read only the spec section your task references,
-  never the whole spec.
-- Tier decides planning artifacts; ownership level (Ownership levels block)
-  decides my involvement. A Tier 0 fix in Core still follows the Core rules.
+
+- Tier 0: the change touches 3 files or fewer and fits one session.
+  Make no plan file and no task list.
+- Tier 1: the approach is unclear, or more than 3 files change. Ask me to
+  switch on plan mode. Keep the plan in chat.
+- Tier 2: the work spans several sessions or needs parallel subagents.
+  Propose /plan-feature and wait for a token.
+- Never create a plan file or a shared task list for single-session work.
+- On a feature, read only the spec section that your task names, plus Decisions.
+- The tier decides the planning files. Ownership levels decide my involvement.
+  A Tier 0 fix in Core still follows the Core rules.
+- The tier never skips the Approval Protocol. Tier 0 still needs a token.
 ```
 
-2. Add a launcher so every session on a feature shares its task list. In `~/.bashrc` or `~/.zshrc`:
+2. Add a launcher so every session on a feature shares its task list. In `scripts/shell.zsh`, sourced from `~/.zshrc`:
 
 ```bash
-# usage: ccf <feature> [mode]   modes: impl (default), tests
+# usage: ccf <feature> [mode]   modes: impl (default), tests, baseline
 ccf() {
   local id="$1" mode="${2:-impl}"
   if [ -n "$id" ]; then
@@ -65,6 +68,11 @@ ccf() {
   else
     TASK_MODE="$mode" claude
   fi
+}
+
+# usage: cct [claude arguments]   starts a tests session
+cct() {
+  TASK_MODE=tests claude "$@"
 }
 ```
 
@@ -83,18 +91,25 @@ argument-hint: <feature-name> <one-line goal>
 Feature: $ARGUMENTS
 
 1. Use the explorer subagent to map the relevant code. Do not read files yourself.
-2. Interview me: ask about edge cases, constraints and acceptance criteria
-   until the approach is unambiguous. One question at a time. For Core work,
-   give 2 approaches with trade-offs and record my choice under Decisions.
-3. Write docs/plans/<feature-name>.md using the template in that folder.
-   Max ~2 pages. One "### T<n>" section per task, with its ownership level.
-4. Create Tasks with dependencies. Each task: one session, one commit, title
-   starts with its id and [mode], description names its spec section and check.
-   - Core or Important work: two tasks. "T<n>-test [tests]" writes the acceptance
-     tests; "T<n>-impl [impl]" depends on it. For Core, T<n>-test asks me for
-     the invariants in plain words and writes property tests from them.
+2. Interview me about edge cases, constraints and acceptance criteria, until
+   the approach has one meaning. Ask one question at a time. For Core work,
+   give 2 approaches with tradeoffs, and record my choice under Decisions.
+3. Draft docs/plans/<feature-name>.md from the template below. Cap it at about
+   120 lines. Give each task its own "### T<n>" section with its ownership level.
+4. Draft the Tasks with dependencies. Each task is one session and one commit.
+   Its title starts with its id and [mode]. Its description names its spec
+   section and its check.
+   - Core or Important work: two tasks. "T<n>-test [tests]" writes the
+     acceptance tests. "T<n>-impl [impl]" depends on it. For Core, T<n>-test
+     asks me for the invariants in plain words and writes property tests.
    - Plumbing: one "T<n> [impl]" task, checked by existing tests or a command.
-5. Stop. Tell me to /clear and start each task with: ccf <feature-name> <mode>
+5. Show the spec and the task list. In plan mode, show them with ExitPlanMode.
+   Wait for a token, then write the spec and create the Tasks.
+6. Stop. Tell me to /clear and start each task with: ccf <feature-name> <mode>
+
+Template:
+
+(the spec template below)
 ```
 
 4. Create `.claude/commands/next-task.md`:
@@ -104,22 +119,24 @@ Feature: $ARGUMENTS
 description: Pick up and finish the next unblocked task for this session's mode
 ---
 
-1. Read .agent/progress.md. List the open Tasks. Check the mode: echo $TASK_MODE
-   (empty means impl).
+1. Read .agent/progress.md. List the open Tasks. Check the mode with
+   `echo $TASK_MODE`. An empty value means impl.
 2. Pick the first unblocked task whose [mode] matches. If none matches, tell me
-   which mode to restart in and stop. Mark it in progress.
-3. Read ONLY its section of the spec in docs/plans/ plus the Decisions section.
-4. Do the task. Use subagents for exploration and log analysis.
+   which mode to restart in, and stop.
+3. Find the spec in docs/plans/. Get its heading lines with `grep -n '^##'`.
+   Read only the task's section and the Decisions section.
+4. Show the plan for the task and wait for a token. Then mark it in progress.
+5. Do the task. Use the explorer subagent for exploration and log analysis.
    [tests]: write the acceptance tests. Core [impl]: follow the approach
-   under Decisions; if it does not fit, stop and ask me.
-5. Run its check. [tests]: the new tests run and fail for the expected reason.
-   Otherwise: the check passes. If not, fix or stop and report; never edit
-   tests to make it pass. Do not mark it done.
-6. Run /check-task and fix Critical and Major findings.
-7. Important or Core code: run /walkthrough and wait for PASS before committing.
-8. Commit, mark the task done, then run /handoff.
-9. If the approach had to change, append a dated line to the spec's
-   Decisions section instead of rewriting the spec.
+   under Decisions. If it does not fit, stop and ask me.
+6. Run its check. [tests]: the new tests run and fail for the expected reason.
+   Other modes: the check passes. If it fails, fix the code or stop and report.
+   Never edit a test to make it pass.
+7. Run /check-task and fix the Critical and Major findings.
+8. Important or Core code: run /walkthrough and wait for PASS.
+9. If the approach had to change, append a dated line to the spec's Decisions
+   section. Do not rewrite the spec. Propose the commit, including that line,
+   and wait for a token. Then commit, mark the task done, and run /handoff.
 ```
 
 ## Running a Tier 2 feature
@@ -136,7 +153,7 @@ Plan in one session, execute each task in its own fresh session, and close the f
 **Execution sessions (repeat per task)**
 
 1. `ccf export-csv <mode>` with the mode in the task title, then `/next-task`.
-2. Plumbing tasks can run unattended. Important tasks pause for `/walkthrough`, and Core tasks pause for your choice of approach and for `/walkthrough`. Each task commits, marks itself done and writes progress.md via `/handoff`.
+2. Each task asks for a token before the work and before the commit. Important tasks also pause for `/walkthrough`, and Core tasks pause for your choice of approach and for `/walkthrough`. Each task commits, marks itself done and writes progress.md via `/handoff`.
 3. `/clear` (or exit) and repeat. Run independent tasks in parallel only in separate git worktrees on the same list; in a shared checkout the Stop gate would see the other session's changes.
 
 **When reality diverges from the plan**
@@ -155,7 +172,7 @@ Plan in one session, execute each task in its own fresh session, and close the f
 
 A spec is a contract for executors, not a design essay: cap it at \~2 pages and give every task its own section so each session reads only what it needs.
 
-Save as `docs/plans/_template.md`:
+`/plan-feature` holds this template inline (`commands/plan-feature.md`):
 
 ```markdown
 # <Feature name>
