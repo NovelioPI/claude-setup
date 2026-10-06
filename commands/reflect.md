@@ -11,6 +11,8 @@ Rules:
   "When <situation>, do <action> because <reason>."
 - Only lessons likely to recur in future tasks. No task-specific status.
 - Project technical lessons only. My working preferences go to auto memory.
+- If the file has more than 30 bullets, first propose merges and deletions,
+  then new bullets.
 - Check existing bullets first. If a lesson refines one, propose an edit
   to that bullet instead of a new one.
 - Never rewrite or reorder the file.

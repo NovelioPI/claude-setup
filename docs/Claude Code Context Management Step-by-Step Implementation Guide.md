@@ -326,11 +326,11 @@ The decision at each breakpoint:
 
 After a task, especially a failed or slow one, distill reusable lessons as small delta bullets into an append-only playbook. This follows the ACE pattern (generator, reflector, curator) and avoids the "context collapse" that comes from repeatedly rewriting one summary.
 
-1. Create `.agent/lessons.md` with sections such as Gotchas, Commands, Patterns that work.
+1. Create `.agent/lessons.md` with sections such as Traps, Commands, Patterns that work.
 2. Import it from the root CLAUDE.md with `@.agent/lessons.md` once it proves useful. Until then, keep it out of context.
 3. Add the `/reflect` command below and run it after each task.
 4. Review proposed bullets before accepting. You are the curator, which keeps wrong lessons out.
-5. Prune monthly: merge duplicates, delete bullets that never helped, move mature ones into CLAUDE.md or a Skill.
+5. Prune when `/reflect` reports more than 30 bullets: merge duplicates, delete bullets that never helped, move mature ones into CLAUDE.md or a Skill.
 
 Command `.claude/commands/reflect.md`:
 
@@ -345,6 +345,8 @@ Rules:
 - Each bullet is one line, specific and actionable:
   "When <situation>, do <action> because <reason>."
 - Only lessons likely to recur in future tasks. No task-specific status.
+- If the file has more than 30 bullets, first propose merges and deletions,
+  then new bullets.
 - Check existing bullets first. If a lesson refines one, propose an edit
   to that bullet instead of a new one.
 - Never rewrite or reorder the file.
