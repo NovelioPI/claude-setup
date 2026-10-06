@@ -20,7 +20,9 @@ if [ "${GATE_CONTEXT:-stop}" != commit ] && [ -f .agent/.skip-gate ]; then
   exit 0
 fi
 
-mapfile -t changed < <(
+# Reason: macOS ships bash 3.2, which has no mapfile, so arrays fill through read loops.
+changed=()
+while IFS= read -r file; do changed+=("$file"); done < <(
   git diff --relative --name-only --diff-filter=d HEAD 2>/dev/null
   git ls-files --others --exclude-standard
 )
@@ -52,7 +54,7 @@ worktree_tree() {
 state="$(git rev-parse --git-dir)/claude-stop-gate"
 fingerprint=""
 tree=$(worktree_tree) &&
-  fingerprint=$(printf '%s\n' "$PWD" "$tree" "$(git hash-object -- "${adapter[-1]}" "$self")" |
+  fingerprint=$(printf '%s\n' "$PWD" "$tree" "$(git hash-object -- "${adapter[${#adapter[@]}-1]}" "$self")" |
                 git hash-object --stdin)
 saved_fingerprint=""
 saved_status=""
@@ -81,8 +83,10 @@ count_in_head() { git show "HEAD:./$1" 2>/dev/null | count_suppressions; }
 # Reason: a moved file is deleted at one path and new at another, so only totals stay equal.
 suppression_ratchet() {
   local file before=0 after=0
-  local -a deleted
-  mapfile -t deleted < <(git diff --relative --name-only --no-renames --diff-filter=D HEAD 2>/dev/null)
+  local -a deleted=()
+  while IFS= read -r file; do deleted+=("$file"); done < <(
+    git diff --relative --name-only --no-renames --diff-filter=D HEAD 2>/dev/null
+  )
   for file in "$@"; do
     is_source "$file" && [ -r "$file" ] && [ ! -L "$file" ] || continue
     after=$((after + $(count_suppressions < "$file")))
