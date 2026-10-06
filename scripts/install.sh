@@ -67,10 +67,12 @@ for t in gh rg; do
   have "$t" && say "$t" "present" || say "$t" "absent (optional)"
 done
 
-if have node && have npm; then
+NODE_MIN_MAJOR=20
+node_major=$(node -v 2>/dev/null | sed 's/^v//; s/\..*//')
+if have npm && [ "${node_major:-0}" -ge "$NODE_MIN_MAJOR" ] 2>/dev/null; then
   say "node/npm" "present  $(node -v) / npm $(npm -v)"
 else
-  block "node/npm" "install Node 20 or newer, then re-run"
+  block "node/npm" "install Node $NODE_MIN_MAJOR or newer, then re-run"
 fi
 
 if have uvx; then
