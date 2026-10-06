@@ -565,7 +565,7 @@ Personal habits that make the difference:
 
 Debugging showed the largest skill gap in the study, and handing every failure back to the agent is how the false-correction loop starts. In Core and Important code, form your own hypothesis before the agent investigates.
 
-Add to the nested `CLAUDE.md` in each Core and Important directory, not the root, so it loads only where it applies:
+Add to the root CLAUDE.md, not a nested file. Debugging often starts from a failing test in `tests/`, where a nested Core `CLAUDE.md` does not load. This setup keeps the rule in the global CLAUDE.md, and the "Root cause" line in `rules/commit-style.md`:
 
 ```markdown
 ## Debugging protocol (Core and Important code)

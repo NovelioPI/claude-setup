@@ -127,6 +127,9 @@ source to confirm before you propose changes.
 - The change is security-sensitive: run `security-review` before the merge.
 - A code change invalidates a doc: update the doc in the same turn as the code.
 - A test fails or is skipped: do not mark the task done without saying so.
+- A bug in Core or Important code (per the project's Ownership levels): ask
+  the user for a hypothesis first and wait. Then report whether it was right,
+  with file:line evidence.
 - Context pressure is high: offer `/handoff`. Typing `/handoff` approves the
   writes it lists.
 

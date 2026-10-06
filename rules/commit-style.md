@@ -26,6 +26,11 @@ land a change.
 
 Keep the exact technical word. The long-word table does not apply here.
 
+### Bug fixes
+
+A bug-fix commit always has a body, even when the subject says enough.
+Its first bullet is `- Root cause: <one sentence>`.
+
 ### Trailers
 
 Put a trailer last, after one blank line.
