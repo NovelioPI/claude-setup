@@ -153,11 +153,7 @@ q=.claude/quality.sh
 changed=$( { git diff --name-only HEAD; git ls-files --others --exclude-standard; } |
            while read -r f; do [ -f "$f" ] && "$q" is-source "$f" && echo "$f"; done )
 [ -z "$changed" ] && exit 0          # conversational turn: nothing to check
-if [ "${TASK_MODE:-impl}" = "pair" ]; then   # Core pairing: TODO(human) stubs allowed
-  out=$("$q" typecheck $changed 2>&1 | tail -40)
-else
-  out=$( { "$q" typecheck $changed && "$q" test-fast $changed; } 2>&1 | tail -40 )
-fi
+out=$( { "$q" typecheck $changed && "$q" test-fast $changed; } 2>&1 | tail -40 )
 if [ $? -ne 0 ]; then
   printf 'Quality gate failed. Fix before finishing (do not edit tests):\n%s\n' "$out" >&2
   exit 2
@@ -172,7 +168,7 @@ Design notes:
 - The gate only sees uncommitted changes. If Claude commits within the turn, the pre-commit hooks from Step 5 cover it.
 - If the fast suite takes more than \~30 seconds, narrow `test-fast` in quality.sh to tests affected by the change (for example `pytest --testmon`, `vitest --changed`, `go test` on changed packages, `cargo test -p <crate>`) and leave the full suite to CI.
 
-Two deliberate escape hatches. `/handoff` creates `.agent/.skip-gate` so a mid-task handoff is not blocked by red tests, and `session-start.sh` deletes it. `TASK_MODE=pair` checks types only, so Core pairing sessions can leave stubs for you to write (modes are listed in Step 3).
+One deliberate escape hatch. `/handoff` creates `.agent/.skip-gate` so a mid-task handoff is not blocked by red tests, and `session-start.sh` deletes it.
 
 Run parallel sessions only in separate git worktrees. In a shared checkout, the gate would see and fail on the other session's changes.
 
@@ -228,7 +224,6 @@ Session modes used across all three docs (set by the `ccf` launcher in the workf
 | --- | --- | --- | --- |
 | impl (default) | Implementation tasks | None | Types + fast tests |
 | tests | Writing or approving acceptance tests | Test files (as defined by `quality.sh is-test`), except `tests/holdout/` | Types + fast tests |
-| pair | Core pairing with TODO(human) stubs | None | Types only |
 | baseline | Updating golden data or eval thresholds (rare, you decide) | `evals/golden/`, thresholds | Types + fast tests |
 
 Check: in a normal session, ask Claude to "make the failing test pass" by editing the test. The edit should be blocked with the message above.
@@ -515,7 +510,7 @@ A practical test for any code: could you reproduce, verify and fix it without th
 
 | Level | Typical areas | How you work |
 | --- | --- | --- |
-| Core | Domain logic and algorithms that define correctness (e.g. pricing rules, scheduling, permissions, core models) | You write or pair closely; the agent explains, reviews and writes tests |
+| Core | Domain logic and algorithms that define correctness (e.g. pricing rules, scheduling, permissions, core models) | The agent writes all code; you pick the approach, state the invariants and pass `/walkthrough` |
 | Important | Data pipelines, integrations with external systems, evaluation or test harnesses | Agent writes; you read every line and pass `/walkthrough` |
 | Plumbing | Config, CLI, logging, glue, scripts | Delegate fully; quality gates are enough |
 
@@ -523,9 +518,14 @@ Add the map to the root CLAUDE.md (replace the paths with yours):
 
 ```markdown
 ## Ownership levels
-Core (I write or pair; you explain, review and write tests):
+Core (User decide; Claude write all code):
 - src/domain/, src/core/
-- Detailed rules: the CLAUDE.md inside each Core directory.
+- I choose the approach before any task starts (in /plan-feature, or from
+  2 options you give me first). If it does not fit, stop and ask me.
+- Tests session: ask me for the invariants in plain words and write
+  property tests from them.
+- Impl session: write all the code; do not edit tests. End with
+  /walkthrough; do not commit on GAPS.
 Important (you write; I review every line):
 - src/pipelines/, src/integrations/, src/eval/
 - Always end the task with /walkthrough.
@@ -535,21 +535,11 @@ Ownership decides my involvement; the workflow tier decides planning.
 They are independent.
 ```
 
-Keep Core-specific rules out of the root. Put them in a nested `CLAUDE.md` inside each Core directory, so they load only when Claude works there (Step 9 adds the debugging protocol to the same files):
-
-```markdown
-# Core area: pairing rules
-- Sessions here run with TASK_MODE=pair (the Stop gate checks types, not tests).
-- Propose the approach and outline the key lines. Leave stubs such as
-  a stub that fails loudly with "TODO(human)" (raise NotImplementedError, throw,
-  panic, todo!()) for the central logic unless I
-  explicitly ask you to write it.
-- Explain your reasoning; do not write large blocks unasked.
-```
+The Core rules stay in the root, not in a nested file. A tests session often works only in `tests/`, so it would never load a `CLAUDE.md` inside a Core directory.
 
 Revisit the map at each milestone. An area moves up a level when incidents or confusion cluster there.
 
-Ownership is separate from the workflow tiers: the tier decides planning artifacts, ownership decides human involvement. A two-line Tier 0 fix in Core gets no plan, but still runs in pair mode with your hypothesis first. Ownership also decides autonomy: Plumbing tasks can run unattended through `/next-task`, Important tasks pause for `/walkthrough` before committing, and Core tasks are pairing sessions.
+Ownership is separate from the workflow tiers: the tier decides planning artifacts, ownership decides human involvement. A two-line Tier 0 fix in Core gets no plan, but you still choose the approach and give your hypothesis first. Ownership also decides autonomy: Plumbing tasks can run unattended through `/next-task`, Important tasks pause for `/walkthrough` before committing, and Core tasks pause twice: for your choice of approach and for `/walkthrough`.
 
 ## Step 8: Inquiry before delegation
 
@@ -568,7 +558,6 @@ Add to the root CLAUDE.md:
 Personal habits that make the difference:
 
 - Ask "why this approach?" after Claude proposes one, even when it looks right.
-- For Core sessions, switch to the Learning output style (`/output-style`, if your version has it). Claude then leaves key pieces for you to write.
 - When learning an unfamiliar library or area, ask conceptual questions and write the first version yourself.
 
 ## Step 9: Hypothesis-first debugging
@@ -710,7 +699,7 @@ Verification checklist:
 - [ ] The metric gate fails on a deliberately degraded build or model
 - [ ] import-linter fails on a deliberately wrong-direction import
 - [x] /check-task finds a planted bug (e.g. a swallowed exception)
-- [ ] Ownership levels are in CLAUDE.md, and Claude leaves TODO(human) markers in Core
+- [ ] Ownership levels are in CLAUDE.md, and Claude offers 2 approaches before Core code
 - [ ] /walkthrough asks for a prediction first and logs GAPS to .agent/understanding-gaps.md
 - [ ] Fix commits include a "Root cause:" line
 - [ ] The first monthly debt review (hotspots, fix-without-diagnosis) is done

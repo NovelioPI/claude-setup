@@ -57,7 +57,7 @@ Four pieces: a tier rule in CLAUDE.md, a way to launch sessions on a shared task
 2. Add a launcher so every session on a feature shares its task list. In `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-# usage: ccf <feature> [mode]   modes: impl (default), tests, pair
+# usage: ccf <feature> [mode]   modes: impl (default), tests
 ccf() {
   local id="$1" mode="${2:-impl}"
   if [ -n "$id" ]; then
@@ -68,7 +68,7 @@ ccf() {
 }
 ```
 
-The mode sets which protected paths the session may edit and how strict the Stop gate is (Playbook, Step 3).
+The mode sets which protected paths the session may edit (Playbook, Step 3).
 
 For a long-running feature, you can instead pin it per checkout in `.claude/settings.local.json` (not committed): `{ "env": { "CLAUDE_CODE_TASK_LIST_ID": "<feature>" } }`.
 
@@ -84,13 +84,15 @@ Feature: $ARGUMENTS
 
 1. Use the explorer subagent to map the relevant code. Do not read files yourself.
 2. Interview me: ask about edge cases, constraints and acceptance criteria
-   until the approach is unambiguous. One question at a time.
+   until the approach is unambiguous. One question at a time. For Core work,
+   give 2 approaches with trade-offs and record my choice under Decisions.
 3. Write docs/plans/<feature-name>.md using the template in that folder.
    Max ~2 pages. One "### T<n>" section per task, with its ownership level.
 4. Create Tasks with dependencies. Each task: one session, one commit, title
    starts with its id and [mode], description names its spec section and check.
-   - Core or Important work: a pair. "T<n>-test [tests]" writes the acceptance
-     tests; "T<n>-impl [impl]" (or "[pair]" for Core) depends on it.
+   - Core or Important work: two tasks. "T<n>-test [tests]" writes the acceptance
+     tests; "T<n>-impl [impl]" depends on it. For Core, T<n>-test asks me for
+     the invariants in plain words and writes property tests from them.
    - Plumbing: one "T<n> [impl]" task, checked by existing tests or a command.
 5. Stop. Tell me to /clear and start each task with: ccf <feature-name> <mode>
 ```
@@ -108,8 +110,8 @@ description: Pick up and finish the next unblocked task for this session's mode
    which mode to restart in and stop. Mark it in progress.
 3. Read ONLY its section of the spec in docs/plans/ plus the Decisions section.
 4. Do the task. Use subagents for exploration and log analysis.
-   [tests]: write the acceptance tests. [pair]: follow the Core rules, outline,
-   leave TODO(human) stubs and wait for me.
+   [tests]: write the acceptance tests. Core [impl]: follow the approach
+   under Decisions; if it does not fit, stop and ask me.
 5. Run its check. [tests]: the new tests run and fail for the expected reason.
    Otherwise: the check passes. If not, fix or stop and report; never edit
    tests to make it pass. Do not mark it done.
@@ -134,7 +136,7 @@ Plan in one session, execute each task in its own fresh session, and close the f
 **Execution sessions (repeat per task)**
 
 1. `ccf export-csv <mode>` with the mode in the task title, then `/next-task`.
-2. Plumbing tasks can run unattended. Important tasks pause for `/walkthrough`, and Core tasks are pairing sessions where you stay at the keyboard. Each task commits, marks itself done and writes progress.md via `/handoff`.
+2. Plumbing tasks can run unattended. Important tasks pause for `/walkthrough`, and Core tasks pause for your choice of approach and for `/walkthrough`. Each task commits, marks itself done and writes progress.md via `/handoff`.
 3. `/clear` (or exit) and repeat. Run independent tasks in parallel only in separate git worktrees on the same list; in a shared checkout the Stop gate would see the other session's changes.
 
 **When reality diverges from the plan**

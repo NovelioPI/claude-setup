@@ -96,7 +96,7 @@ Discard: full file contents, raw grep/ls output, passing test logs.
 
 Check: run `/context` in a fresh session. Memory files should now be a small share of the window.
 
-The other two docs add blocks to this file. Keep the root to what applies everywhere (workflow tiers, execution rules, the ownership summary). Put area-specific rules, such as Core pairing and the debugging protocol, in nested CLAUDE.md files in those directories (Playbook, Steps 7 and 9).
+The other two docs add blocks to this file. Keep the root to what applies everywhere (workflow tiers, execution rules, the ownership levels and Core rules). Put area-specific rules, such as the debugging protocol, in nested CLAUDE.md files in those directories (Playbook, Step 9). The Core rules stay in the root, because a tests session may never load a nested file (Playbook, Step 7).
 
 ## Step 3: Move on-demand knowledge into Skills
 
