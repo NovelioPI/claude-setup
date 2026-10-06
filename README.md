@@ -82,6 +82,7 @@ so take it without asking.
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
 | `commands/reflect.md` | `/reflect`: proposes lessons for `.agent/lessons.md` |
 | `commands/check-task.md` | `/check-task`: reviews the diff, fixes Critical and Major findings, reports the rest |
+| `commands/walkthrough.md` | `/walkthrough`: checks that I understand a change before the commit; logs PASS or GAPS |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `agents/reviewer.md` | Read-only subagent that reviews a diff and returns ranked findings |

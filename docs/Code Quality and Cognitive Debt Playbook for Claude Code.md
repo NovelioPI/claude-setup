@@ -579,32 +579,36 @@ The "Root cause" line is also what Step 11 uses to measure fix-without-diagnosis
 
 ## Step 10: Comprehension gate
 
-Before merging Core or Important work, prove to yourself that you understand it. A prediction check shows where your mental model is wrong, and the walkthrough questions confirm the fix.
+Before committing Core or Important work, prove to yourself that you understand it. A prediction check shows where your mental model is wrong, and the walkthrough questions confirm the fix.
 
 Create `.claude/commands/walkthrough.md`:
 
 ```markdown
 ---
-description: Check my understanding of the change before merging
+description: Check my understanding of the current change before the commit
 ---
 
-1. Before showing anything, ask me to predict which files changed and how.
-   Wait for my answer, then list the actual changed files and point out surprises.
-2. Summarize the change in <=8 lines: what changed, why, the key decision,
-   and how it could fail.
-3. Point to the 2-3 most important code locations (file:line) in reading order.
-4. Ask me 3 questions, one at a time, that I can only answer if I understand
+1. Before you show anything, ask me to predict which files changed and how.
+   Wait for my answer. Then list the changed files from `git diff HEAD --stat`
+   and `git ls-files --others --exclude-standard`, and name what I missed.
+2. Summarize the change in 8 lines or fewer: what changed, why, the key
+   decision, and how it could fail.
+3. Point to the 2 or 3 most important places (file:line), in reading order.
+4. Ask me 3 questions, one at a time, that I can answer only if I understand
    the change: edge cases, invariants, failure modes. No yes/no questions.
-   Do not reveal an answer before I try.
-5. After each answer, correct me precisely if I am wrong.
-6. End with PASS (all correct) or GAPS: <list>. For GAPS, append a line to
-   .agent/understanding-gaps.md with the date, file and topic.
+   Do not show an answer before I try.
+5. After each answer, correct me exactly where I am wrong.
+6. End with PASS (all answers correct) or GAPS: <list>. Append one line to
+   `.agent/understanding-gaps.md`, and create the file if it is missing:
+   `<YYYY-MM-DD> | PASS or GAPS | <main file> | <topic of each gap>`
 ```
+
+Step 6 logs PASS as well as GAPS, so Step 11 can count the pass rate.
 
 Rules of use:
 
 - Required for Core and Important code, optional for Plumbing. The ownership block in CLAUDE.md already asks for it.
-- Do not merge on GAPS in Core code. Ask follow-up questions or read the code until you can answer, then rerun.
+- Do not commit on GAPS in Core code. Ask follow-up questions or read the code until you can answer, then rerun.
 - Example of a good question: "What happens if the external call times out after the database write but before the response is sent?"
 
 ## Step 11: Measure cognitive debt
@@ -702,6 +706,6 @@ Verification checklist:
 - [ ] import-linter fails on a deliberately wrong-direction import
 - [x] /check-task finds a planted bug (e.g. a swallowed exception)
 - [ ] Ownership levels are in CLAUDE.md, and Claude offers 2 approaches before Core code
-- [ ] /walkthrough asks for a prediction first and logs GAPS to .agent/understanding-gaps.md
+- [ ] /walkthrough asks for a prediction first and logs each result to .agent/understanding-gaps.md
 - [ ] Fix commits include a "Root cause:" line
 - [ ] The first monthly debt review (hotspots, fix-without-diagnosis) is done
