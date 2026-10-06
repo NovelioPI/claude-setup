@@ -13,11 +13,36 @@ cmd=$(jq -r '.tool_input.command // empty')
 
 # Reason: these characters chain, redirect, or substitute commands past the allowlist.
 case "$cmd" in
-  *';'* | *'&'* | *'>'* | *'<'* | *'$('* | *'${'* | *'$['* | *'`'* | *$'\n'*)
-    block "the command uses ; & > < \$( \${ \$[ \` or a newline" ;;
+  # Risk: if $'...' were allowed, then its \' would hide a real pipe from the split below.
+  *';'* | *'&'* | *'>'* | *'<'* | *'$('* | *'${'* | *'$['* | *"\$'"* | *'`'* | *$'\n'*)
+    block "the command uses ; & > < \$( \${ \$[ \$' \` or a newline" ;;
 esac
 
-IFS='|' read -ra stages <<< "$cmd"
+# Reason: a | inside quotes, such as grep -E "a|b", is an argument, not a pipe.
+stages=()
+stage=""
+quote=""
+escaped=false
+for ((i = 0; i < ${#cmd}; i++)); do
+  c=${cmd:i:1}
+  if $escaped; then
+    escaped=false
+  elif [ "$c" = '\' ] && [ "$quote" != "'" ]; then
+    escaped=true
+  elif [ -n "$quote" ]; then
+    [ "$c" = "$quote" ] && quote=""
+  elif [ "$c" = "'" ] || [ "$c" = '"' ]; then
+    quote=$c
+  elif [ "$c" = '|' ]; then
+    stages+=("$stage")
+    stage=""
+    continue
+  fi
+  stage+=$c
+done
+[ -z "$quote" ] && ! $escaped || block "the command has an unclosed quote or a trailing backslash"
+stages+=("$stage")
+
 for stage in "${stages[@]}"; do
   read -ra words <<< "$stage"
   [ "${#words[@]}" -gt 0 ] || block "empty pipe stage"
