@@ -65,6 +65,7 @@ command.
     property tests from them.
   - Impl session: write all the code; do not edit tests. Commit only after a
     /walkthrough PASS.
-- Important (Claude writes; the user reads every line; end the task with /walkthrough): <paths>
+- Important (Claude writes; the user reads every line; end the task with /walkthrough;
+  do not commit on GAPS): <paths>
 - Plumbing (delegate; the quality gates are enough): everything else
 ```

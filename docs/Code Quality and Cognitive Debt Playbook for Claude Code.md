@@ -2,7 +2,7 @@
 
 Oct 5, 2026 · @Novel
 
-Make quality mechanical and understanding deliberate: hooks, protected tests and fitness checks enforce quality so the agent cannot skip it, while an ownership map, explain-back gates and scheduled repayment keep the theory of the system in your head. Companion to Doc and Doc.
+Make quality mechanical and understanding deliberate: hooks, protected tests and fitness checks enforce quality so the agent cannot skip it, while an ownership map and explain-back gates at the point of use keep the theory of the system in your head. Companion to Doc and Doc.
 
 ## Part 1: Code quality — the layered stack
 
@@ -528,7 +528,7 @@ Core (User decide; Claude write all code):
   /walkthrough; do not commit on GAPS.
 Important (you write; I review every line):
 - src/pipelines/, src/integrations/, src/eval/
-- Always end the task with /walkthrough.
+- Always end the task with /walkthrough; do not commit on GAPS.
 Plumbing (delegate):
 - Everything else. Quality gates are sufficient.
 Ownership decides my involvement; the workflow tier decides planning.
@@ -608,12 +608,12 @@ Step 6 logs PASS as well as GAPS, so Step 11 can count the pass rate.
 Rules of use:
 
 - Required for Core and Important code, optional for Plumbing. The ownership block in CLAUDE.md already asks for it.
-- Do not commit on GAPS in Core code. Ask follow-up questions or read the code until you can answer, then rerun.
+- Do not commit on GAPS in Core or Important code. Ask follow-up questions or read the code until you can answer, then rerun.
 - Example of a good question: "What happens if the external call times out after the database write but before the response is sent?"
 
 ## Step 11: Measure cognitive debt
 
-No tool measures understanding directly, so track a few proxies monthly and watch their trend rather than absolute values.
+No tool measures understanding directly, so watch the trend of a few proxies rather than absolute values. Nothing here runs on a schedule.
 
 | Indicator | How to get it | Warning sign |
 | --- | --- | --- |
@@ -628,21 +628,20 @@ It counts a commit as a fix only when its subject starts with `Fix`. A bug fix u
 
 This setup has no unowned-hotspot list. Claude writes all code, Core included, so every file would be on it and the list would say nothing.
 
-## Step 12: Scheduled repayment
+## Step 12: Repayment at the point of use
 
-Cognitive debt is repaid through deliberate practice: rebuilding understanding by hand, testing without help, and reconstructing from first principles. Schedule it, because short-term productivity always makes skipping it look rational.
+This setup has no periodic review. Debt is repaid when the code is in front of you, through checks that are already part of the work:
 
-| Cadence | Practice | Time |
+| When | Check | Step |
 | --- | --- | --- |
-| Weekly | Theory session: sketch one Core or Important module from memory (flow, invariants, failure modes), then compare with the code and note the gaps | \~30 min |
-| Weekly | Work through .agent/understanding-gaps.md; ask Claude conceptual questions about each, without editing | \~20 min |
-| Monthly | One unaided diagnosis: find the root cause of a small Core bug yourself, from the code, without the agent; then Claude writes the fix | 1–2 h |
-| Monthly | Run `scripts/debt-report.sh` and review the numbers from Step 11 | 15 min |
-| Per milestone | Refresh the architecture doc and ownership map; collapse finished specs into decision records in docs/decisions/ | \~1 h |
+| Before Core work | You pick the approach | 7 |
+| Each Core or Important bug | You give a hypothesis before Claude investigates | 9 |
+| Each Core or Important task | `/walkthrough` passes before the commit; GAPS blocks it | 10 |
+| Each milestone | Claude drafts updates to the architecture doc and ownership map; you approve | 7 |
 
-After sketching from memory, run `/theory <module> <your description>`. It compares your description with the code and lists what you got wrong or missed, with file:line. It changes no files.
+Run `scripts/debt-report.sh` when you want a reading; it is not scheduled.
 
-On a team, rotate who reviews and who runs theory sessions on each Core area, so understanding never sits with only one person.
+The cost: these checks cover only code that changes. Your understanding of an untouched module fades. You notice it when a bug lands there and you cannot form a hypothesis; treat that as the signal to read that module.
 
 ## Rollout and verification
 
@@ -653,7 +652,7 @@ Roll out over about three weeks, cheapest and highest-impact first, and check ea
 | 1 | Language adapter (0) and ratchet baseline (Step 5, item 4) first, then 1, 2, 3, ownership map (7) | Gates run automatically; tests are protected; areas are classified |
 | 2 | 5, 6, 8, 9, 10 | Structure is enforced; every task is reviewed; walkthroughs are routine |
 | 3 | 4 on core modules, 11 | Tests are strong where it matters; first debt baseline is measured |
-| Ongoing | 12 | Debt is repaid on a schedule |
+| Ongoing | 12 | Debt is repaid at the point of use |
 
 Verification checklist:
 
@@ -669,4 +668,4 @@ Verification checklist:
 - [ ] Ownership levels are in CLAUDE.md, and Claude offers 2 approaches before Core code
 - [ ] /walkthrough asks for a prediction first and logs each result to .agent/understanding-gaps.md
 - [ ] Fix commits include a "Root cause:" line
-- [ ] The first monthly debt review (`debt-report.sh`) is done
+- [ ] `debt-report.sh` runs in a real project and shows the walkthrough log
