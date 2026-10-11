@@ -87,15 +87,18 @@ so take it without asking.
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams; copied from `mattpocock/skills` commit `3f59913` (MIT) |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `research/claude-research` | Launcher for the research profile; `install.sh` links it into `~/.local/bin` |
-| `research/RESEARCH.md` | Research rules, appended to the system prompt: TDD off by default, no Linear rules |
+| `research/RESEARCH.md` | Research rules, appended to the system prompt: TDD off by default, no Linear rules, pointers to `research/guides/` |
 | `research/profile-settings.json` | Research plugin list and MLflow permissions (reads allowed, deletes ask), passed by `--settings` |
 | `research/.claude-plugin/plugin.json` | Manifest of the research plugin, loaded by `--plugin-dir` |
-| `research/.mcp.json` | MLflow MCP server, run through `uv` with the `genai` tool set; reads `MLFLOW_TRACKING_URI` from the shell, default `http://localhost:5000` |
-| `research/skills/mlflow/` | `research:mlflow`: read runs through MCP, then the Python client or CLI |
-| `research/skills/experiment-log/` | `research:experiment-log`: keep `experiments/<experiment>/log.md` and tag each run |
+| `research/.mcp.json` | Hugging Face MCP server for papers, models, and datasets; MLflow MCP server, run through `uv` with the `genai` tool set; reads `MLFLOW_TRACKING_URI` from the shell, default `http://localhost:5000` |
+| `research/guides/mlflow.md` | MLflow rules: MCP first, then the Python client or CLI; never delete; tags set in run code |
+| `research/guides/experiment-log.md` | Rules for `experiments/<experiment>/log.md`: entry format, when to write, run tags |
 | `research/skills/weekly-report/` | `research:weekly-report`: `reports/weekly/<YYYY>-W<ww>.md` from the logs and MLflow, then the summary and, on approval, a Slides deck |
-| `research/skills/llm-api/` | `research:llm-api`: style for code that calls an LLM API, with a request-hash response cache |
-| `research/skills/prompts/` | `research:prompts`: prompts as Jinja2 files in `prompts/<task>/`, loaded by name, hashed in MLflow |
+| `research/guides/llm-api.md` | Rules for code that calls an LLM API, with a request-hash response cache |
+| `research/guides/prompts.md` | Rules for prompts: Jinja2 files in `prompts/<task>/`, loaded by name, hashed in MLflow |
+| `research/skills/papers/` | `research:papers`: search Semantic Scholar, arXiv, and HF; keep `notes/reading-list.md`; write `notes/papers/<id>.md` with a source for every number |
+| `research/skills/ideas/` | `research:ideas`: `notes/ideas.md`, each idea checked against prior work |
+| `research/skills/experiment-plan/` | `research:experiment-plan`: `experiments/<exp>/plan.md`, runs ordered cheapest-to-disprove first |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
@@ -134,6 +137,8 @@ sends the agent there on its first edit in that language.
 Plain `claude` runs the engineering profile. `claude-research` adds the research
 profile through command-line flags, so they apply to that session only. A research
 session and an engineering session can run at the same time.
+Before `claude-research`, set `MLFLOW_TRACKING_URI` for the project, and
+optionally `S2_API_KEY`, a free Semantic Scholar key that avoids shared rate limits.
 
 An output style file does nothing on its own. `settings.json` activates one with
 `"outputStyle": "plain-style"`.

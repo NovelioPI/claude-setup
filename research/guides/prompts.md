@@ -1,8 +1,3 @@
----
-name: prompts
-description: Where prompts live and how code loads them. Use before writing, moving, or changing a prompt, or code that loads one.
----
-
 # Keep prompts in files
 
 ## Place

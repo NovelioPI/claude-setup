@@ -1,9 +1,4 @@
----
-name: mlflow
-description: Read MLflow experiments, runs, metrics, and traces. Use when the user asks about runs, results, or comparisons between runs.
----
-
-# Read MLflow
+# Use MLflow
 
 Use the `mlflow` MCP tools first.
 
@@ -20,4 +15,4 @@ Never delete a run, an experiment, or a trace.
 Risk: if a run is deleted, then a reported number loses its source.
 
 Write tags and notes from the run code, not through MCP. See the
-`experiment-log` skill.
+`~/.claude/research/guides/experiment-log.md`.

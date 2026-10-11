@@ -14,6 +14,10 @@
         "MLFLOW_TRACKING_URI": "${MLFLOW_TRACKING_URI:-http://localhost:5000}",
         "MLFLOW_MCP_TOOLS": "genai"
       }
+    },
+    "hf": {
+      "type": "http",
+      "url": "https://huggingface.co/mcp"
     }
   }
 }

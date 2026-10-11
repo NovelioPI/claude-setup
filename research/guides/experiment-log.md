@@ -1,9 +1,4 @@
----
-name: experiment-log
-description: Keep the experiment log in experiments/<experiment>/log.md. Use before and after each run, and when the user asks why a run happened or what comes next.
----
-
-# Keep the experiment log
+# Experiment log
 
 Each experiment has one log: `experiments/<experiment>/log.md`.
 Create the file on the first run of an experiment. Put the newest entry first.

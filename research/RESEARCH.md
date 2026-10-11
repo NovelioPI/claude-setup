@@ -14,11 +14,14 @@ benchmarks, and datasets.
 
 ## Experiments
 
-- Before and after each run, update `experiments/<experiment>/log.md`. Use the
-  `research:experiment-log` skill.
-- Read MLflow with the `research:mlflow` skill: MCP first, then the Python
-  client or CLI.
+- Before and after each run, update `experiments/<experiment>/log.md`. Before the
+  first run in a session, read `~/.claude/research/guides/experiment-log.md`.
+- Before the first MLflow read or write in a session, read `~/.claude/research/guides/mlflow.md`.
 - Write the weekly report, summary, and deck with the `research:weekly-report`
   skill. Use only the logs and MLflow, never memory.
-- Before code that calls an LLM, use `research:llm-api`. Before a prompt
-  change, use `research:prompts`.
+- Before the first edit to code that calls an LLM, read `~/.claude/research/guides/llm-api.md`.
+- Before the first edit to a prompt, or to code that holds or loads one, read
+  `~/.claude/research/guides/prompts.md`.
+- Explore in this order: `research:papers`, `research:ideas`,
+  `research:experiment-plan`. Files live in `notes/` and
+  `experiments/<exp>/plan.md`.

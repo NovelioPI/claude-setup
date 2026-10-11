@@ -1,8 +1,3 @@
----
-name: llm-api
-description: Style guide for research code that calls an LLM API, mainly the OpenAI SDK, rarely a Hugging Face model. Use before writing or changing code that sends a request to a model.
----
-
 # Call an LLM in research code
 
 ## Model
@@ -48,6 +43,6 @@ Log these with each MLflow run:
 |---|---|
 | Model ID | param `model` |
 | Temperature, seed, max tokens | params |
-| Prompt name and hash | see the `research:prompts` skill |
+| Prompt name and hash | see `~/.claude/research/guides/prompts.md` |
 | Input and output tokens | metrics, summed over the run |
 | Cost | metric, from the token counts |

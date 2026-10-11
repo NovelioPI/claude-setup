@@ -12,7 +12,7 @@ The report is the single source. The summary and the deck come from it.
 1. Find this week: the ISO week of today, Monday to today.
 2. Read every `experiments/*/log.md` in the current repo.
 3. Keep the entries whose ID date `E-<YYYY-MM-DD>-<n>` falls in the week.
-4. Get each entry's metrics from MLflow with the `research:mlflow` skill:
+4. Get each entry's metrics from MLflow following `~/.claude/research/guides/mlflow.md`:
    filter on `tags.log_entry = '<ID>'`.
 
 Use only the logs and MLflow. Never fill a gap from memory.
