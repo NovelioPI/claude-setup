@@ -5,6 +5,14 @@
     "linear@claude-plugins-official": false
   },
   "permissions": {
-    "ask": ["mcp__plugin_research_mlflow__delete_*"]
+    "ask": [
+      "mcp__plugin_research_mlflow__delete_*"
+    ],
+    "allow": [
+      "mcp__plugin_research_mlflow__search_*",
+      "mcp__plugin_research_mlflow__get_*",
+      "mcp__plugin_research_mlflow__list_*",
+      "mcp__plugin_research_mlflow__describe_*"
+    ]
   }
 }

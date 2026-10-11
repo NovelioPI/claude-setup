@@ -88,7 +88,7 @@ so take it without asking.
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `research/claude-research` | Launcher for the research profile; `install.sh` links it into `~/.local/bin` |
 | `research/RESEARCH.md` | Research rules, appended to the system prompt: TDD off by default, no Linear rules |
-| `research/profile-settings.json` | Research plugin list, passed by `--settings` |
+| `research/profile-settings.json` | Research plugin list and MLflow permissions (reads allowed, deletes ask), passed by `--settings` |
 | `research/.claude-plugin/plugin.json` | Manifest of the research plugin, loaded by `--plugin-dir` |
 | `research/.mcp.json` | MLflow MCP server, run through `uv` with the `genai` tool set; reads `MLFLOW_TRACKING_URI` from the shell, default `http://localhost:5000` |
 | `research/skills/mlflow/` | `research:mlflow`: read runs through MCP, then the Python client or CLI |
