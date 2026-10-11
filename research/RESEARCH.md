@@ -18,3 +18,5 @@ benchmarks, and datasets.
   `research:experiment-log` skill.
 - Read MLflow with the `research:mlflow` skill: MCP first, then the Python
   client or CLI.
+- Write the weekly report, summary, and deck with the `research:weekly-report`
+  skill. Use only the logs and MLflow, never memory.
