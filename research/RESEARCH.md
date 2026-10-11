@@ -11,3 +11,10 @@ benchmarks, and datasets.
   `/plan-feature` or `/next-task`.
 - The Approval Protocol does not change. The user starts each experiment with
   "Auto".
+
+## Experiments
+
+- Before and after each run, update `experiments/<experiment>/log.md`. Use the
+  `research:experiment-log` skill.
+- Read MLflow with the `research:mlflow` skill: MCP first, then the Python
+  client or CLI.

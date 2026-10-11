@@ -3,5 +3,8 @@
     "typescript-lsp@claude-plugins-official": false,
     "playwright@anthropic-plugin-directory": false,
     "linear@claude-plugins-official": false
+  },
+  "permissions": {
+    "ask": ["mcp__plugin_research_mlflow__delete_*"]
   }
 }
