@@ -137,6 +137,21 @@ if have claude; then
       block "plugin" "claude plugin install $plugin"
   done
   say "linear" "after restart, run /mcp and sign in to Linear"
+  # Reason: ReUI is an HTTP MCP server, not a plugin, so it needs its own registration.
+  if claude mcp get reui >/dev/null 2>&1; then
+    say "reui" "already registered"
+  else
+    claude mcp add --scope user --transport http reui https://mcp.reui.io >/dev/null 2>&1 &&
+      say "reui" "after restart, run /mcp and sign in to ReUI" ||
+      block "reui" "claude mcp add --scope user --transport http reui https://mcp.reui.io"
+  fi
+  if claude mcp get shadcn >/dev/null 2>&1; then
+    say "shadcn" "already registered"
+  else
+    claude mcp add --scope user shadcn -- npx shadcn@latest mcp >/dev/null 2>&1 &&
+      say "shadcn" "registered" ||
+      block "shadcn" "claude mcp add --scope user shadcn -- npx shadcn@latest mcp"
+  fi
 else
   say "plugins" "claude CLI not found; plugins are not installed"
 fi

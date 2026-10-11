@@ -14,6 +14,8 @@ command for the rest.
 | `rtk` | the `PreToolUse` hook in `settings.json` that shortens Bash output | yes, by brew or a checked GitHub release |
 | `pyright`, `typescript-language-server` | the LSP plugins, which give the `LSP` tool to `explorer` | yes, by npm |
 | `claude` | the plugins `pyright-lsp`, `typescript-lsp`, `context7`, and `linear` | yes, by `claude plugin install`; Linear then needs `/mcp` sign-in |
+| `claude` | the `reui` MCP server for the `reui` skill | yes, by `claude mcp add`; then `/mcp` sign-in |
+| `claude` | the `shadcn` MCP server, run by `npx shadcn@latest mcp`, for frontend components | yes, by `claude mcp add`; no sign-in |
 | `claude-research` | the research launcher | yes, linked into `~/.local/bin` |
 | `gh`, `rg` | `pr-flow` and search | no, optional |
 | `tmux` | long research runs | no, needs sudo |

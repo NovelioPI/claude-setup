@@ -21,6 +21,8 @@ My global Claude Code config at `~/.claude/`, with an engineering profile and a 
 | TDD | Red-green loop at agreed seams |
 | Linear | `/plan-feature` drafts issues; `/next-task` picks the next one |
 | `ui-check` | Opens changed pages with Playwright: screenshots and console errors |
+| ReUI | Finds and installs ReUI registry components through MCP |
+| shadcn | Adds and composes shadcn/ui components through MCP and a skill |
 | `pr-flow` | Opens a PR with `gh` after an approved push, then watches CI |
 
 **Research** (`claude-research`)

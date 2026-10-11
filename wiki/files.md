@@ -35,6 +35,8 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams; copied from `mattpocock/skills` commit `3f59913` (MIT) |
 | `skills/ui-check/SKILL.md` | `ui-check`: open changed pages with Playwright, desktop and mobile screenshots, console errors |
 | `skills/pr-flow/SKILL.md` | `pr-flow`: open a PR with `gh` after an approved push, watch CI, show failed logs |
+| `skills/reui/` | `reui`: find, install, and use ReUI registry components through the ReUI MCP server |
+| `skills/shadcn/` | `shadcn`: add, search, and compose shadcn/ui components; copied from `shadcn/ui` `skills/shadcn` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `research/claude-research` | Launcher for the research profile; `install.sh` links it into `~/.local/bin` |
 | `research/RESEARCH.md` | Research rules, appended to the system prompt: TDD off by default, no Linear rules, pointers to `research/guides/` |
