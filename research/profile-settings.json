@@ -1,0 +1,7 @@
+{
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": false,
+    "playwright@anthropic-plugin-directory": false,
+    "linear@claude-plugins-official": false
+  }
+}

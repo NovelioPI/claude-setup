@@ -143,8 +143,17 @@ fi
 
 echo
 echo "Permissions"
-chmod +x hooks/*.sh statusline-command.sh scripts/*.sh 2>/dev/null
-say "chmod +x" "hooks, status line, scripts"
+chmod +x hooks/*.sh statusline-command.sh scripts/*.sh research/claude-research 2>/dev/null
+say "chmod +x" "hooks, status line, scripts, research launcher"
+
+echo
+echo "Research profile"
+mkdir -p "$HOME/.local/bin" && ln -sfn "$REPO/research/claude-research" "$HOME/.local/bin/claude-research"
+if have claude-research; then
+  say "launcher" "claude-research linked into ~/.local/bin"
+else
+  block "launcher" "linked into ~/.local/bin, which is not on PATH; add it to PATH"
+fi
 
 echo
 echo "Check"

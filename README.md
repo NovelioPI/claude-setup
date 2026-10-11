@@ -86,6 +86,10 @@ so take it without asking.
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams; copied from `mattpocock/skills` commit `3f59913` (MIT) |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
+| `research/claude-research` | Launcher for the research profile; `install.sh` links it into `~/.local/bin` |
+| `research/RESEARCH.md` | Research rules, appended to the system prompt: TDD off by default, no Linear rules |
+| `research/profile-settings.json` | Research plugin list, passed by `--settings` |
+| `research/.claude-plugin/plugin.json` | Manifest of the research plugin, loaded by `--plugin-dir` |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
@@ -120,6 +124,10 @@ and `doc-style.md` have `paths:` frontmatter, so each loads only when Claude
 reads or edits a matching code or Markdown file. A Bash heredoc write does not
 trigger them. `guides/` is never auto-loaded: a pointer in `rules/code-quality.md`
 sends the agent there on its first edit in that language.
+
+Plain `claude` runs the engineering profile. `claude-research` adds the research
+profile through command-line flags, so they apply to that session only. A research
+session and an engineering session can run at the same time.
 
 An output style file does nothing on its own. `settings.json` activates one with
 `"outputStyle": "plain-style"`.
