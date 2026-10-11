@@ -42,6 +42,10 @@ skills/*
 !skills/project-init/**
 !skills/tdd/
 !skills/tdd/**
+!skills/ui-check/
+!skills/ui-check/**
+!skills/pr-flow/
+!skills/pr-flow/**
 
 # Third-party agents that belong to the `impeccable` skill, which is not tracked.
 agents/impeccable-*.md

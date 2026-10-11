@@ -85,6 +85,8 @@ so take it without asking.
 | `commands/auto.md` | `/auto`: plans a task and runs it to the end under Auto Mode |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams; copied from `mattpocock/skills` commit `3f59913` (MIT) |
+| `skills/ui-check/SKILL.md` | `ui-check`: open changed pages with Playwright, desktop and mobile screenshots, console errors |
+| `skills/pr-flow/SKILL.md` | `pr-flow`: open a PR with `gh` after an approved push, watch CI, show failed logs |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `research/claude-research` | Launcher for the research profile; `install.sh` links it into `~/.local/bin` |
 | `research/RESEARCH.md` | Research rules, appended to the system prompt: TDD off by default, no Linear rules, pointers to `research/guides/` |
@@ -102,7 +104,7 @@ so take it without asking.
 | `research/skills/papers/` | `research:papers`: search Semantic Scholar, arXiv, and HF; keep `notes/reading-list.md`; write `notes/papers/<id>.md` with a source for every number |
 | `research/skills/ideas/` | `research:ideas`: `notes/ideas.md`, each idea checked against prior work |
 | `research/skills/experiment-plan/` | `research:experiment-plan`: `experiments/<exp>/plan.md`, runs ordered cheapest-to-disprove first |
-| `statusline-command.sh` | Status line: model, effort, cache, usage bars |
+| `statusline-command.sh` | Status line: model, profile (`◆ research`), effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/debt-report.sh` | Print the Step 11 cognitive debt numbers: fix commits without a root cause |
@@ -179,8 +181,8 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 
 ## Skills
 
-This repo tracks only the skills written here: `brainstorming` and
-`project-init`. Other skills are
+This repo tracks only the skills written here: `brainstorming`,
+`project-init`, `ui-check`, and `pr-flow`. Other skills are
 other people's work, so they are not redistributed.
 
 | Skill | Source |

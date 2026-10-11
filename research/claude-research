@@ -1,6 +1,7 @@
 #!/bin/bash
 # Start Claude Code with the research profile. Every flag applies to this session only.
 DIR="$HOME/.claude/research"
+export CLAUDE_PROFILE=research
 exec claude --plugin-dir "$DIR" \
   --settings "$DIR/profile-settings.json" \
   --append-system-prompt-file "$DIR/RESEARCH.md" "$@"
