@@ -154,7 +154,7 @@ source to confirm before you propose changes.
 
 ## Process
 
-- Work is done: offer `/check-task`, then propose the commit. Typing
+- Work is done: propose the commit. Typing
   `/check-task` approves the reviewer subagent and the Critical and Major fixes
   it lists. After the commit, offer `/reflect`.
 - Typing `/walkthrough` approves the one log line it appends.
