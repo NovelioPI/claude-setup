@@ -154,9 +154,7 @@ source to confirm before you propose changes.
 
 ## Process
 
-- Work is done: propose the commit. Typing
-  `/check-task` approves the reviewer subagent and the Critical and Major fixes
-  it lists.
+- Work is done: propose the commit.
 - When I make a mistake or you correct me, save what went wrong and the rule
   that prevents it. Do not save your decisions.
 - Typing `/auto <task>` approves the plan it writes, under Auto Mode.

@@ -1,5 +1,5 @@
 #!/bin/bash
-# PreToolUse hook for read-only agents (explorer, reviewer): allow only read-only Bash commands.
+# PreToolUse hook for the read-only explorer agent: allow only read-only Bash commands.
 # Exit 2 blocks the call. A command not on the allowlist is blocked.
 
 block() {
