@@ -180,12 +180,14 @@ Two layers guard the destructive commands, and the overlap is on purpose.
 
 `hooks/block-dangerous-git.sh` runs as a `PreToolUse` hook on every Bash call and
 exits 2 to block. It guards `git reset --hard`, `git clean` with a force flag,
-`git branch -D`, and a whole-tree `git checkout` or `git restore`. It matches each
+`git branch -D`, a whole-tree `git checkout` or `git restore`, and `git push`
+with `--force` or `-f`. It matches each
 chained segment at its own start, so a guarded string quoted inside another
 command does not trip it. Without `jq` it blocks every Bash call, by design.
 
-`git push` is **not** guarded, on purpose. A guardrail that blocks a command you
-use every day teaches you to route around the guardrail.
+A plain `git push` is **not** guarded, on purpose. A guardrail that blocks a
+command you use every day teaches you to route around the guardrail.
+`--force-with-lease` also passes, because it refuses to overwrite unseen commits.
 
 The `permissions.ask` list in `settings.json` is the second layer. It prompts for
 `git stash`, a path-scoped `git checkout` or `git restore`, and `rm`. It still

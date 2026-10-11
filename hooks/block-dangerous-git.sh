@@ -18,6 +18,8 @@ DANGEROUS_PATTERNS=(
   'git[[:space:]]+branch[[:space:]].*-D'
   'git[[:space:]]+checkout[[:space:]]+\.([[:space:]]|$)'
   'git[[:space:]]+restore[[:space:]]+\.([[:space:]]|$)'
+  # Reason: --force-with-lease refuses to overwrite unseen commits, so only plain force is blocked.
+  'git[[:space:]]+push[[:space:]](.*[[:space:]])?(--force([[:space:]]|$)|-[^-[:space:]]*f)'
 )
 
 # Match each chained segment at its own start, so a dangerous string quoted
