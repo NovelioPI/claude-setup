@@ -38,7 +38,8 @@ Write `reports/weekly/<YYYY>-W<ww>.md`. Rewrite it if it exists.
     Next: <from the Next lines>
 
     ## Blockers and asks
-    - <items, or "None">
+    - <each Blockers line that is not None, with its entry ID>
+    - None, only when every entry in the week says None
 
 One section per experiment with entries this week. Cite the entry ID for every
 number.

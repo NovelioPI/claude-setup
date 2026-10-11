@@ -16,13 +16,16 @@ Create the file on the first run of an experiment. Put the newest entry first.
     - Run: <MLflow run ID>; results at <path>
     - Result: <one line>
     - Next: <one line>
+    - Blockers: <one line, or None>
 
 `<n>` counts up within the day and the experiment.
 
 ## When
 
 1. Before the run: write Why and Config. Leave Run, Result, and Next empty.
-2. After the run: fill Run, Result, and Next.
+2. After the run: fill Run, Result, Next, and Blockers.
+
+An entry with no Blockers line counts as None.
 
 A run that crashed still gets Result: the error line.
 
