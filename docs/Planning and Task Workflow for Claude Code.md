@@ -2,7 +2,7 @@
 
 Oct 5, 2026 · @Novel
 
-Match planning effort to task size: small tasks get no plan, multi-session features get a short spec plus Claude Code's built-in Tasks, and whole projects are decomposed one milestone at a time. Companion to Claude Code Context Management: Step-by-Step Implementation Guide and Code Quality and Cognitive Debt Playbook for Claude Code.
+Match planning effort to task size: small tasks get no plan, multi-session features get a Linear project with one issue per task, and whole projects are decomposed one milestone at a time. Companion to Claude Code Context Management: Step-by-Step Implementation Guide and Code Quality and Cognitive Debt Playbook for Claude Code.
 
 ## Workflow tiers
 
@@ -12,8 +12,8 @@ Default to Tier 0. Move up a tier only when a signal below is true, because each
 | --- | --- | --- | --- | --- |
 | 0: Just do it | Clear ask, ≤3 files, fits one session | None | None | None |
 | 1: Think first | Approach unclear or >3 files, but one session | Plan mode; plan stays in chat | Built-in Tasks, this session only | None |
-| 2: Feature | Spans several sessions or subagents | Short spec file | Shared Task list with dependencies | `docs/plans/<feature>.md` |
-| 3: Project | Weeks of work, several features | Roadmap of milestones | Issue tracker; only the current milestone becomes Tasks | `docs/roadmap.md` |
+| 2: Feature | Spans several sessions or subagents | Linear project description | Linear issues with blocked-by relations | None in the repo |
+| 3: Project | Weeks of work, several features | Roadmap of milestones | Linear; only the current milestone becomes issues | `docs/roadmap.md` |
 
 Decision rule, in order:
 
@@ -29,15 +29,15 @@ Keep plan, task graph and progress apart. Each changes at a different rate and i
 
 | Artifact | Answers | Changes | Lives in | Read when |
 | --- | --- | --- | --- | --- |
-| Spec (plan) | Why, what, approach, decisions, acceptance criteria | Rarely; decisions appended | `docs/plans/<feature>.md` (in git) | Executor reads only its task's section, at task start |
-| Task graph | What's next, status, what blocks what | Constantly | Built-in Tasks (`~/.claude/tasks`) | Each time the agent picks up work; Ctrl+T to view |
-| Progress note | Where exactly I am now, hypothesis, key files | Rewritten at each handoff | `.agent/progress.md` | Once, at session start |
+| Spec (plan) | Why, what, approach, decisions, acceptance criteria | Rarely; decisions appended | Linear project description | Executor reads only Decisions, at task start |
+| Task graph | What's next, status, what blocks what | Constantly | Linear issues, labels, and relations | Each time the agent picks up work; Linear board to view |
+| Progress note | Where exactly I am now, hypothesis, key files | Rewritten at each handoff | `.agent/progress.md` (gitignored) | Once, at session start |
 
-Built-in Tasks (Claude Code v2.1.16 and later) replace todo.md for tracking. They support dependencies, persist across compaction and `/clear`, and can be shared across sessions and subagents. They live outside the repo, so they are not versioned or visible to teammates; the spec and progress note are.
+Linear holds the spec and the task graph, so the repo gets no plan files. The `linear@claude-plugins-official` plugin gives Claude its MCP tools. The board shows live status on a second screen. Issue and comment writes (`save_issue`, `save_comment`) need no prompt; other Linear writes still ask. The whole `.agent/` folder is gitignored, so nothing from this workflow enters git.
 
 ## One-time setup
 
-Four pieces: a tier rule in CLAUDE.md, a way to launch sessions on a shared task list, and two commands.
+Four pieces: a tier rule in CLAUDE.md, a launcher that names the feature, the Linear plugin, and two commands.
 
 1. Add the workflow block to CLAUDE.md (global `~/.claude/CLAUDE.md` in this setup):
 
@@ -57,14 +57,14 @@ Four pieces: a tier rule in CLAUDE.md, a way to launch sessions on a shared task
 - The tier never skips the Approval Protocol. Tier 0 still needs a token.
 ```
 
-2. Add a launcher so every session on a feature shares its task list. In `scripts/shell.zsh`, sourced from `~/.zshrc`:
+2. Add a launcher so every session on a feature knows its Linear project. In `scripts/shell.zsh`, sourced from `~/.zshrc`:
 
 ```bash
 # usage: ccf <feature> [mode]   modes: impl (default), tests, baseline
 ccf() {
   local id="$1" mode="${2:-impl}"
   if [ -n "$id" ]; then
-    TASK_MODE="$mode" CLAUDE_CODE_TASK_LIST_ID="$id" claude
+    TASK_MODE="$mode" FEATURE="$id" claude
   else
     TASK_MODE="$mode" claude
   fi
@@ -78,99 +78,45 @@ cct() {
 
 The mode sets which protected paths the session may edit (Playbook, Step 3).
 
-For a long-running feature, you can instead pin it per checkout in `.claude/settings.local.json` (not committed): `{ "env": { "CLAUDE_CODE_TASK_LIST_ID": "<feature>" } }`.
+For a long-running feature, you can instead pin it per checkout in `.claude/settings.local.json` (not committed): `{ "env": { "FEATURE": "<feature>" } }`.
 
-3. Create `.claude/commands/plan-feature.md`:
+3. Install the Linear plugin with `claude plugin install linear@claude-plugins-official`, then log in once with `/mcp`.
 
-```markdown
----
-description: Plan a multi-session feature into a spec and a task graph
-argument-hint: <feature-name> <one-line goal>
----
-
-Feature: $ARGUMENTS
-
-1. Use the explorer subagent to map the relevant code. Do not read files yourself.
-2. Interview me about edge cases, constraints and acceptance criteria, until
-   the approach has one meaning. Ask one question at a time. For Core work,
-   give 2 approaches with tradeoffs, and record my choice under Decisions.
-3. Draft docs/plans/<feature-name>.md from the template below. Cap it at about
-   120 lines. Give each task its own "### T<n>" section with its ownership level.
-4. Draft the Tasks with dependencies. Each task is one session and one commit.
-   Its title starts with its id and [mode]. Its description names its spec
-   section and its check.
-   - Core or Important work: two tasks. "T<n>-test [tests]" writes the
-     acceptance tests. "T<n>-impl [impl]" depends on it. For Core, T<n>-test
-     asks me for the invariants in plain words and writes property tests.
-   - Plumbing: one "T<n> [impl]" task, checked by existing tests or a command.
-5. Show the spec and the task list. In plan mode, show them with ExitPlanMode.
-   Wait for a token, then write the spec and create the Tasks.
-6. Stop. Tell me to /clear and start each task with: ccf <feature-name> <mode>
-
-Template:
-
-(the spec template below)
-```
-
-4. Create `.claude/commands/next-task.md`:
-
-```markdown
----
-description: Pick up and finish the next unblocked task for this session's mode
----
-
-1. Read .agent/progress.md. List the open Tasks. Check the mode with
-   `echo $TASK_MODE`. An empty value means impl.
-2. Pick the first unblocked task whose [mode] matches. If none matches, tell me
-   which mode to restart in, and stop.
-3. Find the spec in docs/plans/. Get its heading lines with `grep -n '^##'`.
-   Read only the task's section and the Decisions section.
-4. Show the plan for the task and wait for a token. Then mark it in progress.
-5. Do the task. Use the explorer subagent for exploration and log analysis.
-   [tests]: write the acceptance tests. Core [impl]: follow the approach
-   under Decisions. If it does not fit, stop and ask me.
-6. Run its check. [tests]: the new tests run and fail for the expected reason.
-   Other modes: the check passes. If it fails, fix the code or stop and report.
-   Never edit a test to make it pass.
-7. If the approach had to change, append a dated line to the spec's Decisions
-   section. Do not rewrite the spec. Propose the commit, including that line,
-   and wait for a token. Then commit, mark the task done, and run /handoff.
-```
+4. Add the two commands: `commands/plan-feature.md` creates the Linear project and issues, and `commands/next-task.md` picks and finishes one issue. Read the command files for the exact steps.
 
 ## Running a Tier 2 feature
 
-Plan in one session, execute each task in its own fresh session, and close the feature by archiving the spec. Exploration noise from planning never reaches execution.
+Plan in one session, execute each task in its own fresh session, and close the feature by archiving the Linear project. Exploration noise from planning never reaches execution.
 
 **Plan session**
 
-1. Start on the feature's list: `ccf export-csv`.
+1. Start on the feature: `ccf export-csv`.
 2. Enter plan mode (Shift+Tab) and run `/plan-feature export-csv <goal>`.
-3. Answer the interview questions. Review the spec and task graph (Ctrl+T); edit the spec by hand if needed.
+3. Answer the interview questions. Review the project and issues on the Linear board; edit them by hand if needed.
 4. `/clear`.
 
 **Execution sessions (repeat per task)**
 
-1. `ccf export-csv <mode>` with the mode in the task title, then `/next-task`.
-2. Each task asks for a token before the work and before the commit. Core tasks also pause for your choice of approach. Each task commits, marks itself done and writes progress.md via `/handoff`.
-3. `/clear` (or exit) and repeat. Run independent tasks in parallel only in separate git worktrees on the same list; in a shared checkout the Stop gate would see the other session's changes.
+1. `ccf export-csv <mode>` with the mode from the issue's `mode:` label, then `/next-task`.
+2. Each task asks for a token before the work and before the commit. Core tasks also pause for your choice of approach. Each task commits, sets its issue to Done, comments the commit hash, and writes progress.md via `/handoff`.
+3. `/clear` (or exit) and repeat. Run independent tasks in parallel only in separate git worktrees on the same feature; in a shared checkout the Stop gate would see the other session's changes.
 
 **When reality diverges from the plan**
 
 - Small change of approach: the executor appends a dated line to Decisions and carries on.
-- A task turns out bigger: ask Claude to split it into new Tasks with dependencies, and add matching sections to the spec.
-- The plan is wrong at its core: stop, run a short planning session that edits the spec, and regenerate only the affected Tasks.
+- A task turns out bigger: ask Claude to split it into new issues with blocked-by relations.
+- The plan is wrong at its core: stop, run a short planning session that edits the project description, and regenerate only the affected issues.
 
 **Finishing the feature**
 
-1. Ask Claude to collapse the spec into a short decision record, `docs/decisions/<feature>.md`: what was built, key decisions and why, known gotchas. Add any reusable "when X, do Y" lessons to `.agent/lessons.md` via `/reflect`.
-2. Delete the spec file, or move it to `docs/plans/done/` if your team reviews plans. Git keeps the full version.
-3. Clear the feature's task list ("clear all tasks").
+1. Ask Claude to collapse the project description into a short decision record, `docs/decisions/<feature>.md`: what was built, key decisions and why, known gotchas. Add any reusable "when X, do Y" lessons to `.agent/lessons.md` via `/reflect`.
+2. Archive the Linear project. Linear keeps the full history.
 
 ## Spec template and lean-plan rules
 
 A spec is a contract for executors, not a design essay: cap it at \~2 pages and give every task its own section so each session reads only what it needs.
 
-`/plan-feature` holds this template inline (`commands/plan-feature.md`):
+`/plan-feature` holds the project and issue templates inline (`commands/plan-feature.md`). The project description uses the sections below; each `### T<n>` section becomes one issue:
 
 ```markdown
 # <Feature name>
@@ -202,15 +148,15 @@ Check: <test written in T1-test (Core/Important), or a command (Plumbing)>
 
 Rules that keep it from bloating:
 
-- Never `@import` a spec into CLAUDE.md. It is loaded by path, on demand.
-- One `### T<n>` section per task, matching the task title, so `/next-task` reads only that section plus Decisions.
+- Never copy a spec into CLAUDE.md. Claude reads it from Linear, on demand.
+- One issue per task, so `/next-task` reads only that issue plus Decisions.
 - Append to Decisions; never regenerate the spec. Regeneration is where drift and silent scope changes creep in.
 - Code belongs in the repo, not the spec. Name files and functions instead of pasting snippets.
 - If a spec passes \~2 pages, the feature is too big. Split it into two features or promote it to Tier 3.
 
 ## Big projects: rolling-wave planning
 
-Decompose only the current milestone into Tasks. Tasks for work months away are guesses that go vague and stale, which is what makes a big todo.md feel sparse.
+Decompose only the current milestone into issues. Tasks for work months away are guesses that go vague and stale, which is what makes a big todo.md feel sparse.
 
 1. Keep a roadmap of 5–10 milestones, one paragraph each, in `docs/roadmap.md`. Claude reads it only when planning, never during execution.
 2. Treat the current milestone as one or more Tier 2 features: run `/plan-feature` for each, so its tasks are dense and specific.
@@ -235,16 +181,16 @@ Template `docs/roadmap.md`:
 - M1 <name> (<month>): <one line outcome>
 ```
 
-If teammates need to see the work, keep milestones and features as GitHub issues and let Claude read them with the `gh` CLI (e.g. `gh issue list --milestone M2`). Built-in Tasks still handle the in-flight execution graph. Beads, a git-backed issue tracker built for coding agents, is an alternative if you want the dependency graph itself versioned in the repo.
+Linear projects can also hold the milestones, so the roadmap file becomes optional.
 
 ## Migrating from todo.md
 
 Sort what is in todo.md by tier, move each part to its new home, then delete the file.
 
-1. Update Claude Code to v2.1.16 or later so built-in Tasks are available.
+1. Install the Linear plugin (One-time setup, step 3).
 2. Ask Claude to classify every open item in todo.md as Tier 0, 1 or 2, or as a roadmap-level milestone.
-3. Tier 0/1 items: just do them, or leave them as GitHub issues. They need no tracking file.
-4. Tier 2 groups: run `/plan-feature` for each, which creates its spec and Tasks.
+3. Tier 0/1 items: just do them, or leave them as Linear issues. They need no tracking file.
+4. Tier 2 groups: run `/plan-feature` for each, which creates its Linear project and issues.
 5. Milestone-level items: move them into `docs/roadmap.md`.
 6. Delete todo.md and remove any CLAUDE.md lines that mention it.
 
@@ -252,7 +198,8 @@ Verification checklist:
 
 - [ ] A small fix (Tier 0) is done with no plan, no tasks and no new files
 - [ ] A medium change uses plan mode and leaves no plan file behind
-- [ ] `/plan-feature` produces a spec under \~2 pages with one section per task
-- [ ] Two sessions started with the same `ccf <feature>` see the same task list
-- [ ] `/next-task` reads only its spec section, and finishes with a commit and handoff
+- [ ] `/plan-feature` produces a Linear project and one issue per task
+- [ ] Two sessions started with the same `ccf <feature>` see the same Linear project
+- [ ] `/next-task` reads only its issue plus Decisions, and finishes with a commit and handoff
+- [ ] `git status` after `/handoff` shows nothing under `.agent/`
 - [ ] A finished feature leaves a short summary in lessons.md and no stale spec

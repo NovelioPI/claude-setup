@@ -79,8 +79,8 @@ so take it without asking.
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
-| `commands/plan-feature.md` | `/plan-feature`: drafts a spec and a task graph, writes after a token |
-| `commands/next-task.md` | `/next-task`: picks the next task for the session mode; asks for a token before the work and before the commit |
+| `commands/plan-feature.md` | `/plan-feature`: drafts a Linear project and issues, creates them after a token |
+| `commands/next-task.md` | `/next-task`: picks the next unblocked Linear issue for the session mode; asks for a token before the work and before the commit |
 | `commands/auto.md` | `/auto`: plans a task and runs it to the end under Auto Mode |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
@@ -88,7 +88,7 @@ so take it without asking.
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/debt-report.sh` | Print the Step 11 cognitive debt numbers: fix commits without a root cause |
-| `scripts/shell.zsh` | Shell launchers: `cct` starts a `TASK_MODE=tests` session; `ccf <feature> [mode]` adds a shared task list |
+| `scripts/shell.zsh` | Shell launchers: `cct` starts a `TASK_MODE=tests` session; `ccf <feature> [mode]` sets `FEATURE`, the Linear project name |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `LICENSE` | MIT |

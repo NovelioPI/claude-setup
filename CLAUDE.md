@@ -74,9 +74,9 @@ If you are not sure, ask: "So, <interpretation>. Execute?"
 The token does not die on errors you can fix inside the plan.
 
 Still ask each time, even in Auto mode:
-- Push, deploy, or any action outside this machine.
+- Push, deploy, or any action outside this machine, except Linear `save_issue` and `save_comment`.
 - Delete an untracked file, add a dependency, or change a schema or public API.
-- Any MCP write.
+- Any MCP write, except Linear `save_issue` and `save_comment`.
 
 Stop, send a push notification, and wait when one of these happens:
 - A test fails and the fix is not clear.

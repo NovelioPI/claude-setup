@@ -1,5 +1,5 @@
 ---
-description: Plan a multi-session feature into a spec and a task graph
+description: Plan a multi-session feature into a Linear project and issues
 argument-hint: <feature-name> <one-line goal>
 ---
 
@@ -9,24 +9,22 @@ Feature: $ARGUMENTS
 2. Interview me about edge cases, constraints and acceptance criteria, until
    the approach has one meaning. Ask one question at a time. For Core work,
    give 2 approaches with tradeoffs, and record my choice under Decisions.
-3. Draft docs/plans/<feature-name>.md from the template below. Cap it at about
-   120 lines. Give each task its own "### T<n>" section with its ownership level.
-4. Draft the Tasks with dependencies. Each task is one session and one commit.
-   Its title starts with its id and [mode]. Its description names its spec
-   section and its check.
-   - Core or Important work: two tasks. "T<n>-test [tests]" writes the
-     acceptance tests. "T<n>-impl [impl]" depends on it. For Core, T<n>-test
-     asks me for the invariants in plain words and writes property tests.
-   - Plumbing: one "T<n> [impl]" task, checked by existing tests or a command.
-5. Show the spec and the task list. In plan mode, show them with ExitPlanMode.
-   Wait for a token, then write the spec and create the Tasks.
+3. Draft the Linear project description from the project template below. Name
+   the project <feature-name>. Cap the description at about 60 lines.
+4. Draft the issues from the issue template below. Each issue is one session
+   and one commit. Its title starts with its id. Give it one `mode:` label and
+   one `level:` label. Add a "blocked by" relation for each dependency.
+   - Core or Important work: two issues. "T<n>-test" (`mode:tests`) writes the
+     acceptance tests. "T<n>-impl" (`mode:impl`) is blocked by it. For Core,
+     T<n>-test asks me for the invariants in plain words and writes property tests.
+   - Plumbing: one "T<n>" issue (`mode:impl`), checked by existing tests or a command.
+5. Show the project and the issue list. In plan mode, show them with ExitPlanMode.
+   Wait for a token, then create the project, any missing labels, and the issues.
 6. Stop. Tell me to /clear and start each task with: ccf <feature-name> <mode>
 
-Template:
+Project template:
 
 ```markdown
-# <Feature name>
-
 ## Goal
 <1-2 sentences: what changes for the user/system and why>
 
@@ -39,15 +37,14 @@ Template:
 ## Acceptance (feature level)
 - <measurable check, e.g. "export of 1M rows finishes in < 30 s; existing integration tests pass">
 
-## Tasks
-### T1: <title>  [Core|Important|Plumbing]
-Files: <paths>
-Do: <what, in 2-5 lines>
-Check: <test written in T1-test (Core/Important), or a command (Plumbing)>
-
-### T2: <title>  (depends on T1)
-...
-
 ## Decisions (append only)
 - <date>: <decision> — <reason>
+```
+
+Issue template (title `T<n>: <title>`, labels `mode:tests|impl`, `level:core|important|plumbing`):
+
+```markdown
+Files: <paths>
+Do: <what, in 2-5 lines>
+Check: <test written in T<n>-test (Core/Important), or a command (Plumbing)>
 ```

@@ -5,7 +5,7 @@
 ccf() {
   local id="$1" mode="${2:-impl}"
   if [ -n "$id" ]; then
-    TASK_MODE="$mode" CLAUDE_CODE_TASK_LIST_ID="$id" claude
+    TASK_MODE="$mode" FEATURE="$id" claude
   else
     TASK_MODE="$mode" claude
   fi
