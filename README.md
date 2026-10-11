@@ -83,6 +83,7 @@ so take it without asking.
 | `commands/next-task.md` | `/next-task`: picks the next unblocked Linear issue of the feature; asks for a token before the work and before the commit |
 | `commands/auto.md` | `/auto`: plans a task and runs it to the end under Auto Mode |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
+| `skills/tdd/` | `tdd`: red-green loop at agreed seams; copied from `mattpocock/skills` commit `3f59913` (MIT) |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
