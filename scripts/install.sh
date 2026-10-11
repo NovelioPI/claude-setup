@@ -124,11 +124,19 @@ echo
 echo "Language servers"
 npm_server pyright-langserver pyright
 npm_server typescript-language-server typescript-language-server typescript
+
+echo
+echo "Plugins"
+PLUGINS="pyright-lsp@claude-plugins-official typescript-lsp@claude-plugins-official
+  context7@anthropic-plugin-directory linear@claude-plugins-official"
 if have claude; then
-  for plugin in pyright-lsp typescript-lsp; do
-    claude plugin install "$plugin@claude-plugins-official" >/dev/null 2>&1 && say "plugin" "$plugin" ||
-      block "plugin" "claude plugin install $plugin@claude-plugins-official"
+  # Reason: a new machine has no official marketplace until the first interactive session.
+  claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1
+  for plugin in $PLUGINS; do
+    claude plugin install "$plugin" >/dev/null 2>&1 && say "plugin" "$plugin" ||
+      block "plugin" "claude plugin install $plugin"
   done
+  say "linear" "after restart, run /mcp and sign in to Linear"
 else
   say "plugins" "claude CLI not found; plugins are not installed"
 fi

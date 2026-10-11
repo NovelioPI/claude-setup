@@ -152,6 +152,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 | `uv` | `scripts/quality.sh`, which runs `ruff`, `complexipy`, and `lizard` through `uvx` | yes |
 | `rtk` | the `PreToolUse` hook in `settings.json` that shortens Bash output | yes, by brew or a checked GitHub release |
 | `pyright`, `typescript-language-server` | the LSP plugins in `enabledPlugins`, which give the `LSP` tool to `explorer` | yes, by npm |
+| `claude` | the plugins `pyright-lsp`, `typescript-lsp`, `context7`, and `linear` | yes, by `claude plugin install`; Linear then needs `/mcp` sign-in |
 | `gh`, `rg` | optional convenience | no |
 
 ## Skills
