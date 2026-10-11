@@ -20,3 +20,5 @@ benchmarks, and datasets.
   client or CLI.
 - Write the weekly report, summary, and deck with the `research:weekly-report`
   skill. Use only the logs and MLflow, never memory.
+- Before code that calls an LLM, use `research:llm-api`. Before a prompt
+  change, use `research:prompts`.

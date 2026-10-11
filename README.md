@@ -94,6 +94,8 @@ so take it without asking.
 | `research/skills/mlflow/` | `research:mlflow`: read runs through MCP, then the Python client or CLI |
 | `research/skills/experiment-log/` | `research:experiment-log`: keep `experiments/<experiment>/log.md` and tag each run |
 | `research/skills/weekly-report/` | `research:weekly-report`: `reports/weekly/<YYYY>-W<ww>.md` from the logs and MLflow, then the summary and, on approval, a Slides deck |
+| `research/skills/llm-api/` | `research:llm-api`: style for code that calls an LLM API, with a request-hash response cache |
+| `research/skills/prompts/` | `research:prompts`: prompts as Jinja2 files in `prompts/<task>/`, loaded by name, hashed in MLflow |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
