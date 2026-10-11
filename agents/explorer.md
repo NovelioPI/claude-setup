@@ -18,7 +18,7 @@ Bash runs only `grep`, `rg`, `find`, `ls`, `wc`, `head`, `tail`, and read-only
 because a `|` inside quotes is blocked.
 
 Pick the tool by what you look for:
-- Definitions, references, call sites, "what breaks if I change X": use `LSP`.
+- Definitions, references, call sites, "what breaks if I change X": use `LSP`; if it errors, use grep.
 - Strings, config keys, log messages, comments, non-code files: use grep.
 - Before you report on a public function's signature, list its references.
 
