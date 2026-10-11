@@ -12,7 +12,7 @@ The agent optimizes for whatever signal you give it, so quality depends on three
 | --- | --- | --- | --- |
 | Format + fast lint | After every edit (PostToolUse) | Style, unused code, obvious bugs | 1 |
 | Types + related tests | End of turn (Stop) | Interface breaks, regressions | 2 |
-| Signal protection | Before edits (PreToolUse) | Test and baseline tampering | 3 |
+| Signal protection | Before edits (PreToolUse) | Edits to the adapter and listed paths | 3 |
 | Test strength | Per feature, core modules | Weak tests that pass broken code | 4 |
 | Architecture fitness | Pre-commit + CI | Boundary violations, bloat, duplication | 5 |
 | Independent review | Per task diff | Logic, error handling, security, I/O waste | 6 |
@@ -176,27 +176,9 @@ Check: introduce a type error through Claude. It should be blocked once, fix the
 
 ## Step 3: Protect the verification signal
 
-Tests, golden datasets and eval thresholds are the signal the agent is graded against, so make them read-only while it implements. Benchmarks such as EvilGenie and SpecBench have observed coding agents editing tests and hardcoding expected outputs.
+Tests, golden datasets and eval thresholds are the signal the agent is graded against. The guard keeps the adapter and listed paths read-only. Test files stay editable; the execution rules guard them. Benchmarks such as EvilGenie and SpecBench have observed coding agents editing tests and hardcoding expected outputs.
 
-1. Add the guard `.claude/hooks/protect-signal.sh`:
-
-```bash
-#!/usr/bin/env bash
-# Tests and eval baselines are read-only unless the session's TASK_MODE allows them.
-f=$(jq -r '.tool_input.file_path // empty')
-cd "$CLAUDE_PROJECT_DIR"
-rel=${f#"$CLAUDE_PROJECT_DIR"/}
-mode=${TASK_MODE:-impl}
-case "$rel" in
-  tests/holdout/*) ;;                                              # never editable by the agent
-  evals/golden/*|configs/eval_thresholds.yaml) [ "$mode" = "baseline" ] && exit 0 ;;
-  *) .claude/quality.sh is-test "$rel" || exit 0                   # not a test file: allow
-     [ "$mode" = "tests" ] && exit 0 ;;
-esac
-echo "BLOCKED: $rel is part of the verification signal and is read-only in TASK_MODE=$mode. If it looks wrong, stop and explain why instead of editing it." >&2
-exit 2
-```
-
+1. The guard is `hooks/protect-signal.sh`. It always blocks `.claude/quality.sh` and each glob in `.claude/protected-paths`, such as `tests/holdout/*` or `evals/golden/*`.
 2. One session writes both the tests and the code. This setup dropped the separate tests session because switching sessions cost too much. No hook stops a test edit; only the execution rules below do.
 3. Add the execution rules to the root CLAUDE.md. The first rule matters most: in ImpossibleBench, a single "stop if tests are flawed" instruction cut one model's test-gaming rate from 93% to 1%.
 
