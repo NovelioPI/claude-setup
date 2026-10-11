@@ -12,14 +12,17 @@ fi
 COMMAND=$(printf '%s' "$INPUT" | jq -r '.tool_input.command // empty')
 [ -z "$COMMAND" ] && exit 0
 
+# Reason: a prefix, a path, or a git option before the subcommand must not skip the guard.
+GIT_PREFIX='((sudo|env|rtk|command|exec|time)[[:space:]]+|[A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*[[:space:]]+)*([^[:space:]]*/)?git([[:space:]]+(-[cC][[:space:]]*[^[:space:]]+|--[^[:space:]]+))*[[:space:]]+'
+
 DANGEROUS_PATTERNS=(
-  'git[[:space:]]+reset[[:space:]].*--hard'
-  'git[[:space:]]+clean[[:space:]].*(-[^[:space:]]*f|--force)'
-  'git[[:space:]]+branch[[:space:]].*-D'
-  'git[[:space:]]+checkout[[:space:]]+\.([[:space:]]|$)'
-  'git[[:space:]]+restore[[:space:]]+\.([[:space:]]|$)'
+  'reset[[:space:]].*--hard'
+  'clean[[:space:]].*(-[^[:space:]]*f|--force)'
+  'branch[[:space:]].*-D'
+  'checkout[[:space:]]+\.([[:space:]]|$)'
+  'restore[[:space:]]+\.([[:space:]]|$)'
   # Reason: --force-with-lease refuses to overwrite unseen commits, so only plain force is blocked.
-  'git[[:space:]]+push[[:space:]](.*[[:space:]])?(--force([[:space:]]|$)|-[^-[:space:]]*f)'
+  'push[[:space:]](.*[[:space:]])?(--force([[:space:]]|$)|-[^-[:space:]]*f|\+[^[:space:]])'
 )
 
 # Match each chained segment at its own start, so a dangerous string quoted
@@ -28,7 +31,7 @@ SEGMENTS=$(printf '%s' "$COMMAND" | sed -E 's/(\|\||&&|;|\|)/\n/g')
 
 while IFS= read -r segment; do
   for pattern in "${DANGEROUS_PATTERNS[@]}"; do
-    if printf '%s' "$segment" | grep -qE "^[[:space:]]*(sudo[[:space:]]+)?(${pattern})"; then
+    if printf '%s' "$segment" | grep -qE "^[[:space:]]*${GIT_PREFIX}(${pattern})"; then
       echo "BLOCKED: '${COMMAND}' matches the guarded pattern '${pattern}'. The user has not given you authority to run this." >&2
       exit 2
     fi
