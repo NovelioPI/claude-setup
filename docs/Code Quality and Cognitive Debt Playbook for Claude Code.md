@@ -440,7 +440,7 @@ Inputs:
 - Run `git diff HEAD > .agent/review.diff` and `git diff HEAD --stat`, then read
   .agent/review.diff with the Read tool. Do not rely on diff output printed in
   the shell: it may be compressed by RTK, the file is not.
-- The spec section named by the caller.
+- The Linear issue named by the caller.
 
 Check, in this order:
 1. Signal tampering: any change under tests/, evals/golden/ or eval thresholds?
@@ -465,7 +465,7 @@ End with: VERDICT: PASS or VERDICT: FIX (if any Critical or Major).
 description: Review the current task diff, fix serious findings, report the rest
 ---
 
-1. Run the reviewer subagent on the current diff, passing the spec section for this task.
+1. Run the reviewer subagent on the current diff, passing the Linear issue for this task.
 2. Fix every Critical and Major finding. Do not touch protected paths.
 3. Run the reviewer once more on the updated diff.
 4. Report to me: remaining Minor findings, anything you disagreed with and why,
@@ -508,7 +508,7 @@ Ownership decides my involvement; the workflow tier decides planning.
 They are independent.
 ```
 
-The Core rules stay in the root, not in a nested file. A tests session often works only in `tests/`, so it would never load a `CLAUDE.md` inside a Core directory.
+The Core rules stay in the root, not in a nested file. A session often works only in `tests/`, so it would never load a `CLAUDE.md` inside a Core directory.
 
 Revisit the map at each milestone. An area moves up a level when incidents or confusion cluster there.
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Sourced by protect-signal.sh, commit-gate.sh, post-edit.sh, and stop-gate.sh.
-# Matches a path against <project>/.claude/protected-paths, or the default test patterns,
+# Matches a path against <project>/.claude/protected-paths, and the adapter,
 # and finds a trusted project adapter.
 
 # Prints an absolute path with `.`, `..`, and repeated slashes removed.

@@ -51,7 +51,7 @@ Four pieces: a tier rule in CLAUDE.md, a way to name the feature, the Linear plu
 - Tier 2: the work spans several sessions or needs parallel subagents.
   Propose /plan-feature and wait for a token.
 - Never create a plan file or a shared task list for single-session work.
-- On a feature, read only the spec section that your task names, plus Decisions.
+- On a feature, read only your Linear issue, plus the project Decisions.
 - The tier decides the planning files. Ownership levels decide my involvement.
   A Tier 0 fix in Core still follows the Core rules.
 - The tier never skips the Approval Protocol. Tier 0 still needs a token.

@@ -23,7 +23,7 @@ repo/
 │   └── hooks/                    # pre-compact + session-start scripts
 └── .agent/
     ├── progress.md               # current state, rewritten each handoff
-    │   (no task file)            # tasks: built-in Tasks, ~/.claude/tasks
+    │   (no task file)            # tasks: Linear issues
     └── lessons.md                # append-only playbook from /reflect
 ```
 
@@ -178,7 +178,7 @@ Check: ask the main session "how is X implemented?" and confirm it delegates. Th
 The working state of a task should live on disk, not in the conversation, so that losing the conversation costs nothing.
 
 1. Create `.agent/progress.md`. It is rewritten (not appended) at each handoff and stays under \~60 lines.
-2. Track tasks with Claude Code's built-in Tasks instead of a file. They support dependencies, persist across compaction and `/clear`, and can be shared across sessions with `CLAUDE_CODE_TASK_LIST_ID`. Setup is in the companion workflow doc linked below.
+2. Track tasks as Linear issues instead of a file. Setup is in the companion workflow doc linked below.
 3. Commit after every completed task. `git log --oneline -20` then becomes a free, exact history.
 4. Add a `/handoff` command that writes all of the above in one step.
 
@@ -207,9 +207,9 @@ Template `.agent/progress.md`:
 - <...>
 ```
 
-**Planning and task workflow.** When to plan, when to write a spec, and how to run multi-session features on a shared task list are covered in a separate doc: Planning and Task Workflow for Claude Code
+**Planning and task workflow.** When to plan, when to write a spec, and how to run multi-session features on a Linear project are covered in a separate doc: Planning and Task Workflow for Claude Code
 
-In short: small tasks get no plan and no task list, multi-session features get a \~2-page spec plus shared Tasks, and big projects are decomposed one milestone at a time.
+In short: small tasks get no plan and no task list, multi-session features get a Linear project with one issue per task, and big projects are decomposed one milestone at a time.
 
 Command `.claude/commands/handoff.md`:
 
@@ -293,7 +293,7 @@ rm -f .agent/.skip-gate   # re-enable the Playbook's Stop gate after a handoff
 echo "=== Restored working state ==="
 [ -f .agent/progress.md ] && head -c 6000 .agent/progress.md
 echo; echo "=== Tasks ==="
-echo "Built-in Tasks persist across compaction; list the open ones before continuing."
+echo "Open tasks live in Linear; /next-task lists them."
 echo; echo "=== Git ==="
 [ -f .agent/snapshot.md ] && head -c 3000 .agent/snapshot.md || git log --oneline -5
 ```

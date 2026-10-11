@@ -1,6 +1,6 @@
 #!/bin/bash
 # PreToolUse hook. Blocks edits to existing files that match a protected pattern
-# (.claude/protected-paths, or the defaults), and creation of a file a pattern names exactly.
+# (.claude/protected-paths, and the adapter), and creation of a file a pattern names exactly.
 
 source "$(dirname "$0")/protected-paths.sh"
 
