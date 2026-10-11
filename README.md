@@ -81,7 +81,6 @@ so take it without asking.
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
 | `commands/reflect.md` | `/reflect`: proposes lessons for `.agent/lessons.md` |
 | `commands/check-task.md` | `/check-task`: reviews the diff, fixes Critical and Major findings, reports the rest |
-| `commands/walkthrough.md` | `/walkthrough`: checks that I understand a change before the commit; logs PASS or GAPS |
 | `commands/plan-feature.md` | `/plan-feature`: drafts a spec and a task graph, writes after a token |
 | `commands/next-task.md` | `/next-task`: picks the next task for the session mode; asks for a token before the work and before the commit |
 | `commands/auto.md` | `/auto`: plans a task and runs it to the end under Auto Mode |
@@ -91,7 +90,7 @@ so take it without asking.
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
-| `scripts/debt-report.sh` | Print the Step 11 cognitive debt numbers: fix commits without a root cause, walkthrough results |
+| `scripts/debt-report.sh` | Print the Step 11 cognitive debt numbers: fix commits without a root cause |
 | `scripts/shell.zsh` | Shell launchers: `cct` starts a `TASK_MODE=tests` session; `ccf <feature> [mode]` adds a shared task list |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |

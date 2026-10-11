@@ -132,8 +132,7 @@ description: Pick up and finish the next unblocked task for this session's mode
 6. Run its check. [tests]: the new tests run and fail for the expected reason.
    Other modes: the check passes. If it fails, fix the code or stop and report.
    Never edit a test to make it pass.
-7. Important or Core code: run /walkthrough and wait for PASS.
-8. If the approach had to change, append a dated line to the spec's Decisions
+7. If the approach had to change, append a dated line to the spec's Decisions
    section. Do not rewrite the spec. Propose the commit, including that line,
    and wait for a token. Then commit, mark the task done, and run /handoff.
 ```
@@ -152,7 +151,7 @@ Plan in one session, execute each task in its own fresh session, and close the f
 **Execution sessions (repeat per task)**
 
 1. `ccf export-csv <mode>` with the mode in the task title, then `/next-task`.
-2. Each task asks for a token before the work and before the commit. Important tasks also pause for `/walkthrough`, and Core tasks pause for your choice of approach and for `/walkthrough`. Each task commits, marks itself done and writes progress.md via `/handoff`.
+2. Each task asks for a token before the work and before the commit. Core tasks also pause for your choice of approach. Each task commits, marks itself done and writes progress.md via `/handoff`.
 3. `/clear` (or exit) and repeat. Run independent tasks in parallel only in separate git worktrees on the same list; in a shared checkout the Stop gate would see the other session's changes.
 
 **When reality diverges from the plan**

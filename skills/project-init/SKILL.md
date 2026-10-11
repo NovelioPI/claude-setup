@@ -65,9 +65,7 @@ command.
     words and write property tests from them. Write no source code.
   - Impl session (TASK_MODE empty or impl): write all the code; do not write or
     edit tests. If the task has no tests yet, list the invariants it needs and
-    ask the user to restart with TASK_MODE=tests first. Commit only after a
-    /walkthrough PASS.
-- Important (Claude writes; the user reads every line; end the task with /walkthrough;
-  do not commit on GAPS): <paths>
+    ask the user to restart with TASK_MODE=tests first.
+- Important (Claude writes; the user reads every line): <paths>
 - Plumbing (delegate; the quality gates are enough): everything else
 ```

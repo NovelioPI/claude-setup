@@ -15,7 +15,6 @@ description: Pick up and finish the next unblocked task for this session's mode
 6. Run its check. [tests]: the new tests run and fail for the expected reason.
    Other modes: the check passes. If it fails, fix the code or stop and report.
    Never edit a test to make it pass.
-7. Important or Core code: run /walkthrough and wait for PASS.
-8. If the approach had to change, append a dated line to the spec's Decisions
+7. If the approach had to change, append a dated line to the spec's Decisions
    section. Do not rewrite the spec. Propose the commit, including that line,
    and wait for a token. Then commit, mark the task done, and run /handoff.
