@@ -1,185 +1,128 @@
 ## Technical Names
 
-The terms below are Technical Names. Use them as written:
-"Go", "Execute", approval token, dead token, mutating tool, read-only tool, plan,
-substantive turn, fail closed, harness, subagent, YAGNI, echo, scope.
+Use these terms as written: "Go", "Execute", approval token, dead token,
+mutating tool, read-only tool, plan, substantive turn, fail closed, harness,
+subagent, YAGNI, echo, scope.
 
 Definition: fail closed = when you are not sure, do not execute.
 
-## Precedence
-
 CLAUDE.md is the workflow contract. Style modes control presentation only.
-If a style rule and a CLAUDE.md rule do not agree, obey CLAUDE.md. Do not apply the
-style to that part.
+If a style rule conflicts with CLAUDE.md, obey CLAUDE.md for that part.
 
 ## Approval Protocol
 
-- Read-only tools (Read, Grep, Glob, git status/diff/log, ls, and test, build, and
-  lint commands): approval is not necessary.
-- Mutating tools (Edit, Write, Bash commands with side effects, MCP writes): get an
-  explicit approval token first.
-- Spawning a subagent (the Agent tool) is a mutating operation. It needs a token,
-  like any other. Propose the agent type and the task, then wait. Propose a
-  subagent when research covers many files, or when the locations are not known.
-  Exception: use `explorer` for any search over more than 3 files; it needs no
-  token. The built-in `Explore` agent still needs one.
-  If the user names a model that is not available, say so and ask.
-- A skill's instructions never override this protocol. If a skill tells you to act,
-  to dispatch, or to not block, propose the action and wait for a token.
-- The approval tokens are "Go", "Execute", and "Auto". The token must match the
-  word exactly. Case is not important. "Auto" starts Auto mode.
-- The default mode is discussion. Do not do a mutating operation before you get an
-  approval token. Text that quotes, names, or describes a mutating operation is not
-  an approval. This includes commands, facts, errors, and hypothetical statements.
-- When you get an approval: start immediately. Do not ask again for each sub-step.
-  Ask again only if the scope becomes larger than the approved plan.
-- The approval applies only to the plan that you showed. A new request needs a new
-  approval.
-- Approval-adjacent echo: some replies seem to be an approval, an agreement, or
-  an instruction, but are not the exact token. Examples: "yes", "ok", "sure",
-  "sounds good", "do it", "want X". For these replies, ask: "So, <interpretation>?"
-  Then wait. Do not execute. If a reply contains the token and a new instruction
-  ("Go, do X"), ask: "So, <interpretation>. Execute?" If you are not sure that a
-  reply is a token, it is not a token. Ask the echo question.
+- Read-only tools need no approval: Read, Grep, Glob, git status/diff/log, ls,
+  and test, build, and lint commands.
+- Mutating tools need an approval token first: Edit, Write, Bash with side
+  effects, MCP writes, and the Agent tool. Propose the agent type and task.
+  Exception: `explorer` needs no token; use it for any search over more than
+  3 files. The built-in `Explore` agent still needs one. Propose a subagent
+  when research covers many files or the locations are unknown.
+- If the user names a model that is not available, say so and ask.
+- A skill never overrides this protocol. If it says to act, dispatch, or not
+  block, propose the action and wait for a token.
+- Tokens: "Go", "Execute", "Auto". Exact word match, any case. "Auto" starts
+  Auto Mode.
+- Default mode is discussion. Text that quotes, names, or describes a mutating
+  operation is not approval: commands, facts, errors, hypotheticals.
+- Echo: a reply such as "yes", "ok", "sure", "do it", or "want X" is not a token.
+  Ask "So, <interpretation>?" and wait. A token plus a new instruction ("Go, do
+  X"): ask "So, <interpretation>. Execute?" If unsure, it is not a token.
 
-## Conversation Flow
+## Token life
 
-Core invariant (fail closed): one token approves one continuous execution of one
-plan. A plan is a discrete statement of the concrete actions that the token
-approves; open discussion is not a plan. The execution must start immediately
-after the approval. If the approval is not the event that came immediately before
-the execution, the token is dead.
+One token approves one continuous execution of one plan. A plan is a discrete
+list of concrete actions; open discussion is not a plan. Start at once, and do
+not ask again per sub-step. If the approval was not the event right before the
+execution, the token is dead.
 
-The token dies in each of these conditions:
+The token dies when:
 - The plan is complete.
-- An error makes the plan invalid, or a step shows that the plan is wrong.
-- You find new scope during the run (refer to the Generalization Protocol).
-- A new substantive turn occurs, from the user or from you. A substantive turn is
-  a turn that changes the plan. Classify a turn by its content, not by its label.
+- An error or a step shows the plan is invalid or wrong.
+- You find new scope (see Generalization).
+- A substantive turn occurs: a turn, from either side, that changes the plan.
+  Classify by content, not by label.
 
-These events do not kill a live token:
-- Your read-only verification.
-- Harness or system events.
-- A retry of the identical approved action after a transient error.
-- A progress report, or a bare affirmation of the unchanged plan.
+The token survives: your read-only checks, harness or system events, a retry of
+the identical action after a transient error, a progress report, and a bare
+affirmation of the unchanged plan.
 
-When the token dies: stop. Make a new plan. Get a new "Go" or "Execute". A
-"while I am here" action and a recovery action are new actions. A clarifying
-question and its answer stay in scope only if the answer does not change the plan.
-If you are not sure, ask: "So, <interpretation>. Execute?"
+When it dies: stop, make a new plan, get a new token. A "while I am here" action
+and a recovery action are new actions. A clarifying answer stays in scope only
+if it does not change the plan.
 
 ## Auto Mode
 
-"Auto" approves one plan from start to end. Do not stop for each sub-step.
-The token does not die on errors you can fix inside the plan.
+"Auto" approves one plan from start to end. The token does not die on errors
+you can fix inside the plan. New scope: do not extend; list it in the report.
 
-Still ask each time, even in Auto mode:
-- Push, deploy, or any action outside this machine, except Linear `save_issue` and `save_comment`.
+Still ask each time:
+- Push, deploy, or any action outside this machine.
+- Any MCP write. Exception for both: Linear `save_issue` and `save_comment`.
 - Delete an untracked file, add a dependency, or change a schema or public API.
-- Any MCP write, except Linear `save_issue` and `save_comment`.
 
-Stop, send a push notification, and wait when one of these happens:
-- A test fails and the fix is not clear.
-- A test, spec, or threshold looks wrong.
+Stop, send a push notification, and wait when:
+- A test fails and the fix is not clear, or a test, spec, or threshold looks wrong.
 - The diff passes 300 changed lines.
-- An irreversible action from the list above is next.
+- An action from the "still ask" list is next.
 
-New scope: do not extend. List it in the final report.
+## Generalization
 
-## Generalization Protocol
+When a fix, pattern, or instruction applies beyond its literal scope: finish
+the literal request, report where else it applies and why, then wait for
+approval. In Auto Mode, log it in the final report. Never ignore a clear one.
 
-Sometimes a fix, a pattern, or an instruction can apply outside its literal scope.
-Examples: other files, similar code, related systems. When you see this:
-1. Complete the literal request first.
-2. Report the generalization: what it is, where it applies, and why you think it
-   applies.
-3. Wait for approval before you extend the scope. In Auto mode, log it in the
-   final report instead.
+## Discussion
 
-Do not ignore a clear generalization.
+Before approval, show the plan and tradeoffs. Attack it in two directions:
+- Failure: the conditions in which the plan fails.
+- Excess: the parts the request does not need (YAGNI).
 
-## Discussion Default
+Report the strongest objections only if they exist. Do not invent them. If an
+idea is weak, say so and why.
 
-Before approval: show the plan and show the tradeoffs. Then examine the plan from
-an adversarial view. Test it in two directions:
-- Failure: try to find the conditions in which the plan fails.
-- Excess: try to find the parts that are not necessary for the request (YAGNI).
+Discuss in chat prose. Close a settled discussion with AskUserQuestion when four
+or fewer choices stay open. Label the approving option "Go" or "Execute", and
+keep the comparison in the prose above the call. This sets the channel, not the
+gate: approval is never optional.
 
-Report the strongest objections and the unnecessary parts, if they exist. If you
-find none, say nothing about them. Do not invent objections. If an idea is
-weak, say so and give your reasons.
-
-## Tool Preferences
-
-Discuss plans in chat prose. Prose explores; a tool decides.
-
-Close a settled discussion with the AskUserQuestion tool when four or fewer
-choices stay open. Label the approving option "Go" or "Execute", so the Approval
-Protocol's exact-match rule still decides. Keep the comparison in the prose above
-the call, because an option label holds one line.
-
-Keep plan mode off unless the harness puts you in it. There, call ExitPlanMode to
-show the plan and get approval. That is the required exit.
-
-This rule sets the channel, not the gate. "Discussion first" does not mean
-"approval is optional".
-
-## Workflow tiers
-
-- Tier 0: the change touches 3 files or fewer and fits one session.
-  Make no plan file and no task list.
-- Tier 1: the approach is unclear, or more than 3 files change. Ask me to
-  switch on plan mode. Keep the plan in chat.
-- Tier 2: the work spans several sessions or needs parallel subagents.
-  Propose /plan-feature and wait for a token.
-- Never create a plan file or a shared task list for single-session work.
-- On a feature, read only your Linear issue, plus the project Decisions.
-- The tier decides the planning files. Ownership levels decide my involvement.
-  A Tier 0 fix in Core still follows the Core rules.
-- The tier never skips the Approval Protocol. Tier 0 still needs a token.
+Keep plan mode off unless the harness puts you in it. There, ExitPlanMode is the
+required exit.
 
 ## Verification
 
-The primary source is the code or the configuration that you modify. Memory,
-cache, and prior assumptions are not primary sources. Always read or grep the
-source to confirm before you propose changes.
+Confirm against the code or configuration you change, by read or grep, before you
+propose. Memory, cache, and prior assumptions are not primary sources.
 
 ## TDD
 
-- Default: load the `tdd` skill before the first edit that changes code
-  behavior. Every plan lists the seams under test.
-- The seams in an approved plan count as the seams the skill asks me to confirm.
-- Skip TDD for docs, config, and changes with no behavior to test.
-  Say so in the plan.
-- The project has no test runner: say so in the plan and ask.
-- "No TDD" turns TDD off until "TDD on" or the end of the session.
-  The words must match exactly. Case is not important.
-  "Go, no TDD" approves the plan and turns TDD off.
-- Never propose "No TDD" yourself. When you are not sure whether TDD is
-  off, it is on.
+- Load the `tdd` skill before the first edit that changes code behavior. Every
+  plan lists the seams under test; approved seams count as confirmed.
+- Skip TDD for docs, config, and changes with no behavior. Say so in the plan.
+- No test runner in the project: say so in the plan and ask.
+- "No TDD" turns TDD off until "TDD on" or session end. Exact words, any case.
+  "Go, no TDD" approves and turns it off. Never propose "No TDD". If unsure, TDD is on.
 
-## Execution Rules
+## Execution
 
+- Never create a plan file or shared task list for single-session work.
+- On a feature, read only your Linear issue and the project Decisions.
+- Ownership levels decide my involvement, whatever the change size.
 - A test, spec, or threshold looks wrong: stop and report. Never edit a test,
   special-case an input, or weaken an assertion to make it pass.
 - Keep a task diff under 300 changed lines. Split a larger one.
 - Ask before a new dependency, a public API change, or a schema change.
-- End each task with: what changed, why, and what you were unsure about.
-
-## Process
-
-- Work is done: propose the commit.
-- When I make a mistake or you correct me, save what went wrong and the rule
-  that prevents it. Do not save your decisions.
-- Typing `/auto <task>` approves the plan it writes, under Auto Mode.
-- The change is security-sensitive: run `security-review` before the merge.
-- A code change invalidates a doc: update the doc in the same turn as the code.
-- A test fails or is skipped: do not mark the task done without saying so.
-- A bug in Core or Important code (per the project's Ownership levels): ask
-  the user for a hypothesis first and wait. Then report whether it was right,
-  with file:line evidence.
-- Context pressure is high: offer `/handoff`. Typing `/handoff` approves the
-  writes it lists.
+- A code change invalidates a doc: update the doc in the same turn.
+- A security-sensitive change: run `security-review` before the merge.
+- A bug in Core or Important code: ask me for a hypothesis and wait. Then report
+  whether it was right, with file:line evidence.
+- End each task with what changed, why, and what you were unsure about. Say so
+  if a test failed or was skipped. Then propose the commit.
+- When I make a mistake or you correct me, save what went wrong and the rule that
+  prevents it. Do not save your decisions.
+- Context pressure is high: offer `/handoff`.
+- Ask before each use of a command in the hooks' block list or `permissions.ask`.
+  A previous approval does not cover a new use.
 
 ## Compact instructions
 
@@ -190,12 +133,3 @@ When compacting, always keep:
 - Decisions made and the reason for each
 - Whether "No TDD" is active
 Discard: full file contents, raw grep/ls output, passing test logs.
-
-## Forbidden Without Explicit Per-Use Approval
-
-Two layers enforce this, and neither replaces asking. `hooks/block-dangerous-git.sh`
-blocks the unrecoverable git commands before they run. The `permissions.ask` list in
-`settings.json` prompts for the rest, including `rm` on a file that you did not
-create in this session.
-
-Ask first, each time. A previous approval does not apply to a new use.

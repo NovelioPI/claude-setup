@@ -6,17 +6,17 @@ description: Widen a raw idea into a feature space, grounded tech facts, and a n
 # Brainstorm an idea
 
 This skill widens an idea. AskUserQuestion closes the decisions it finds, per
-the Tool Preferences section of CLAUDE.md.
+the Discussion section of CLAUDE.md.
 
 ## Classify first
 
 Say the path out loud before the first question, so the user can override it.
 
-| Path | Trigger | Output | Passes | Tier |
-|---|---|---|---|---|
-| `probe` | a feasibility question, where the answer is the deliverable | an answer in chat | none | 0 |
-| `bounded` | a change to a flow that already exists in this repo | a decision list in chat | Narrow | 1 |
-| `project` | a new project, a new subsystem, or a changed interface others depend on | a file in `docs/plans/` | all three | 3 |
+| Path | Trigger | Output | Passes |
+|---|---|---|---|
+| `probe` | a feasibility question, where the answer is the deliverable | an answer in chat | none |
+| `bounded` | a change to a flow that already exists in this repo | a decision list in chat | Narrow |
+| `project` | a new project, a new subsystem, or a changed interface others depend on | a file in `docs/plans/` | all three |
 
 `bounded` measures the repo, not your familiarity. A flow you cannot open and
 read is not bounded.

@@ -5,6 +5,8 @@ argument-hint: <task>
 
 Task: $ARGUMENTS
 
+Typing `/auto <task>` approves the plan this command writes, under Auto Mode.
+
 1. If the task is empty or unclear, ask one question and stop. Do not guess.
 2. Write the plan in chat: the files, the actions, the seams under test, and
    the first failing test.

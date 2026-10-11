@@ -2,6 +2,8 @@
 description: Write current working state to disk before clearing or stopping
 ---
 
+Typing `/handoff` approves the writes listed below.
+
 1. If `.agent/` does not exist, create it, and create `.agent/.gitignore` with
    one line: `*`.
 2. Rewrite `.agent/progress.md`. Use the existing section headings, or the

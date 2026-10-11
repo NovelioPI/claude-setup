@@ -1,3 +1,8 @@
+---
+paths:
+  - "**/*.{py,pyi,ts,tsx,js,jsx,mjs,cjs,c,cc,cpp,cxx,h,hpp,kt,kts,dart,sh,go,rs,java}"
+---
+
 ## Code Quality
 
 Definition: cognitive debt = the mental effort a reader needs to hold code in mind.

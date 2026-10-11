@@ -113,10 +113,12 @@ Known gaps in the guards:
 - `stop-gate.sh` keeps its last result in `claude-stop-gate` in the git dir. A change to a git-ignored file, a tool, `.venv`, or `node_modules` does not rerun it.
 - `scripts/quality.sh` runs `ruff check --fix` and `ktlint -F` even with no project config.
 
-Claude Code auto-loads every file under `rules/` into every session and every
-subagent, with no import line needed. `guides/` is the opposite: nothing loads
-it, and a pointer in `rules/code-quality.md` sends the agent there on its first
-edit in that language. That split is worth about 5,500 words per context.
+Claude Code auto-loads every file under `rules/` with no import line needed.
+`plain-words.md` and `commit-style.md` load in every session. `code-quality.md`
+and `doc-style.md` have `paths:` frontmatter, so each loads only when Claude
+reads or edits a matching code or Markdown file. A Bash heredoc write does not
+trigger them. `guides/` is never auto-loaded: a pointer in `rules/code-quality.md`
+sends the agent there on its first edit in that language.
 
 An output style file does nothing on its own. `settings.json` activates one with
 `"outputStyle": "plain-style"`.

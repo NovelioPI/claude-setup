@@ -107,7 +107,7 @@ wrong one.
 
 Close the set with the AskUserQuestion tool when four or fewer decisions
 stay open. Keep the comparison table in the prose above the call. The
-Tool Preferences section of CLAUDE.md carries the approval rule.
+Discussion section of CLAUDE.md carries the approval rule.
 
 # Relations
 
