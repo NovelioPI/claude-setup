@@ -17,9 +17,10 @@ these files will look like too much process.
 
 ## What is different here
 
-**The agent waits for a word.** Not "yes", not "sounds good", but the literal
-token `Go`, `Execute`, or `Auto`. One token approves one plan, and the token
-dies when the plan changes. `CLAUDE.md` calls this failing closed. `Auto` runs
+**The agent waits for approval.** Any reply that clearly approves the plan it
+just showed counts, such as "go", "yes", or "sounds good". An unclear reply gets
+a question back. Only `Auto` must be the exact word. One approval covers one
+plan, and it dies when the plan changes. `CLAUDE.md` calls this failing closed. `Auto` runs
 the plan to the end and still stops before an action you cannot undo.
 
 **Comments are off by default.** A comment earns its place by naming a hidden

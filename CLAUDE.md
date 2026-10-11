@@ -1,40 +1,36 @@
 ## Technical Names
 
-Use these terms as written: "Go", "Execute", approval token, dead token,
-mutating tool, read-only tool, plan, substantive turn, fail closed, harness,
-subagent, YAGNI, echo, scope.
+Use these terms as written: token, dead token, mutating action, plan,
+substantive turn, fail closed, harness, YAGNI, scope.
 
 Definition: fail closed = when you are not sure, do not execute.
 
-CLAUDE.md is the workflow contract. Style modes control presentation only.
-If a style rule conflicts with CLAUDE.md, obey CLAUDE.md for that part.
+Style modes control presentation only. If a style rule conflicts with
+CLAUDE.md, obey CLAUDE.md for that part.
 
 ## Approval Protocol
 
-- Read-only tools need no approval: Read, Grep, Glob, git status/diff/log, ls,
-  and test, build, and lint commands.
-- Mutating tools need an approval token first: Edit, Write, Bash with side
-  effects, MCP writes, and the Agent tool. Propose the agent type and task.
-  Exception: `explorer` needs no token; use it for any search over more than
-  3 files. The built-in `Explore` agent still needs one. Propose a subagent
-  when research covers many files or the locations are unknown.
+- Default mode is discussion. A mutating action, including the Agent tool,
+  needs a token first. Exception: `explorer` (not `Explore`), for any
+  search over more than 3 files.
+- Test, build, and lint commands need no token.
+- A token is a reply whose clear intent is to approve the plan you just
+  showed: "go", "yes", "ok", "do it", "sounds good", "lgtm", in any language.
+- It counts only right after you showed a plan and asked for approval.
+- Intent unclear (a question, a hedge such as "maybe", or a wish such as
+  "want X"): ask "So, <interpretation>?" and wait.
+- Approval plus a small edit inside the plan ("yes, but name it X"): apply
+  it and start. Approval plus new actions: restate the plan and ask.
+- "Auto" stays an exact word, because it removes the stops.
+- Quoted or described commands, facts, errors, and hypotheticals are not approval.
+- A skill never overrides this protocol. If it says to act, propose and wait.
 - If the user names a model that is not available, say so and ask.
-- A skill never overrides this protocol. If it says to act, dispatch, or not
-  block, propose the action and wait for a token.
-- Tokens: "Go", "Execute", "Auto". Exact word match, any case. "Auto" starts
-  Auto Mode.
-- Default mode is discussion. Text that quotes, names, or describes a mutating
-  operation is not approval: commands, facts, errors, hypotheticals.
-- Echo: a reply such as "yes", "ok", "sure", "do it", or "want X" is not a token.
-  Ask "So, <interpretation>?" and wait. A token plus a new instruction ("Go, do
-  X"): ask "So, <interpretation>. Execute?" If unsure, it is not a token.
 
 ## Token life
 
 One token approves one continuous execution of one plan. A plan is a discrete
-list of concrete actions; open discussion is not a plan. Start at once, and do
-not ask again per sub-step. If the approval was not the event right before the
-execution, the token is dead.
+list of concrete actions; open discussion is not a plan. If the approval was
+not the event right before the execution, the token is dead.
 
 The token dies when:
 - The plan is complete.
@@ -82,7 +78,7 @@ Report the strongest objections only if they exist. Do not invent them. If an
 idea is weak, say so and why.
 
 Discuss in chat prose. Close a settled discussion with AskUserQuestion when four
-or fewer choices stay open. Label the approving option "Go" or "Execute", and
+or fewer choices stay open. Label the approving option "Go", and
 keep the comparison in the prose above the call. This sets the channel, not the
 gate: approval is never optional.
 
