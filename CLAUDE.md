@@ -1,7 +1,7 @@
 ## Technical Names
 
-Use these terms as written: token, dead token, mutating action, plan,
-substantive turn, fail closed, harness, YAGNI, scope.
+Use these terms as written: token, mutating action, plan, fail closed,
+harness, YAGNI, scope.
 
 Definition: fail closed = when you are not sure, do not execute.
 
@@ -26,30 +26,17 @@ CLAUDE.md, obey CLAUDE.md for that part.
 - A skill never overrides this protocol. If it says to act, propose and wait.
 - If the user names a model that is not available, say so and ask.
 
-## Token life
+## Approval scope
 
-One token approves one continuous execution of one plan. A plan is a discrete
-list of concrete actions; open discussion is not a plan. If the approval was
-not the event right before the execution, the token is dead.
-
-The token dies when:
-- The plan is complete.
-- An error or a step shows the plan is invalid or wrong.
-- You find new scope (see Generalization).
-- A substantive turn occurs: a turn, from either side, that changes the plan.
-  Classify by content, not by label.
-
-The token survives: your read-only checks, harness or system events, a retry of
-the identical action after a transient error, a progress report, and a bare
-affirmation of the unchanged plan.
-
-When it dies: stop, make a new plan, get a new token. A "while I am here" action
-and a recovery action are new actions. A clarifying answer stays in scope only
-if it does not change the plan.
+One approval covers one plan you saw, run once, start to finish.
+Stop and ask again when the plan is done, a step shows it is wrong,
+new scope appears, or either of us changes the plan.
+A "while I am here" fix or a recovery action is new scope.
+Read-only checks, retries, and progress reports do not end it.
 
 ## Auto Mode
 
-"Auto" approves one plan from start to end. The token does not die on errors
+"Auto" approves one plan from start to end. The approval does not end on errors
 you can fix inside the plan. New scope: do not extend; list it in the report.
 
 Still ask each time:
