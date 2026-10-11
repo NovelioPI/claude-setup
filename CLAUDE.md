@@ -156,7 +156,9 @@ source to confirm before you propose changes.
 
 - Work is done: propose the commit. Typing
   `/check-task` approves the reviewer subagent and the Critical and Major fixes
-  it lists. After the commit, offer `/reflect`.
+  it lists.
+- When I make a mistake or you correct me, save what went wrong and the rule
+  that prevents it. Do not save your decisions.
 - Typing `/auto <task>` approves the plan it writes, under Auto Mode.
 - The change is security-sensitive: run `security-review` before the merge.
 - A code change invalidates a doc: update the doc in the same turn as the code.

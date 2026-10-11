@@ -79,7 +79,6 @@ so take it without asking.
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
-| `commands/reflect.md` | `/reflect`: proposes lessons for `.agent/lessons.md` |
 | `commands/check-task.md` | `/check-task`: reviews the diff, fixes Critical and Major findings, reports the rest |
 | `commands/plan-feature.md` | `/plan-feature`: drafts a spec and a task graph, writes after a token |
 | `commands/next-task.md` | `/next-task`: picks the next task for the session mode; asks for a token before the work and before the commit |
