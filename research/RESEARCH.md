@@ -25,3 +25,7 @@ benchmarks, and datasets.
 - Explore in this order: `research:papers`, `research:ideas`,
   `research:experiment-plan`. Files live in `notes/` and
   `experiments/<exp>/plan.md`.
+- Before the first job start in a session, read
+  `~/.claude/research/guides/long-runs.md`.
+- Before the first edit to a notebook, read `~/.claude/research/guides/notebooks.md`.
+- Compare runs with the `research:compare-runs` skill.

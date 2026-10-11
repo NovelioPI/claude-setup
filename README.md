@@ -94,6 +94,9 @@ so take it without asking.
 | `research/guides/mlflow.md` | MLflow rules: MCP first, then the Python client or CLI; never delete; tags set in run code |
 | `research/guides/experiment-log.md` | Rules for `experiments/<experiment>/log.md`: entry format, when to write, run tags |
 | `research/skills/weekly-report/` | `research:weekly-report`: `reports/weekly/<YYYY>-W<ww>.md` from the logs and MLflow, then the summary and, on approval, a Slides deck |
+| `research/skills/compare-runs/` | `research:compare-runs`: table, plot, and bootstrap interval across MLflow runs, with git commits |
+| `research/guides/notebooks.md` | Notebook rules: logic in modules, seeds first, run top to bottom, no outputs in git |
+| `research/guides/long-runs.md` | Run rules for SSH: every job in detached `tmux` with a log, watched by Monitor |
 | `research/guides/llm-api.md` | Rules for code that calls an LLM API, with a request-hash response cache |
 | `research/guides/prompts.md` | Rules for prompts: Jinja2 files in `prompts/<task>/`, loaded by name, hashed in MLflow |
 | `research/skills/papers/` | `research:papers`: search Semantic Scholar, arXiv, and HF; keep `notes/reading-list.md`; write `notes/papers/<id>.md` with a source for every number |
