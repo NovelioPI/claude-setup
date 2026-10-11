@@ -218,15 +218,7 @@ Known gap: the hook covers Claude's edit tools, not shell commands such as `sed 
 
 Tests that live inside source files, such as Rust `#[cfg(test)]` modules or doctests, cannot be protected by path. The reviewer's tampering check covers them; for Core code, consider moving acceptance tests into separate test files (for Rust, the `tests/` directory).
 
-Session modes used across all three docs (set by the `ccf` launcher in the workflow doc):
-
-| TASK\_MODE | Used for | Editable protected paths | Stop gate |
-| --- | --- | --- | --- |
-| impl (default) | Implementation tasks | None | Types + fast tests |
-| tests | Writing or approving acceptance tests | Test files (as defined by `quality.sh is-test`), except `tests/holdout/` | Types + fast tests |
-| baseline | Updating golden data or eval thresholds (rare, you decide) | `evals/golden/`, thresholds | Types + fast tests |
-
-Check: in a normal session, ask Claude to "make the failing test pass" by editing the test. The edit should be blocked with the message above.
+Test files are not protected by default. List them in `.claude/protected-paths` to block edits.
 
 ## Step 4: Strengthen the tests
 

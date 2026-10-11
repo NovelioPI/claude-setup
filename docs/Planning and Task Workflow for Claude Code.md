@@ -37,7 +37,7 @@ Linear holds the spec and the task graph, so the repo gets no plan files. The `l
 
 ## One-time setup
 
-Four pieces: a tier rule in CLAUDE.md, a launcher that names the feature, the Linear plugin, and two commands.
+Four pieces: a tier rule in CLAUDE.md, a way to name the feature, the Linear plugin, and two commands.
 
 1. Add the workflow block to CLAUDE.md (global `~/.claude/CLAUDE.md` in this setup):
 
@@ -57,18 +57,9 @@ Four pieces: a tier rule in CLAUDE.md, a launcher that names the feature, the Li
 - The tier never skips the Approval Protocol. Tier 0 still needs a token.
 ```
 
-2. Add a launcher so every session on a feature knows its Linear project. In `scripts/shell.zsh`, sourced from `~/.zshrc`:
-
-```bash
-# usage: ccf <feature>
-ccf() {
-  FEATURE="$1" claude
-}
-```
+2. Name the feature. `/next-task` asks for the Linear project name when `FEATURE` is empty. For a long-running feature, pin it per checkout in `.claude/settings.local.json` (not committed): `{ "env": { "FEATURE": "<feature>" } }`.
 
 One session writes both the tests and the code of a task. TDD is the default: each task follows the `tdd` skill at the seams its plan names. "No TDD" turns it off until "TDD on" or the end of the session.
-
-For a long-running feature, you can instead pin it per checkout in `.claude/settings.local.json` (not committed): `{ "env": { "FEATURE": "<feature>" } }`.
 
 3. Install the Linear plugin with `claude plugin install linear@claude-plugins-official`, then log in once with `/mcp`.
 
@@ -80,14 +71,14 @@ Plan in one session, execute each task in its own fresh session, and close the f
 
 **Plan session**
 
-1. Start on the feature: `ccf export-csv`.
+1. Start a session: `claude`.
 2. Enter plan mode (Shift+Tab) and run `/plan-feature export-csv <goal>`.
 3. Answer the interview questions. Review the project and issues on the Linear board; edit them by hand if needed.
 4. `/clear`.
 
 **Execution sessions (repeat per task)**
 
-1. `ccf export-csv`, then `/next-task`.
+1. `claude`, then `/next-task`. Give `export-csv` when it asks for the feature.
 2. Each task asks for a token before the work and before the commit. Core tasks also pause for your choice of approach. Each task commits, sets its issue to Done, comments the commit hash, and writes progress.md via `/handoff`.
 3. `/clear` (or exit) and repeat. Run independent tasks in parallel only in separate git worktrees on the same feature; in a shared checkout the Stop gate would see the other session's changes.
 
@@ -189,7 +180,7 @@ Verification checklist:
 - [ ] A small fix (Tier 0) is done with no plan, no tasks and no new files
 - [ ] A medium change uses plan mode and leaves no plan file behind
 - [ ] `/plan-feature` produces a Linear project and one issue per task
-- [ ] Two sessions started with the same `ccf <feature>` see the same Linear project
+- [ ] Two sessions given the same feature name see the same Linear project
 - [ ] `/next-task` reads only its issue plus Decisions, and finishes with a commit and handoff
 - [ ] `git status` after `/handoff` shows nothing under `.agent/`
 - [ ] A finished feature leaves a short summary in lessons.md and no stale spec

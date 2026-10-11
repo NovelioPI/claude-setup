@@ -20,7 +20,7 @@ Feature: $ARGUMENTS
    - Use a command check only when the task has no behavior to test.
 5. Show the project and the issue list. In plan mode, show them with ExitPlanMode.
    Wait for a token, then create the project, any missing labels, and the issues.
-6. Stop. Tell me to /clear and start each task with: ccf <feature-name>
+6. Stop. Tell me to /clear and start each task with /next-task, giving <feature-name>.
 
 Project template:
 
