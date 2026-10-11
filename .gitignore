@@ -33,6 +33,7 @@ paste-cache/
 policy-limits.json*
 remote/
 remote-settings.json
+state/
 # Only the skills listed here are tracked.
 skills/*
 !skills/brainstorming/
