@@ -18,8 +18,9 @@ these files will look like too much process.
 ## What is different here
 
 **The agent waits for a word.** Not "yes", not "sounds good", but the literal
-token `Go` or `Execute`. One token approves one plan, and the token dies when
-the plan changes. `CLAUDE.md` calls this failing closed.
+token `Go`, `Execute`, or `Auto`. One token approves one plan, and the token
+dies when the plan changes. `CLAUDE.md` calls this failing closed. `Auto` runs
+the plan to the end and still stops before an action you cannot undo.
 
 **Comments are off by default.** A comment earns its place by naming a hidden
 constraint or a risk, in 20 words or fewer. Everything else is the code
@@ -83,6 +84,7 @@ so take it without asking.
 | `commands/walkthrough.md` | `/walkthrough`: checks that I understand a change before the commit; logs PASS or GAPS |
 | `commands/plan-feature.md` | `/plan-feature`: drafts a spec and a task graph, writes after a token |
 | `commands/next-task.md` | `/next-task`: picks the next task for the session mode; asks for a token before the work and before the commit |
+| `commands/auto.md` | `/auto`: plans a task and runs it to the end under Auto Mode |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `agents/reviewer.md` | Read-only subagent that reviews a diff and returns ranked findings |
