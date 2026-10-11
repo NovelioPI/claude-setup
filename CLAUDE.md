@@ -144,6 +144,20 @@ The primary source is the code or the configuration that you modify. Memory,
 cache, and prior assumptions are not primary sources. Always read or grep the
 source to confirm before you propose changes.
 
+## TDD
+
+- Default: load the `tdd` skill before the first edit that changes code
+  behavior. Every plan lists the seams under test.
+- The seams in an approved plan count as the seams the skill asks me to confirm.
+- Skip TDD for docs, config, and changes with no behavior to test.
+  Say so in the plan.
+- The project has no test runner: say so in the plan and ask.
+- "No TDD" turns TDD off until "TDD on" or the end of the session.
+  The words must match exactly. Case is not important.
+  "Go, no TDD" approves the plan and turns TDD off.
+- Never propose "No TDD" yourself. When you are not sure whether TDD is
+  off, it is on.
+
 ## Execution Rules
 
 - A test, spec, or threshold looks wrong: stop and report. Never edit a test,
@@ -174,6 +188,7 @@ When compacting, always keep:
 - Failing test names and the exact error lines
 - The current hypothesis and what has been ruled out
 - Decisions made and the reason for each
+- Whether "No TDD" is active
 Discard: full file contents, raw grep/ls output, passing test logs.
 
 ## Forbidden Without Explicit Per-Use Approval

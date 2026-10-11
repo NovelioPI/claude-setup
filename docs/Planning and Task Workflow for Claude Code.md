@@ -66,7 +66,7 @@ ccf() {
 }
 ```
 
-One session writes both the tests and the code of a task.
+One session writes both the tests and the code of a task. TDD is the default: each task follows the `tdd` skill at the seams its plan names. "No TDD" turns it off until "TDD on" or the end of the session.
 
 For a long-running feature, you can instead pin it per checkout in `.claude/settings.local.json` (not committed): `{ "env": { "FEATURE": "<feature>" } }`.
 

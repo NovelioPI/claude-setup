@@ -14,10 +14,10 @@ Feature: $ARGUMENTS
 4. Draft the issues from the issue template below. Each issue is one session
    and one commit. Its title starts with its id. Give it one `level:` label.
    Add a "blocked by" relation for each dependency.
-   - Core or Important work: the check is acceptance tests that the task writes
-     first. For Core, the task asks me for the invariants in plain words and
-     writes property tests.
-   - Plumbing: checked by existing tests or a command.
+   - Every issue names its seams. The task writes tests at those seams with
+     the `tdd` skill. For Core, it asks me for the invariants in plain words
+     and writes property tests.
+   - Use a command check only when the task has no behavior to test.
 5. Show the project and the issue list. In plan mode, show them with ExitPlanMode.
    Wait for a token, then create the project, any missing labels, and the issues.
 6. Stop. Tell me to /clear and start each task with: ccf <feature-name>
@@ -46,5 +46,6 @@ Issue template (title `T<n>: <title>`, label `level:core|important|plumbing`):
 ```markdown
 Files: <paths>
 Do: <what, in 2-5 lines>
-Check: <tests written first in this task (Core/Important), or a command (Plumbing)>
+Seams: <public interfaces under test>
+Check: <tests at those seams, or a command when nothing has behavior>
 ```

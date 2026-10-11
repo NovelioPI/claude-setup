@@ -61,8 +61,8 @@ command.
   - The user picks the approach before any task starts: in /plan-feature, or
     from 2 options with tradeoffs that Claude gives first. If it does not fit,
     stop and ask.
-  - Ask the user for the invariants in plain words, and write property
-    tests from them. Write all the code. Never edit a test to make it pass.
+  - Follow the `tdd` skill. Ask the user for the invariants in plain words,
+    and write property tests from them. Never edit a test to make it pass.
 - Important (Claude writes; the user reads every line): <paths>
 - Plumbing (delegate; the quality gates are enough): everything else
 ```
