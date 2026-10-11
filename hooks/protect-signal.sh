@@ -1,7 +1,6 @@
 #!/bin/bash
 # PreToolUse hook. Blocks edits to existing files that match a protected pattern
 # (.claude/protected-paths, or the defaults), and creation of a file a pattern names exactly.
-# TASK_MODE=tests lifts the block.
 
 source "$(dirname "$0")/protected-paths.sh"
 
@@ -14,7 +13,6 @@ command -v jq >/dev/null 2>&1 || block "jq is missing, so protect-signal.sh cann
 file=$(jq -r '.tool_input.file_path // .tool_input.notebook_path // empty') ||
   block "the hook input is not valid JSON, so protect-signal.sh cannot check this edit."
 [ -z "$file" ] && exit 0
-[ "${TASK_MODE:-impl}" = "tests" ] && exit 0
 
 root=$(normalize "${CLAUDE_PROJECT_DIR:-$PWD}")
 case "$file" in /*) ;; *) file="$root/$file" ;; esac
@@ -29,7 +27,7 @@ check() {
   case "$2" in "$1"/*) ;; *) return 0 ;; esac
   local rel=${2#"$1"/}
   "$matcher" "$root" "$rel" &&
-    block "$rel is part of the verification signal and is read-only in this session. If it looks wrong, stop and explain why instead of editing it. Start the session with TASK_MODE=tests to change it."
+    block "$rel is part of the verification signal and is read-only in this session. If it looks wrong, stop and explain why instead of editing it."
   return 0
 }
 

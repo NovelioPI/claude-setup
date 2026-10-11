@@ -80,7 +80,7 @@ so take it without asking.
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
 | `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
 | `commands/plan-feature.md` | `/plan-feature`: drafts a Linear project and issues, creates them after a token |
-| `commands/next-task.md` | `/next-task`: picks the next unblocked Linear issue for the session mode; asks for a token before the work and before the commit |
+| `commands/next-task.md` | `/next-task`: picks the next unblocked Linear issue of the feature; asks for a token before the work and before the commit |
 | `commands/auto.md` | `/auto`: plans a task and runs it to the end under Auto Mode |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
@@ -88,7 +88,7 @@ so take it without asking.
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/debt-report.sh` | Print the Step 11 cognitive debt numbers: fix commits without a root cause |
-| `scripts/shell.zsh` | Shell launchers: `cct` starts a `TASK_MODE=tests` session; `ccf <feature> [mode]` sets `FEATURE`, the Linear project name |
+| `scripts/shell.zsh` | Shell launcher: `ccf <feature>` sets `FEATURE`, the Linear project name |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `LICENSE` | MIT |
@@ -96,16 +96,14 @@ so take it without asking.
 An executable `.claude/quality.sh` in a project replaces `scripts/quality.sh` for that project.
 The hooks use it only when git tracks it and it is unchanged from HEAD.
 It must give all three subcommands: `format <file>`, `lint <file>`, and `check <files...>`.
-Both guards always protect it, so Claude cannot edit or commit it outside `TASK_MODE=tests`.
+Both guards always protect it, so Claude cannot edit or commit it.
 A committed adapter in a cloned repo runs on every edit with no prompt.
 
 `.claude/protected-paths` in a project holds one glob per line, relative to the project, where `*` also matches `/`.
 A line with no wildcard, such as `tests/conftest.py`, also blocks creating that file.
-A project with no list gets the default test patterns in `hooks/protected-paths.sh`, such as `tests/*` and `*.test.*`.
-They block edits to existing test files, not new ones, except `conftest.py` at the root or directly in `tests/` or `test/`, which they also block from being created.
-A list with no patterns, empty or only comments, turns them off.
+A project with no list protects only the adapter, so Claude can edit test files.
 The commit gate also checks unstaged changes, so a changed protected file, including one you edited, blocks every commit made through Claude until you restore or commit it yourself.
-Start a session with `TASK_MODE=tests` to edit those files. A gate that runs past its 300-second timeout lets the action go through.
+To change a listed file, edit it yourself. A gate that runs past its 300-second timeout lets the action go through.
 
 Known gaps in the guards:
 

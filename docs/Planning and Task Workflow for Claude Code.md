@@ -60,23 +60,13 @@ Four pieces: a tier rule in CLAUDE.md, a launcher that names the feature, the Li
 2. Add a launcher so every session on a feature knows its Linear project. In `scripts/shell.zsh`, sourced from `~/.zshrc`:
 
 ```bash
-# usage: ccf <feature> [mode]   modes: impl (default), tests, baseline
+# usage: ccf <feature>
 ccf() {
-  local id="$1" mode="${2:-impl}"
-  if [ -n "$id" ]; then
-    TASK_MODE="$mode" FEATURE="$id" claude
-  else
-    TASK_MODE="$mode" claude
-  fi
-}
-
-# usage: cct [claude arguments]   starts a tests session
-cct() {
-  TASK_MODE=tests claude "$@"
+  FEATURE="$1" claude
 }
 ```
 
-The mode sets which protected paths the session may edit (Playbook, Step 3).
+One session writes both the tests and the code of a task.
 
 For a long-running feature, you can instead pin it per checkout in `.claude/settings.local.json` (not committed): `{ "env": { "FEATURE": "<feature>" } }`.
 
@@ -97,7 +87,7 @@ Plan in one session, execute each task in its own fresh session, and close the f
 
 **Execution sessions (repeat per task)**
 
-1. `ccf export-csv <mode>` with the mode from the issue's `mode:` label, then `/next-task`.
+1. `ccf export-csv`, then `/next-task`.
 2. Each task asks for a token before the work and before the commit. Core tasks also pause for your choice of approach. Each task commits, sets its issue to Done, comments the commit hash, and writes progress.md via `/handoff`.
 3. `/clear` (or exit) and repeat. Run independent tasks in parallel only in separate git worktrees on the same feature; in a shared checkout the Stop gate would see the other session's changes.
 

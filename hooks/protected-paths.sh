@@ -20,22 +20,12 @@ normalize() {
 }
 
 # Prints the patterns of project $1, one per line, without comments or blank lines.
-# A missing list gives the default patterns; a list with no patterns gives none.
+# A missing list gives no patterns.
 protected_patterns() {
   local list="$1/.claude/protected-paths" pattern
-  # Reason: a project with no list still has tests, so test files are protected by name.
-  # Reason: a new conftest.py can skip every test, so its exact names also block creation.
-  local -a defaults=(
-    'tests/*' 'test/*' '*/tests/*' '*/test/*' '*/__tests__/*'
-    '*.test.*' '*.spec.*' '*_test.*' 'test_*.py' '*/test_*.py'
-    'conftest.py' 'tests/conftest.py' 'test/conftest.py' '*/conftest.py'
-  )
   # Reason: the project adapter decides what the gates check, so it is always protected.
   echo .claude/quality.sh
-  if [ ! -f "$list" ]; then
-    printf '%s\n' "${defaults[@]}"
-    return 0
-  fi
+  [ -f "$list" ] || return 0
   while IFS= read -r pattern || [ -n "$pattern" ]; do
     # Reason: a list saved on Windows ends each line with \r, which no path matches.
     pattern=${pattern%$'\r'}

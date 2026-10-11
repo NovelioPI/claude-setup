@@ -61,11 +61,8 @@ command.
   - The user picks the approach before any task starts: in /plan-feature, or
     from 2 options with tradeoffs that Claude gives first. If it does not fit,
     stop and ask.
-  - Tests session (TASK_MODE=tests): ask the user for the invariants in plain
-    words and write property tests from them. Write no source code.
-  - Impl session (TASK_MODE empty or impl): write all the code; do not write or
-    edit tests. If the task has no tests yet, list the invariants it needs and
-    ask the user to restart with TASK_MODE=tests first.
+  - Ask the user for the invariants in plain words, and write property
+    tests from them. Write all the code. Never edit a test to make it pass.
 - Important (Claude writes; the user reads every line): <paths>
 - Plumbing (delegate; the quality gates are enough): everything else
 ```

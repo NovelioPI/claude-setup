@@ -31,7 +31,7 @@ check() {
   case "$2" in "$prefix"*) ;; *) return 0 ;; esac
   local rel=${2#"$prefix"}
   "$1" "$root" "$rel" &&
-    block "$rel is part of the verification signal; this commit adds, deletes, renames, or changes it. Start the session with TASK_MODE=tests to change it."
+    block "$rel is part of the verification signal; this commit adds, deletes, renames, or changes it."
   return 0
 }
 
@@ -50,11 +50,9 @@ check_diff() {
 
 # Reason: a shell edit such as `sed -i` or `git rm` skips protect-signal.sh, so the diff is checked here.
 # The index is what a commit records; the working tree covers `commit -a`.
-if [ "${TASK_MODE:-impl}" != "tests" ]; then
-  base=HEAD
-  git -C "$root" rev-parse --verify -q HEAD >/dev/null || base=$(git -C "$root" hash-object -t tree /dev/null)
-  check_diff < <(git -C "$root" diff --cached --name-status -z --diff-filter=ACDMRT "$base" 2>/dev/null)
-  check_diff < <(git -C "$root" diff --name-status -z --diff-filter=DMRT "$base" 2>/dev/null)
-fi
+base=HEAD
+git -C "$root" rev-parse --verify -q HEAD >/dev/null || base=$(git -C "$root" hash-object -t tree /dev/null)
+check_diff < <(git -C "$root" diff --cached --name-status -z --diff-filter=ACDMRT "$base" 2>/dev/null)
+check_diff < <(git -C "$root" diff --name-status -z --diff-filter=DMRT "$base" 2>/dev/null)
 
 printf '{}' | GATE_CONTEXT=commit bash "$(dirname "$0")/stop-gate.sh"

@@ -1,17 +1,6 @@
-# Shell launchers that start Claude Code in a TASK_MODE. Source from ~/.zshrc.
-# Reason: hooks read TASK_MODE from the claude process, so it must be set at launch.
+# Shell launcher that starts Claude Code on a feature. Source from ~/.zshrc.
 
-# usage: ccf <feature> [mode]   modes: impl (default), tests, baseline
+# usage: ccf <feature>
 ccf() {
-  local id="$1" mode="${2:-impl}"
-  if [ -n "$id" ]; then
-    TASK_MODE="$mode" FEATURE="$id" claude
-  else
-    TASK_MODE="$mode" claude
-  fi
-}
-
-# usage: cct [claude arguments]   starts a tests session
-cct() {
-  TASK_MODE=tests claude "$@"
+  FEATURE="$1" claude
 }

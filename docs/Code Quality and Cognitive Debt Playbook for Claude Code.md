@@ -197,7 +197,7 @@ echo "BLOCKED: $rel is part of the verification signal and is read-only in TASK_
 exit 2
 ```
 
-2. Split roles across sessions. Write or approve tests in a session started with `TASK_MODE=tests claude`, then implement in a normal session. One session should never change both the tests and the code under test. The workflow doc's /plan-feature creates these as paired tasks (T\<n>-test, then T\<n>-impl).
+2. One session writes both the tests and the code. This setup dropped the separate tests session because switching sessions cost too much. No hook stops a test edit; only the execution rules below do.
 3. Add the execution rules to the root CLAUDE.md. The first rule matters most: in ImpossibleBench, a single "stop if tests are flawed" instruction cut one model's test-gaming rate from 93% to 1%.
 
 ```markdown
@@ -522,12 +522,9 @@ Core (User decide; Claude write all code):
 - src/domain/, src/core/
 - I choose the approach before any task starts (in /plan-feature, or from
   2 options you give me first). If it does not fit, stop and ask me.
-- Tests session (TASK_MODE=tests): ask me for the invariants in plain
-  words and write property tests from them. Write no source code.
-- Impl session (TASK_MODE empty or impl): write all the code; do not write
-  or edit tests. If the task has no tests yet, list the invariants it needs
-  and ask me to restart with TASK_MODE=tests first. End with /walkthrough;
-  do not commit on GAPS.
+- Ask me for the invariants in plain words, and write property tests from
+  them. Write all the code. Never edit a test to make it pass.
+  End with /walkthrough; do not commit on GAPS.
 Important (you write; I review every line):
 - src/pipelines/, src/integrations/, src/eval/
 - Always end the task with /walkthrough; do not commit on GAPS.
