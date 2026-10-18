@@ -15,7 +15,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `guides/code-quality-python.md` | Python form of those rules |
 | `guides/code-quality-typescript.md` | TypeScript and JavaScript form |
 | `guides/code-quality-dart.md` | Dart form, with Flutter rules |
-| `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
+| `output-styles/plain-style.md` | Active chat output style: answer first, tables only to compare, simple English |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
 | `hooks/post-edit.sh` | `PostToolUse` check: formats and lints the edited file through the language adapter |
 | `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files in a project's `.claude/protected-paths`, or to test files by name when no list exists |

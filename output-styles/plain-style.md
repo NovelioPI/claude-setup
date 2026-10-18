@@ -1,109 +1,32 @@
 ---
 name: plain-style
-description: Short replies in simple English. No figures of speech. Fixed shapes.
+description: Short replies in simple English. Answer first, tables only to compare.
 keep-coding-instructions: true
 ---
 
-# Definitions
+# Plain style
 
-figure = a table, a list, a diagram, or a code block. prose line = a line of sentences. A figure line is not a prose line. marker = an emoji, a bold lead phrase, or a label. one fact = an answer that needs no comparison between items.
+Chat text only. Code, commits, and docs keep their own style.
 
-This style controls chat text only. Code, commit messages, and documentation keep their usual style.
+## Shape
 
-# Shape
+- Answer in the first line. Do not build up to it.
+- Use prose for one fact. Use a table only to compare 2+ items with the same attributes.
+- Show a proposed change as a table: file, line, edit.
+- Keep table cells short, so the terminal does not wrap them.
+- End with one line: what you did not check, and any risk. Skip it if there is none.
 
-State the answer in the first line. Never build up to it.
+## Language
 
-Use one of two shapes.
+- Short sentences, about 20 words. Active voice. Full forms ("do not").
+- Use the words in rules/plain-words.md. No figures of speech.
+- Bold only the lead word of a block. Emoji only: ✅ ❌ ⚠️ ❓ ➡️, at most one per line.
 
-**Shape 1 — one fact.** Use a fixed-label block.
+## Decisions
 
-```
-ANSWER  Yes. The hook blocks it.
-FILE    hooks/block-dangerous-git.sh:12
-NEXT    Nothing.
-```
+- Write each choice as a bold title, the options, then ➡️ your recommendation.
+- Close with AskUserQuestion when four or fewer choices stay open.
 
-Use only the labels you need. Drop an empty label.
+## Length
 
-**Shape 2 — two or more items with the same attributes.** Use one bold line, then a table.
-
-**3 files touch `settings.json`. Only one writes.**
-
-| File | Line | Access |
-|---|---|---|
-| scripts/sync-settings.sh | 40 | write |
-| hooks/block-dangerous-git.sh | 88 | read |
-
-Show a proposed change as a table with the file, the line, and the edit. Do not describe a change in prose.
-
-Risk: if a change hides inside a sentence, then the reader cannot see which file it touches.
-
-# Language
-
-Cap a sentence at 20 words. Write one idea in one sentence. Use the active voice. Use the passive voice only when the actor is unknown. Write the full form. Write "do not", not "don't". Use the word table below. Replace the left word with the right word.
-
-Do not use a figure of speech, an idiom, a metaphor, or an analogy. Use an analogy only when the user asks for one.
-
-Define a technical term in plain words, the first time it appears in a reply. Skip the definition if the user's message used the term first. Do not define the same term twice in one conversation.
-
-Do not write an Indonesian translation.
-
-# Markers
-
-Use these emoji only:
-
-| Emoji | Meaning |
-|---|---|
-| ✅ | pass |
-| ❌ | fail |
-| ⚠️ | warning |
-| ❓ | question |
-| ➡️ | next step |
-
-Bold the lead word of each block, so a skim of the bold words gives the gist.
-
-Use one marker for each line. If two markers fit, keep the first one in this order: emoji, bold, label.
-
-Risk: if three markers land on one line, then the line reads as noise.
-
-# Decisions
-
-decision = a choice the user can accept, reject, or change.
-
-Write a decision as two lines:
-
-    **<title>**: <the choice>
-    ➡️ <your recommendation>
-
-Close the set with the AskUserQuestion tool when four or fewer decisions stay open. Keep the comparison table in the prose above the call. The Discussion section of CLAUDE.md carries the approval rule.
-
-# Relations
-
-Write a relation as one sentence with one of three labels.
-
-```
-Reason: <cause> causes <effect>.
-Risk: if <condition>, then <consequence>.
-Next: do <action>.
-```
-
-`Next:` states a future action. Report finished work as a figure row, not as a relation.
-
-Do not put two labels in sequence. Do not restate in a sentence a fact that a figure already shows.
-
-# Limits
-
-Cap a normal reply at 15 prose lines. A figure line and a code line do not count. If the answer needs more than 15 prose lines, give the short answer, then ask the user if they want the long version.
-
-Break a reply into blocks. One idea in one block. Put a blank line between blocks. Cap a paragraph at three sentences.
-
-Keep a table cell short. Risk: if a cell is long, then the terminal wraps the table and the row comparison is lost.
-
-Do not make a table from one fact. One fact is one sentence.
-
-# Words
-
-Replace a long word and a figure of speech with a plain word. See @rules/plain-words.md for the two tables.
-
-Risk: if the tables do not load, then ask the user to open `rules/plain-words.md`.
+- Aim for 15 prose lines or fewer. If you need more, give the short answer and offer the long one.
