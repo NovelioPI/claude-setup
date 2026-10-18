@@ -32,7 +32,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `commands/next-task.md` | `/next-task`: picks the next unblocked Linear issue of the feature; asks for a token before the work and before the commit |
 | `commands/auto.md` | `/auto`: plans a task and runs it to the end under Auto Mode |
 | `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
-| `skills/tdd/` | `tdd`: red-green loop at agreed seams; copied from `mattpocock/skills` commit `3f59913` (MIT) |
+| `skills/tdd/` | `tdd`: red-green loop at agreed seams, only on `/tdd`; copied from `mattpocock/skills` commit `3f59913` (MIT) |
 | `skills/ui-check/SKILL.md` | `ui-check`: open changed pages with Playwright, desktop and mobile screenshots, console errors |
 | `skills/pr-flow/SKILL.md` | `pr-flow`: open a PR with `gh` after an approved push, watch CI, show failed logs |
 | `skills/reui/` | `reui`: find, install, and use ReUI registry components through the ReUI MCP server |

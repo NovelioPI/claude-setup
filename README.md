@@ -11,7 +11,6 @@ My global Claude Code config at `~/.claude/`.
 | Quality hooks | Format and lint after each edit; type checks and tests before a turn ends |
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
-| TDD | Red-green loop at agreed seams |
 | Linear | `/plan-feature` drafts issues; `/next-task` picks the next one |
 | `ui-check` | Opens changed pages with Playwright: screenshots and console errors |
 | ReUI | Finds and installs ReUI registry components through MCP |
@@ -42,7 +41,7 @@ On a GPU server, repeat these steps on the server, where Claude Code runs.
 
 Start `claude` in the repo.
 
-1. Describe the task. The agent shows a plan with the seams it will test.
+1. Describe the task. The agent shows a plan.
 2. Approve with "go", or with `Auto` to run to the end.
 3. The agent writes a failing test, then the code, and runs the checks.
 4. It reports what changed and what it was unsure about, then proposes a commit.

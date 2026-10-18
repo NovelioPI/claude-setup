@@ -77,15 +77,6 @@ required exit.
 Confirm against the code or configuration you change, by read or grep, before you
 propose. Memory, cache, and prior assumptions are not primary sources.
 
-## TDD
-
-- Load the `tdd` skill before the first edit that changes code behavior. Every
-  plan lists the seams under test; approved seams count as confirmed.
-- Skip TDD for docs, config, and changes with no behavior. Say so in the plan.
-- No test runner in the project: say so in the plan and ask.
-- "No TDD" turns TDD off until "TDD on" or session end. Exact words, any case.
-  "Go, no TDD" approves and turns it off. Never propose "No TDD". If unsure, TDD is on.
-
 ## Execution
 
 - Never create a plan file or shared task list for single-session work.
@@ -114,5 +105,4 @@ When compacting, always keep:
 - Failing test names and the exact error lines
 - The current hypothesis and what has been ruled out
 - Decisions made and the reason for each
-- Whether "No TDD" is active
 Discard: full file contents, raw grep/ls output, passing test logs.
