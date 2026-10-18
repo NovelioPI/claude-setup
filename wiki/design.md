@@ -34,9 +34,6 @@ chat text and commit messages. Write "use", not "leverage". Write "start", not
 unrecoverable commands. `git push` is not blocked, on purpose. A guardrail you
 hit every day teaches you to route around it.
 
-**Two profiles.** Engineering is the default. Research adds its own rules, skills,
-and tools for one session at a time. See [research-profile.md](research-profile.md).
-
 ## Take what you want
 
 Most of this works in pieces. Copy one file and ignore the rest. MIT licensed,

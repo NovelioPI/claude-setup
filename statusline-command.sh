@@ -139,9 +139,6 @@ if [ -z "$lines" ]; then
 fi
 
 header="${DIM}${model}${RESET}"
-if [ -n "${CLAUDE_PROFILE:-}" ]; then
-  header="${header}  \033[1;38;5;109m◆ ${CLAUDE_PROFILE}${RESET}"
-fi
 if [ -n "$effort_indicator" ]; then
   header="${header}  ${effort_indicator}"
 fi

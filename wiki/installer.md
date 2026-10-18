@@ -16,9 +16,7 @@ command for the rest.
 | `claude` | the plugins `pyright-lsp`, `typescript-lsp`, `context7`, and `linear` | yes, by `claude plugin install`; Linear then needs `/mcp` sign-in |
 | `claude` | the `reui` MCP server for the `reui` skill | yes, by `claude mcp add`; then `/mcp` sign-in |
 | `claude` | the `shadcn` MCP server, run by `npx shadcn@latest mcp`, for frontend components | yes, by `claude mcp add`; no sign-in |
-| `claude-research` | the research launcher | yes, linked into `~/.local/bin` |
 | `gh`, `rg` | `pr-flow` and search | no, optional |
-| `tmux` | long research runs | no, needs sudo |
 
 It also tests both directions of the git guard, the `rtk` hook, and the
 context floor in `scripts/probe-context-floor.sh`.

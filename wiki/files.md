@@ -38,23 +38,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `skills/reui/` | `reui`: find, install, and use ReUI registry components through the ReUI MCP server |
 | `skills/shadcn/` | `shadcn`: add, search, and compose shadcn/ui components; copied from `shadcn/ui` `skills/shadcn` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
-| `research/claude-research` | Launcher for the research profile; `install.sh` links it into `~/.local/bin` |
-| `research/RESEARCH.md` | Research rules, appended to the system prompt: TDD off by default, no Linear rules, pointers to `research/guides/` |
-| `research/profile-settings.json` | Research plugin list and MLflow permissions (reads allowed, deletes ask), passed by `--settings` |
-| `research/.claude-plugin/plugin.json` | Manifest of the research plugin, loaded by `--plugin-dir` |
-| `research/.mcp.json` | Hugging Face MCP server for papers, models, and datasets; MLflow MCP server, run through `uv` with the `genai` tool set; reads `MLFLOW_TRACKING_URI` from the shell, default `http://localhost:5000` |
-| `research/guides/mlflow.md` | MLflow rules: MCP first, then the Python client or CLI; never delete; tags set in run code |
-| `research/guides/experiment-log.md` | Rules for `experiments/<experiment>/log.md`: entry format, when to write, run tags |
-| `research/skills/weekly-report/` | `research:weekly-report`: `reports/weekly/<YYYY>-W<ww>.md` from the logs and MLflow, then the summary and, on approval, a Slides deck |
-| `research/skills/compare-runs/` | `research:compare-runs`: table, plot, and bootstrap interval across MLflow runs, with git commits |
-| `research/guides/notebooks.md` | Notebook rules: logic in modules, seeds first, run top to bottom, no outputs in git |
-| `research/guides/long-runs.md` | Run rules for SSH: every job in detached `tmux` with a log, watched by Monitor |
-| `research/guides/llm-api.md` | Rules for code that calls an LLM API, with a request-hash response cache |
-| `research/guides/prompts.md` | Rules for prompts: Jinja2 files in `prompts/<task>/`, loaded by name, hashed in MLflow |
-| `research/skills/papers/` | `research:papers`: search Semantic Scholar, arXiv, and HF; keep `notes/reading-list.md`; write `notes/papers/<id>.md` with a source for every number |
-| `research/skills/ideas/` | `research:ideas`: `notes/ideas.md`, each idea checked against prior work |
-| `research/skills/experiment-plan/` | `research:experiment-plan`: `experiments/<exp>/plan.md`, runs ordered cheapest-to-disprove first |
-| `statusline-command.sh` | Status line: model, profile (`◆ research`), effort, cache, usage bars |
+| `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/debt-report.sh` | Print the cognitive debt numbers: fix commits without a root cause |
@@ -71,9 +55,6 @@ and `doc-style.md` have `paths:` frontmatter, so each loads only when Claude
 reads or edits a matching code or Markdown file. A Bash heredoc write does not
 trigger them. `guides/` is never auto-loaded: a pointer in `rules/code-quality.md`
 sends the agent there on its first edit in that language.
-
-`research/guides/` loads the same way: a pointer in `research/RESEARCH.md` sends
-the agent there before the first matching task.
 
 An output style file does nothing on its own. `settings.json` activates one with
 `"outputStyle": "plain-style"`.

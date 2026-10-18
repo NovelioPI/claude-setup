@@ -8,9 +8,6 @@ Definition: fail closed = when you are not sure, do not execute.
 Style modes control presentation only. If a style rule conflicts with
 CLAUDE.md, obey CLAUDE.md for that part.
 
-A profile prompt appended at launch overrides the TDD and Execution sections
-where they conflict.
-
 ## Approval Protocol
 
 - Default mode is discussion. A mutating action, including the Agent tool,
