@@ -9,9 +9,7 @@ Typing `/auto <task>` approves the plan this command writes, under Auto Mode.
 
 1. If the task is empty or unclear, ask one question and stop. Do not guess.
 2. Write the plan in chat: the files and the actions.
-3. Start at once. Do not wait for a token. Follow the Auto Mode rules in
-   CLAUDE.md: the "still ask" list, the stop conditions, and the scope rule.
+3. Start at once. Do not wait for a token. Follow the Auto Mode rules in CLAUDE.md: the "still ask" list, the stop conditions, and the scope rule.
 4. Run the tests, the build, and the lint that the project has.
-5. Report: what changed, why, what you were unsure about, test results, and
-   the new scope you logged.
+5. Report: what changed, why, what you were unsure about, test results, and the new scope you logged.
 6. Do not commit.

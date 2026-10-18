@@ -2,8 +2,7 @@
 
 What `scripts/install.sh` checks, and what it installs on its own.
 
-The script is safe to re-run. It installs what needs no sudo and prints the
-command for the rest.
+The script is safe to re-run. It installs what needs no sudo and prints the command for the rest.
 
 | Tool | Used by | Installed by the script |
 |---|---|---|
@@ -18,5 +17,4 @@ command for the rest.
 | `claude` | the `shadcn` MCP server, run by `npx shadcn@latest mcp`, for frontend components | yes, by `claude mcp add`; no sign-in |
 | `gh`, `rg` | `pr-flow` and search | no, optional |
 
-It also tests both directions of the git guard, the `rtk` hook, and the
-context floor in `scripts/probe-context-floor.sh`.
+It also tests both directions of the git guard, the `rtk` hook, and the context floor in `scripts/probe-context-floor.sh`.

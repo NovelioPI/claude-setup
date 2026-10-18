@@ -4,15 +4,11 @@ description: Write current working state to disk before clearing or stopping
 
 Typing `/handoff` approves the writes listed below.
 
-1. If `.agent/` does not exist, create it, and create `.agent/.gitignore` with
-   one line: `*`.
-2. Rewrite `.agent/progress.md`. Use the existing section headings, or the
-   template below if the file does not exist. Be exact: file paths, test names,
-   error lines, commit hashes. Max 60 lines.
+1. If `.agent/` does not exist, create it, and create `.agent/.gitignore` with one line: `*`.
+2. Rewrite `.agent/progress.md`. Use the existing section headings, or the template below if the file does not exist. Be exact: file paths, test names, error lines, commit hashes. Max 60 lines.
 3. Update the status of the current Linear issues. Do not delete or rename issues.
 4. Do not commit. List uncommitted work under "In progress".
-5. Create the empty file `.agent/.skip-gate`, so the Stop gate lets this turn end.
-   The gate deletes the file, so the next turn is checked again.
+5. Create the empty file `.agent/.skip-gate`, so the Stop gate lets this turn end. The gate deletes the file, so the next turn is checked again.
 6. Reply with one line: "Handoff written — safe to /clear."
 
 Template:

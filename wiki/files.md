@@ -46,39 +46,24 @@ What each file in this repo does, how it loads, and which skills are tracked.
 
 ## How rules and guides load
 
-Claude Code auto-loads every file under `rules/` with no import line needed.
-`plain-words.md` and `commit-style.md` load in every session. `code-quality.md`
-and `doc-style.md` have `paths:` frontmatter, so each loads only when Claude
-reads or edits a matching code or Markdown file. A Bash heredoc write does not
-trigger them. `guides/` is never auto-loaded: a pointer in `rules/code-quality.md`
-sends the agent there on its first edit in that language.
+Claude Code auto-loads every file under `rules/` with no import line needed. `plain-words.md` and `commit-style.md` load in every session. `code-quality.md` and `doc-style.md` have `paths:` frontmatter, so each loads only when Claude reads or edits a matching code or Markdown file. A Bash heredoc write does not trigger them. `guides/` is never auto-loaded: a pointer in `rules/code-quality.md` sends the agent there on its first edit in that language.
 
-An output style file does nothing on its own. `settings.json` activates one with
-`"outputStyle": "plain-style"`.
+An output style file does nothing on its own. `settings.json` activates one with `"outputStyle": "plain-style"`.
 
 ## Skills
 
-This repo tracks only the skills written here: `brainstorming`,
-`project-init`, `ui-check`, and `pr-flow`. Other skills are
-other people's work, so they are not redistributed.
+This repo tracks only the skills written here: `brainstorming`, `project-init`, `ui-check`, and `pr-flow`. Other skills are other people's work, so they are not redistributed.
 
 | Skill | Source |
 |---|---|
 | `impeccable`, and the `agents/impeccable-*.md` it dispatches | installed separately, not tracked here |
 
-`~/.claude/skills/` is otherwise excluded, with a negation for each tracked
-skill. Every entry is a real directory, never a symlink.
+`~/.claude/skills/` is otherwise excluded, with a negation for each tracked skill. Every entry is a real directory, never a symlink.
 
-A skill's own instructions never override the approval protocol in `CLAUDE.md`.
-Several of them tell the agent to dispatch a subagent or to not block, and
-`CLAUDE.md` has a clause that overrules them.
+A skill's own instructions never override the approval protocol in `CLAUDE.md`. Several of them tell the agent to dispatch a subagent or to not block, and `CLAUDE.md` has a clause that overrules them.
 
 ## Notes
 
-- `settings.json` carries no secrets and no tokens. Machine-local settings live
-  in `settings.local.json`, which is not tracked.
-- `hooks/notify.sh` sends a WinRT toast under the registered Windows PowerShell
-  AppId. A `NotifyIcon` balloon does not work: Windows 11 accepts the call,
-  returns success, and shows nothing.
-- This repo excludes `~/.claude/projects/*/memory/`. Those memory files are tied
-  to session-specific paths on the machine that wrote them.
+- `settings.json` carries no secrets and no tokens. Machine-local settings live in `settings.local.json`, which is not tracked.
+- `hooks/notify.sh` sends a WinRT toast under the registered Windows PowerShell AppId. A `NotifyIcon` balloon does not work: Windows 11 accepts the call, returns success, and shows nothing.
+- This repo excludes `~/.claude/projects/*/memory/`. Those memory files are tied to session-specific paths on the machine that wrote them.

@@ -12,10 +12,7 @@ hooks:
           command: "bash ~/.claude/hooks/explorer-readonly.sh || exit 2"
 ---
 
-You investigate the codebase and report back. You never edit files.
-Bash runs only `grep`, `rg`, `find`, `ls`, `wc`, `head`, `tail`, and read-only
-`git` subcommands, joined with `|`. Use `grep -e a -e b` for alternation,
-because a `|` inside quotes is blocked.
+You investigate the codebase and report back. You never edit files. Bash runs only `grep`, `rg`, `find`, `ls`, `wc`, `head`, `tail`, and read-only `git` subcommands, joined with `|`. Use `grep -e a -e b` for alternation, because a `|` inside quotes is blocked.
 
 Pick the tool by what you look for:
 - Definitions, references, call sites, "what breaks if I change X": use `LSP`; if it errors, use grep.

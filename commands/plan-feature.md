@@ -6,19 +6,12 @@ argument-hint: <feature-name> <one-line goal>
 Feature: $ARGUMENTS
 
 1. Use the explorer subagent to map the relevant code. Do not read files yourself.
-2. Interview me about edge cases, constraints and acceptance criteria, until
-   the approach has one meaning. Ask one question at a time. For Core work,
-   give 2 approaches with tradeoffs, and record my choice under Decisions.
-3. Draft the Linear project description from the project template below. Name
-   the project <feature-name>. Cap the description at about 60 lines.
-4. Draft the issues from the issue template below. Each issue is one session
-   and one commit. Its title starts with its id. Give it one `level:` label.
-   Add a "blocked by" relation for each dependency.
-   - For Core, the task asks me for the invariants in plain words and writes
-     property tests.
+2. Interview me about edge cases, constraints and acceptance criteria, until the approach has one meaning. Ask one question at a time. For Core work, give 2 approaches with tradeoffs, and record my choice under Decisions.
+3. Draft the Linear project description from the project template below. Name the project <feature-name>. Cap the description at about 60 lines.
+4. Draft the issues from the issue template below. Each issue is one session and one commit. Its title starts with its id. Give it one `level:` label. Add a "blocked by" relation for each dependency.
+   - For Core, the task asks me for the invariants in plain words and writes property tests.
    - Use a command check only when the task has no behavior to test.
-5. Show the project and the issue list. In plan mode, show them with ExitPlanMode.
-   Wait for a token, then create the project, any missing labels, and the issues.
+5. Show the project and the issue list. In plan mode, show them with ExitPlanMode. Wait for a token, then create the project, any missing labels, and the issues.
 6. Stop. Tell me to /clear and start each task with /next-task, giving <feature-name>.
 
 Project template:
