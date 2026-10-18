@@ -110,20 +110,13 @@
     "typescript-lsp@claude-plugins-official": true,
     "context7@anthropic-plugin-directory": true,
     "playwright@anthropic-plugin-directory": true,
-    "linear@claude-plugins-official": true,
-    "ponytail@ponytail": true
+    "linear@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
       "source": {
         "source": "github",
         "repo": "anthropics/claude-plugins-official"
-      }
-    },
-    "ponytail": {
-      "source": {
-        "source": "github",
-        "repo": "DietrichGebert/ponytail"
       }
     }
   },

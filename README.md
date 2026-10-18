@@ -17,7 +17,6 @@ My global Claude Code config at `~/.claude/`.
 | shadcn | Adds and composes shadcn/ui components through MCP and a skill |
 | `pr-flow` | Opens a PR with `gh` after an approved push, then watches CI |
 | TDD | `/tdd` runs a red-green loop, only when you call it |
-| Ponytail | Plugin that asks for the smallest change that solves the task |
 
 ## Setup
 

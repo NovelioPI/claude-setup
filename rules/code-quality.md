@@ -76,7 +76,7 @@ Name a magic number as a constant. An unexplained literal forces the reader to r
 
 ### Tests
 
-Do not write one test file per source file, by default. Do not write one test per function, by default. Write a test at a behavior boundary: one test per observable behavior. Skip a test for a trivial function with no branch and no edge case. A bug fix ships together with a regression test that reproduces the bug first. Write a property test for a function with a stated invariant: a bound, an ordering, or a round trip. A hardcoded output cannot satisfy it. Run mutation testing per feature on a core module, never in a hook. Treat each surviving mutant as a missing test. Aim for about 70% killed. Fix every random seed, so a changed result means changed code. Keep held-out tests in `tests/holdout/`. Do not read them.
+Do not write one test file per source file, by default. Do not write one test per function, by default. Write a test at a behavior boundary: one test per observable behavior. Skip a test for a trivial function with no branch and no edge case. A bug fix ships together with a regression test that reproduces the bug first. Write a property test for a function with a stated invariant: a bound, an ordering, or a round trip. A hardcoded output cannot satisfy it. Run mutation testing per feature on a core module, never in a hook. Treat each surviving mutant as a missing test. Aim for about 70% killed. Fix every random seed, so a changed result means changed code. Keep held-out tests in `tests/holdout/`. Do not read them. New logic with a branch, a loop, a parser, money, or security leaves at least one small test.
 
 ### File and folder size
 
