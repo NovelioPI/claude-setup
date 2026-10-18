@@ -107,7 +107,3 @@ Do not make a table from one fact. One fact is one sentence.
 Replace a long word and a figure of speech with a plain word. See @rules/plain-words.md for the two tables.
 
 Risk: if the tables do not load, then ask the user to open `rules/plain-words.md`.
-
-# Check
-
-Every line in this file is a definition, an instruction, or a relation. Cut a line that is none of the three.
