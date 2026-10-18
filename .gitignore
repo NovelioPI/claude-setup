@@ -34,6 +34,8 @@ policy-limits.json*
 remote/
 remote-settings.json
 state/
+.ponytail-active
+remote-settings.json.synced-at
 # Only the skills listed here are tracked.
 skills/*
 !skills/brainstorming/

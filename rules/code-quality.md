@@ -13,8 +13,6 @@ Before your first edit to a file in a language below, read that language's
 guide. It gives the language form of the rules here.
 Python: `~/.claude/guides/code-quality-python.md`.
 TypeScript and JavaScript: `~/.claude/guides/code-quality-typescript.md`.
-C and C++: `~/.claude/guides/code-quality-cpp.md`.
-Kotlin: `~/.claude/guides/code-quality-kotlin.md`.
 Dart and Flutter: `~/.claude/guides/code-quality-dart.md`.
 
 ### Comments and docstrings

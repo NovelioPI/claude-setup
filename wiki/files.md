@@ -14,8 +14,6 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `rules/doc-style.md` | Style for a document a human reads |
 | `guides/code-quality-python.md` | Python form of those rules |
 | `guides/code-quality-typescript.md` | TypeScript and JavaScript form |
-| `guides/code-quality-cpp.md` | C and C++ form |
-| `guides/code-quality-kotlin.md` | Kotlin form, with coroutine and flow rules |
 | `guides/code-quality-dart.md` | Dart form, with Flutter rules |
 | `output-styles/plain-style.md` | Active chat output style: two fixed shapes, simple English |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
@@ -41,7 +39,6 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
-| `scripts/debt-report.sh` | Print the cognitive debt numbers: fix commits without a root cause |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `wiki/` | These detail pages; `README.md` links to each one |

@@ -16,6 +16,8 @@ My global Claude Code config at `~/.claude/`.
 | ReUI | Finds and installs ReUI registry components through MCP |
 | shadcn | Adds and composes shadcn/ui components through MCP and a skill |
 | `pr-flow` | Opens a PR with `gh` after an approved push, then watches CI |
+| TDD | `/tdd` runs a red-green loop, only when you call it |
+| Ponytail | Plugin that asks for the smallest change that solves the task |
 
 ## Setup
 
@@ -35,15 +37,13 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 4. Fix anything it reports as a blocker, then run it again.
 5. Restart Claude Code.
 
-On a GPU server, repeat these steps on the server, where Claude Code runs.
-
 ## Workflow
 
 Start `claude` in the repo.
 
 1. Describe the task. The agent shows a plan.
 2. Approve with "go", or with `Auto` to run to the end.
-3. The agent writes a failing test, then the code, and runs the checks.
+3. The agent writes the code and runs the checks.
 4. It reports what changed and what it was unsure about, then proposes a commit.
 5. For review, run `pr-flow`: it asks before the push and watches CI.
 
