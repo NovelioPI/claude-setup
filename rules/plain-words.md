@@ -1,7 +1,6 @@
 ## Plain Words
 
-Replace the left word with the right word, in chat text and in commit
-messages.
+Replace the left word with the right word, in chat text and in commit messages.
 
 ### Long word to short word
 
@@ -38,8 +37,7 @@ messages.
 | utilize | use |
 | verify | check |
 
-This table applies to chat text only. A commit message keeps the exact
-word when the short word is wrong.
+This table applies to chat text only. A commit message keeps the exact word when the short word is wrong.
 
 ### Figure of speech to plain words
 
