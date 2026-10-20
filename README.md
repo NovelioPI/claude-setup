@@ -35,7 +35,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
    ```
 4. Fix anything it reports as a blocker, then run it again.
 5. Restart Claude Code.
-6. In Linear, give your team the statuses Backlog, Planning, Ready, Building, Verifying, Done, and Canceled, and make one project per repo.
+6. In Linear, give your team the statuses Backlog, Planning, Ready, Building, Verifying, Done, and Canceled, and make one project per repo. Add a saved view of issues in Verifying, your review queue. In Settings → Team → Workflows & automations, set auto-archive to the shortest period, to help keep the Free plan under its 250-issue cap.
 
 ## Workflow
 

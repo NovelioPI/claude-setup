@@ -27,7 +27,7 @@ Before you report done, follow the Independent check in `rules/verification.md`.
 ## Execution
 
 - A feature (new behavior a user can see, or work that spans sessions) uses the `feature` skill and lives in `docs/features/<slug>/`. A fix or small change writes no plan file and plans in chat.
-- Track work in Linear through its MCP, one Linear project per repo. The issue holds status and a link; the repo holds intent, spec, and plan.
+- Track each feature in Linear through its MCP, one Linear project per repo. A fix gets no issue, to stay under the Free plan's 250-issue cap. The issue holds status and a link; the repo holds intent, spec, and plan.
 - Ownership levels decide my involvement, whatever the change size.
 - A test, spec, or threshold looks wrong: stop and report. Never edit a test, special-case an input, or weaken an assertion to make it pass.
 - Keep a task diff under 300 changed lines. Split a larger one.
