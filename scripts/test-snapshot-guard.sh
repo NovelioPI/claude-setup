@@ -36,6 +36,9 @@ expect() {
 expect none  'ls -la'
 expect none  'git commit -m "rm the old file"'
 expect none  'echo rm x'
+expect none  'git commit -m "tidy; rm stale files"'
+expect none  'git commit -m "a && rm b"'
+expect none  "echo 'x | rm y'"
 expect allow 'rm tracked.txt'
 expect allow 'rm -f new.txt'
 expect allow 'rm *.txt'
@@ -55,6 +58,18 @@ expect ask   'find . -name x -delete'
 expect ask   'git stash drop'
 expect ask   'git -C /elsewhere restore f'
 expect ask   'cd "$DIR" && rm new.txt'
+
+# Reason: outside a repo git fails on its own, so the hook must not claim a snapshot.
+outside=$(mktemp -d "$HOME/.snapshot-guard-out.XXXXXX")
+got=$(jq -n --arg d "$outside" '{tool_input: {command: "git stash"}, cwd: $d}' | bash "$hook" |
+  jq -r '.hookSpecificOutput.permissionDecision // "none"')
+rm -rf "$outside"
+if [ "${got:-none}" = none ]; then
+  echo "ok    none  git stash outside a repo"
+else
+  echo "FAIL  $got, want none  git stash outside a repo"
+  fails=$((fails + 1))
+fi
 
 # The snapshot must hold an untracked file, so rm of it can be undone.
 ref=$(git -C "$repo" for-each-ref --sort=-refname --format='%(refname)' refs/claude/snapshots/ | head -1)
