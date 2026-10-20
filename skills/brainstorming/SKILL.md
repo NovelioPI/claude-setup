@@ -25,9 +25,7 @@ Take the heavier path when two fit. If you find hidden complexity during the run
 
 The `project` path writes one file: `docs/plans/brainstorm-<slug>.md`, following `rules/doc-style.md`.
 
-Run the three passes in chat. Then show the slug and the full file, and wait for "Go" or "Execute". Write the file once, after the token.
-
-Risk: if the context compacts before the write, then the passes are lost. Offer `/handoff` when context pressure is high.
+Run the three passes in chat. Then write the file once.
 
 `probe` and `bounded` stay in chat and write no file.
 
@@ -60,7 +58,7 @@ Turn each assumption the idea rests on into a checked fact.
 
 Mark a claim you could not check as `unverified`. An unverified claim is an honest row; a guessed one is a defect that survives into the plan.
 
-Propose a research subagent for one case only: an `unverified` claim that blocks a decision in pass 3. Name the claim, the decision it blocks, and the source you would send the agent to, then wait for a token.
+Dispatch a research subagent for one case only: an `unverified` claim that blocks a decision in pass 3. Name the claim, the decision it blocks, and the source you send the agent to.
 
 Done when every assumption carries a source link or the label `unverified`.
 
@@ -86,12 +84,8 @@ Done when every open decision has an ID, two or more options, and a recommendati
 
 Scan the file for `TBD`, an empty cell, and two rows that contradict each other. Fix them inline.
 
-End with the file path, the count of open decisions, and this offer:
+Show the file path and the count of open decisions. Then close the pass 3 table with AskUserQuestion, up to four rows each round, in the table order.
 
-    Close these <n> decisions? Go or Execute.
-
-On a token, close the pass 3 table with AskUserQuestion, up to four rows each round, in the table order.
-
-Next: add the milestones to `docs/roadmap.md`, then run `/plan-feature` for each feature of the first milestone.
+Next: add the milestones to `docs/roadmap.md`.
 
 Risk: if a brainstorm ends without a decision table, then nothing is left to close and the work has no plan.

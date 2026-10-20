@@ -6,7 +6,6 @@ My global Claude Code config at `~/.claude/`.
 
 | Feature | What it does |
 |---|---|
-| Approval protocol | The agent shows a plan and waits for a clear "go". `Auto` runs one plan to the end |
 | Code and doc rules | Readable code, few comments, plain words, short commit messages |
 | Quality hooks | Format and lint after each edit; type checks and tests before a turn ends |
 | Guards | Block unrecoverable git commands and edits to protected test files |
@@ -35,10 +34,9 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 
 Start `claude` in the repo.
 
-1. Describe the task. The agent shows a plan.
-2. Approve with "go", or with `Auto` to run to the end.
-3. The agent writes the code and runs the checks.
-4. It reports what changed and what it was unsure about, then proposes a commit.
+1. Describe the task.
+2. The agent writes the code and runs the checks.
+3. It reports what changed and what it was unsure about, then proposes a commit.
 
 ## More
 

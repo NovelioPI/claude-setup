@@ -12,8 +12,6 @@ Everything here follows from that. If you disagree with the premise, most of the
 
 ## What is different here
 
-**The agent waits for approval.** Any reply that clearly approves the plan it just showed counts, such as "go", "yes", or "sounds good". An unclear reply gets a question back. Only `Auto` must be the exact word. One approval covers one plan, and it ends when the plan changes. `CLAUDE.md` calls this failing closed. `Auto` runs the plan to the end and still stops before an action you cannot undo.
-
 **Comments are off by default.** A comment earns its place by naming a hidden constraint or a risk, in 20 words or fewer. Everything else is the code restating itself.
 
 **Short words are enforced.** `rules/plain-words.md` is a replacement table for chat text and commit messages. Write "use", not "leverage". Write "start", not "spin up".
@@ -30,9 +28,7 @@ Most of this works in pieces. Copy one file and ignore the rest. MIT licensed, s
 | `rules/code-quality.md` and its language guides | yes | nothing |
 | `output-styles/plain-style.md` | yes | one key in `settings.json` |
 | `hooks/block-dangerous-git.sh` | yes | `jq` |
-| The approval protocol in `CLAUDE.md` | yes | your patience |
 
 ## Not for you if
 
-- You want the agent to act without showing a plan first.
 - You want a short config. About 2,300 words load on every turn. The code and doc rules add 1,900 more when Claude touches those files, and a language guide adds 700 to 1,600.

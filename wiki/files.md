@@ -7,7 +7,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | Path | Purpose |
 |---|---|
 | `settings.json` | Model, effort, output style, permission rules, hooks, status line |
-| `CLAUDE.md` | Workflow contract: approval protocol, conversation flow, process gates |
+| `CLAUDE.md` | Workflow contract: conversation flow, verification, execution rules |
 | `rules/code-quality.md` | Coding, comment, typing, test, and file-layout rules |
 | `rules/plain-words.md` | Word replacements for chat text and commit messages |
 | `rules/commit-style.md` | Commit subject, body, word, and trailer rules |
@@ -50,8 +50,6 @@ This repo tracks the skills written here, `brainstorming`, and the MIT-licensed 
 | `impeccable`, and the `agents/impeccable-*.md` it dispatches | installed separately, not tracked here |
 
 `~/.claude/skills/` is otherwise excluded, with a negation for each tracked skill. Every entry is a real directory, never a symlink.
-
-A skill's own instructions never override the approval protocol in `CLAUDE.md`. Several of them tell the agent to dispatch a subagent or to not block, and `CLAUDE.md` has a clause that overrules them.
 
 ## Notes
 
