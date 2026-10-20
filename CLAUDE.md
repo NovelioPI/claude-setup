@@ -28,12 +28,10 @@ Before you report done, follow the Independent check in `rules/verification.md`.
 
 - A feature (new behavior a user can see, or work that spans sessions) uses the `feature` skill and lives in `docs/features/<slug>/`. A fix or small change writes no plan file and plans in chat.
 - Track each feature in Linear through its MCP, one Linear project per repo. A fix gets no issue, to stay under the Free plan's 250-issue cap. The issue holds status and a link; the repo holds intent, spec, and plan.
-- Ownership levels decide my involvement, whatever the change size.
 - A test, spec, or threshold looks wrong: stop and report. Never edit a test, special-case an input, or weaken an assertion to make it pass.
 - Keep a task diff under 300 changed lines. Split a larger one.
 - A code change invalidates a doc: update the doc in the same turn.
 - A security-sensitive change: run `security-review` before the merge.
-- A bug in Core or Important code: ask me for a hypothesis and wait. Then report whether it was right, with file:line evidence.
 - End each task with what changed, why, and what you were unsure about. Say so if a test failed or was skipped. Then propose the commit.
 - A project with no `CLAUDE.md`: run `/init`, then cut the result to one page with four sections: Commands (build, test, lint, each with a sample healthy output), Conventions, Architecture, and Things Claude gets wrong.
 - When I correct the same mistake twice in a project, add the rule that prevents it to that project's `CLAUDE.md` under Things Claude gets wrong. Save any other mistake or correction to memory. Do not save your decisions.
