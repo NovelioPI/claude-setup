@@ -4,9 +4,9 @@ Why this setup looks the way it does, and whether it fits you.
 
 ## Why it looks like this
 
-An agent writes code faster than I can read it. That is the whole problem. Speed was never my bottleneck. My review was.
+An agent writes code faster than I can read it. So I stopped reading every line, and check evidence instead.
 
-So the work went into three things. A contract that says when the agent may act. Rules that make what it writes readable on the first pass. A loop that proves a change works before I look at it.
+The work went into three things. A method that fixes what to build before any code: intent, spec, and plan. Rules that make what it writes readable on the first pass. A verifier in a fresh context that proves each claim and puts its screenshots on the Linear issue.
 
 Everything here follows from that. If you disagree with the premise, most of these files will look like too much process.
 
@@ -31,4 +31,4 @@ Most of this works in pieces. Copy one file and ignore the rest. MIT licensed, s
 
 ## Not for you if
 
-- You want a short config. About 2,300 words load on every turn. The code and doc rules add 1,900 more when Claude touches those files, and a language guide adds 700 to 1,600.
+- You want a short config. About 1,600 words load on every turn. The code and doc rules add 1,900 more when Claude touches those files, and a language guide adds 700 to 1,000.
