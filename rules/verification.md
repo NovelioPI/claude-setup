@@ -21,4 +21,4 @@ After two failed fixes that share one premise, write the premise down. Test it b
 
 ### Independent check
 
-Before you report a change with visible behavior as done, a fresh subagent that did not write it runs `verify-this`. It uses the project's `verify-<app>` skill when one exists, else `control-ui` or `control-cli`. Report its verdict and the evidence paths. `NOT VERIFIED` or `INCONCLUSIVE` means the task is not done.
+Before you report a change with visible behavior as done, a fresh subagent that did not write it runs `verify-this`. It uses the project's `verify-<app>` skill when one exists, else `control-ui` or `control-cli`. When the feature has a `spec.md`, it checks each Behavior claim. Report its verdict and the evidence paths. `NOT VERIFIED` or `INCONCLUSIVE` means the task is not done.

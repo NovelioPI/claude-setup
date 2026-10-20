@@ -26,7 +26,7 @@ Before you report done, follow the Independent check in `rules/verification.md`.
 
 ## Execution
 
-- Never create a plan file or shared task list for single-session work.
+- A feature (new behavior a user can see, or work that spans sessions) uses the `feature` skill and lives in `docs/features/<slug>/`. A fix or small change writes no plan file and plans in chat.
 - Ownership levels decide my involvement, whatever the change size.
 - A test, spec, or threshold looks wrong: stop and report. Never edit a test, special-case an input, or weaken an assertion to make it pass.
 - Keep a task diff under 300 changed lines. Split a larger one.

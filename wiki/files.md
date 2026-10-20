@@ -26,6 +26,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
+| `skills/feature/` | `feature`: writes `docs/features/<slug>/` intent, spec, and plan from templates; stops for approval after intent and plan; then builds and verifies |
 | `skills/attribution/SKILL.md` | `/attribution on` or `off`: sets `attribution` in `settings.json` |
 | `skills/verify-this/`, `skills/control-ui/`, `skills/control-cli/`, `skills/deslop/` | Claim verdicts, browser and terminal drivers, code cleanup; copied from `cursor/plugins` `cursor-team-kit` (MIT) |
 | `skills/create-verification-skill/`, `skills/maintain-verification-skill/` | Generate and audit a project `verify-<app>` skill; copied from `cursor/plugins` `pstack` (MIT), paths changed to `.claude/` |
@@ -47,7 +48,7 @@ An output style file does nothing on its own. `settings.json` activates one with
 
 ## Skills
 
-This repo tracks the skills written here, `brainstorming` and `attribution`, and MIT-licensed copies: `tdd`, `verify-this`, `control-ui`, `control-cli`, `deslop`, `create-verification-skill`, and `maintain-verification-skill`. Each copy keeps its LICENSE. Other skills are other people's work, so they are not redistributed.
+This repo tracks the skills written here, `feature` and `attribution`, and MIT-licensed copies: `tdd`, `verify-this`, `control-ui`, `control-cli`, `deslop`, `create-verification-skill`, and `maintain-verification-skill`. Each copy keeps its LICENSE. Other skills are other people's work, so they are not redistributed.
 
 | Skill | Source |
 |---|---|
