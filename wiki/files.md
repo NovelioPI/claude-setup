@@ -35,6 +35,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
+| `scripts/board.sh` | `setup`, `add`, `move` for the `Work` GitHub Projects board that the `feature` skill keeps in step with the `Status:` lines |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |

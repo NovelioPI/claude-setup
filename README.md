@@ -11,6 +11,7 @@ My global Claude Code config at `~/.claude/`.
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
 | `feature` | Turns an idea into intent, spec, and plan files; you approve and it commits each one, then it builds and verifies |
+| Board | One GitHub Projects board, `Work`, tracks every feature across repos; `scripts/board.sh` moves the cards |
 | `attribution` | `/attribution on` or `off` turns the Claude co-author trailer on or off |
 | Verification | `verify-this` gives VERIFIED, NOT VERIFIED, or INCONCLUSIVE from a fresh subagent; `control-ui` and `control-cli` drive the app |
 | Project verifier | `/create-verification-skill` writes a `verify-<app>` skill for each project |
@@ -34,6 +35,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
    ```
 4. Fix anything it reports as a blocker, then run it again.
 5. Restart Claude Code.
+6. For the feature board, run `gh auth refresh -s project`, then `~/.claude/scripts/board.sh setup`.
 
 ## Workflow
 

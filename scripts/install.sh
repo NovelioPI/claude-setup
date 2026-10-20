@@ -36,6 +36,10 @@ done
 for t in gh rg; do
   have "$t" && say "$t" "present" || say "$t" "absent (optional)"
 done
+if have gh; then
+  gh auth status 2>&1 | grep -q "'project'" && say "gh scope" "project present" ||
+    say "gh scope" "no project scope; the feature board needs: gh auth refresh -s project"
+fi
 
 NODE_MIN_MAJOR=20
 node_major=$(node -v 2>/dev/null | sed 's/^v//; s/\..*//')

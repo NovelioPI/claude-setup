@@ -7,16 +7,20 @@ description: Turn an idea into docs/features/<slug>/ with intent.md, spec.md, an
 
 Each feature lives in `docs/features/<slug>/` in the project. Fill the templates in `templates/` and follow `rules/doc-style.md`.
 
-| Step | Writes | Then |
-|---|---|---|
-| 1 Intent | `intent.md` | Stop. The user accepts it. Commit it |
-| 2 Spec | `spec.md` | Stop. The user accepts it. Commit it |
-| 3 Plan | `plan.md` | Stop. The user accepts it. Commit it |
-| 4 Build | code and tests | Verify, then set the plan to `done` and commit |
+| Step | Writes | Then | Board |
+|---|---|---|---|
+| 1 Intent | `intent.md` | Stop. The user accepts it. Commit it | Create the issue, add it: Planning |
+| 2 Spec | `spec.md` | Stop. The user accepts it. Commit it | Planning |
+| 3 Plan | `plan.md` | Stop. The user accepts it. Commit it | Ready |
+| 4 Build | code and tests | Verify, then set the plan to `done` and commit | Building, Verifying, Done |
 
 Each file has a `Status:` line: `draft`, `accepted`, or `done`. Change it only at the step that says so. Each accepted file gets its own commit, so the git log records who asked for what and who accepted it.
 
 If `docs/features/<slug>/` already exists, read it and resume at the first file that is not `accepted`.
+
+## Board
+
+The GitHub issue holds the status and a link. The files hold the content. Move the card with `~/.claude/scripts/board.sh move <issue-url> <status>` in the same step that changes a `Status:` line. When the card and a file disagree, the file wins: move the card to match it. If `board.sh` fails, report it and go on; never let a board error block the feature.
 
 If the project has no `CLAUDE.md`, follow the project CLAUDE.md rule in the global `CLAUDE.md` before step 1.
 
@@ -61,7 +65,10 @@ Write the decisions that block the work in Open questions, as the table in the t
 
 Scan the file for `TBD`, an empty cell, and two rows that contradict each other. Fix them inline. Close Open questions with AskUserQuestion, up to four rows each round, in table order. Record each answer in its row. A question the user wants to leave open stays, marked `carried`.
 
-Ask the user to accept the intent. On acceptance, set `Status: accepted` and commit: `docs: Add intent for <slug>`.
+Ask the user to accept the intent. On acceptance:
+1. Create the issue: `gh issue create --title "<title>" --label feature --body "Feature: docs/features/<slug>/"`. Create the `feature` label first if it is missing.
+2. Run `board.sh add <issue-url>`, then `board.sh move <issue-url> Planning`.
+3. Write the issue URL in the `Issue:` line, set `Status: accepted`, and commit: `docs: Add intent for <slug>`.
 
 ## 2 Spec
 
@@ -88,10 +95,10 @@ Question the plan before you show it, and put the answers in Risks and Options n
 - Which step is the riskiest?
 - Which other approaches did you reject, and why?
 
-The plan is done when someone who never saw this conversation could build the change from the plan alone. Ask the user to accept it. On acceptance, set `Status: accepted` and commit: `docs: Add plan for <slug>`.
+The plan is done when someone who never saw this conversation could build the change from the plan alone. Ask the user to accept it. On acceptance, set `Status: accepted`, commit: `docs: Add plan for <slug>`, and move the card to Ready.
 
 ## 4 Build
 
-Follow Order of work. Keep each commit under 300 changed lines. When the build departs from the plan, update `plan.md` in the same commit as the code that departs, and say so in the commit body.
+Move the card to Building, then follow Order of work. Keep each commit under 300 changed lines. When the build departs from the plan, update `plan.md` in the same commit as the code that departs, and say so in the commit body.
 
-When all work is done, run the Independent check in `rules/verification.md` against every claim in Proof. Set the plan to `Status: done` only when every claim is `VERIFIED`, and commit it with the last change.
+When all work is done, move the card to Verifying and run the Independent check in `rules/verification.md` against every claim in Proof. On any `NOT VERIFIED` or `INCONCLUSIVE`, move the card back to Building and fix. When every claim is `VERIFIED`, set the plan to `Status: done`, commit it with the last change with a `Closes #<n>` trailer, and move the card to Done.
