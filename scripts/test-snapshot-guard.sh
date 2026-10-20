@@ -90,6 +90,7 @@ expect ask   $'bash -c "echo hi\nrm tracked.txt\n"'
 expect ask   "bash -c \$'rm\\x20.env'"
 expect none  'docker run --rm image'
 expect ask   'cd; rm new.txt'
+expect ask   'cd /home && rm new.txt'
 expect ask   'pushd /tmp && rm new.txt'
 expect ask   'cd -P /tmp && rm new.txt'
 expect ask   'cd -- /tmp && rm new.txt'
