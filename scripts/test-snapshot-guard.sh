@@ -15,6 +15,15 @@ git -C "$repo" -c user.name=t -c user.email=t@t commit -qm init
 echo untracked > "$repo/new.txt"
 echo secret > "$repo/.env"
 mkdir -p "$repo/app/node_modules" && echo dep > "$repo/app/node_modules/x.js"
+ln -s /tmp/snapshot-guard-link-target "$repo/lnk"
+# Reason: branch other tracks .env, so a checkout of it overwrites the ignored local .env.
+other_tree=$(
+  export GIT_INDEX_FILE="$repo/.git/other-index"
+  git -C "$repo" read-tree HEAD && git -C "$repo" add -f .env && git -C "$repo" write-tree
+)
+rm -f "$repo/.git/other-index"
+other=$(git -C "$repo" -c user.name=t -c user.email=t@t commit-tree "$other_tree" -p HEAD -m other)
+git -C "$repo" update-ref refs/heads/other "$other"
 
 decision() {
   jq -n --arg c "$1" --arg d "$repo" '{tool_input: {command: $c}, cwd: $d}' |
@@ -80,6 +89,19 @@ expect ask   'bash -c rm\ tracked.txt'
 expect ask   $'bash -c "echo hi\nrm tracked.txt\n"'
 expect ask   "bash -c \$'rm\\x20.env'"
 expect none  'docker run --rm image'
+expect ask   'cd; rm new.txt'
+expect ask   'pushd /tmp && rm new.txt'
+expect ask   'cd -P /tmp && rm new.txt'
+expect ask   'cd -- /tmp && rm new.txt'
+expect ask   'rm lnk'
+expect ask   'git checkout other'
+expect ask   'git stash -a'
+expect ask   'git stash --all'
+expect ask   'git clean -x'
+expect ask   'git -c clean.requireForce=false clean -x'
+expect ask   'git -c core.worktree=/tmp stash'
+expect allow 'git switch -f other2'
+expect allow 'git checkout-index -a -f'
 expect ask   $'ls # don\'t\ntrue; rm .env'
 expect ask   "echo \$'a\\'b'; rm .env"
 expect allow 'sleep 1 & rm new.txt'
@@ -97,6 +119,19 @@ else
   echo "FAIL  $got, want none  git stash outside a repo"
   fails=$((fails + 1))
 fi
+
+# Reason: git add skips a skip-worktree file, so the snapshot must clear that bit to see the edit.
+git -C "$repo" update-index --skip-worktree tracked.txt
+echo EDITED > "$repo/tracked.txt"
+decision 'rm tracked.txt' >/dev/null
+ref=$(git -C "$repo" for-each-ref --sort=-refname --format='%(refname)' refs/claude/snapshots/ | head -1)
+if [ "$(git -C "$repo" show "$ref:tracked.txt" 2>/dev/null)" = EDITED ]; then
+  echo "ok    snapshot holds the edit of a skip-worktree file"
+else
+  echo "FAIL  snapshot lost the edit of a skip-worktree file"
+  fails=$((fails + 1))
+fi
+git -C "$repo" update-index --no-skip-worktree tracked.txt
 
 # The snapshot must hold an untracked file, so rm of it can be undone.
 ref=$(git -C "$repo" for-each-ref --sort=-refname --format='%(refname)' refs/claude/snapshots/ | head -1)
