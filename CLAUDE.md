@@ -1,4 +1,4 @@
-## Technical Names
+## Style
 
 Style modes control presentation only. If a style rule conflicts with CLAUDE.md, obey CLAUDE.md for that part.
 
