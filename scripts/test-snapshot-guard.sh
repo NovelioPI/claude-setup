@@ -34,8 +34,8 @@ expect() {
 }
 
 expect none  'ls -la'
-expect none  'git commit -m "rm the old file"'
-expect none  'echo rm x'
+expect ask   'git commit -m "rm the old file"'
+expect ask   'echo rm x'
 expect ask   'git commit -m "tidy; rm stale files"'
 expect ask   'git commit -m "a && rm b"'
 expect ask   "echo 'x | rm y'"

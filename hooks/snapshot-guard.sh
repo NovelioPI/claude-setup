@@ -10,7 +10,7 @@ dir=$(printf '%s' "$INPUT" | jq -r '.cwd // empty')
 [ -n "$dir" ] || dir=$PWD
 
 KEEP=50
-seen=0
+temp_only=0
 asks=()
 tops=()
 
@@ -34,7 +34,7 @@ check_target() {
   case "$path" in /*) abs=$path ;; *) abs="$dir/$path" ;; esac
   abs=$(realpath -m -- "$abs")
   # Reason: files under the temp dir are disposable, so they need no snapshot and no prompt.
-  case "$abs" in /tmp/*|"${TMPDIR:-/tmp}"/*) return ;; esac
+  case "$abs" in /tmp/*|"${TMPDIR:-/tmp}"/*) temp_only=1; return ;; esac
   top=$(repo_top "$(dirname "$abs")")
   if [ -z "$top" ] || [ "$abs" = "$top" ] || [[ "$abs" != "$top"/* ]] || [[ "$abs" == "$top"/.git* ]]; then
     asks+=("$path is outside a git repo")
@@ -88,27 +88,57 @@ check_git() {
   [ -n "$top" ] && add_top "$top"
 }
 
-SEGMENTS=$(printf '%s' "$COMMAND" | sed -E 's/(\|\||&&|;|\|)/\n/g')
+# Prints the command with a newline at each ;, |, ||, &&, |&, and &.
+# Reason: quotes are ignored on purpose, so a mistake makes an extra command and a prompt, never a hidden one.
+split_segments() {
+  local s=$1 out="" c i
+  for ((i = 0; i < ${#s}; i++)); do
+    c=${s:i:1}
+    case $c in
+      ';'|'|') out+=$'\n' ;;
+      '&')
+        # Reason: & next to < or > is a redirection such as 2>&1, not a background separator.
+        case "${s:i-1:1}${s:i+1:1}" in
+          *[\<\>]*) out+=$c ;;
+          *) out+=$'\n' ;;
+        esac ;;
+      *) out+=$c ;;
+    esac
+  done
+  printf '%s' "$out"
+}
+
+# Reason: a boundary that excludes - keeps docker's --rm from counting as a delete.
+B='(^|[^[:alnum:]_-])'
+E='([^[:alnum:]_-]|$)'
+DELETE_WORD="${B}(rm|unlink|shred|eval)${E}|[[:space:]]-delete${E}|${B}git[[:space:]](.*[^[:alnum:]_-])?(stash|restore|checkout|clean|reset)${E}"
+[[ "$COMMAND" =~ $DELETE_WORD ]] || exit 0
+
+# Reason: from here the hook allows only forms it parses, so shell syntax it does not model asks.
+# Reason: a quote that spans lines hides which line is code, as in a multi-line bash -c string.
+if [[ "$COMMAND" =~ [\(\)\{\}\`\$\\!] ]] || [[ "$COMMAND" == *"<<"* ]] ||
+   { [[ "$COMMAND" == *$'\n'* ]] && [[ "$COMMAND" =~ [\'\"] ]]; }; then
+  decide ask "Not undoable by snapshot: a delete inside shell syntax this hook does not parse" ""
+fi
+
+SEGMENTS=$(split_segments "$COMMAND")
 while IFS= read -r segment; do
   segment="${segment#"${segment%%[![:space:]]*}"}"
   if [[ "$segment" =~ ^cd[[:space:]]+([^[:space:]]+)[[:space:]]*$ ]]; then
     target=${BASH_REMATCH[1]}
-    if [[ "$target" =~ [\$\`\'\"~] ]]; then dir=""; continue; fi
+    if [[ "$target" =~ [\'\"~] ]]; then dir=""; continue; fi
     case "$target" in /*) dir=$target ;; *) dir="$dir/$target" ;; esac
     continue
   fi
-  risky=""
+  [[ "$segment" =~ $DELETE_WORD ]] || continue
   if [[ "$segment" =~ ^rm([[:space:]]|$) ]]; then
     risky=rm
   elif [[ "$segment" =~ ^git([[:space:]]+-[^[:space:]]+([[:space:]]+[^-][^[:space:]]*)?)*[[:space:]]+(stash|restore|checkout|clean|reset|rm)([[:space:]]|$) ]]; then
     risky=git
-  elif [[ "$segment" =~ ^((sudo|env|command|exec|time|nice|nohup|xargs)([[:space:]]+[^[:space:]]+)*[[:space:]]+)?([^[:space:]]*/)?(rm|unlink|shred)([[:space:]]|$) ]] ||
-       [[ "$segment" =~ ^find[[:space:]].*[[:space:]]-delete([[:space:]]|$) ]]; then
+  else
     asks+=("cannot check: $segment")
     continue
   fi
-  [ -n "$risky" ] || continue
-  seen=1
   # Reason: a cd this parser cannot follow leaves the working directory unknown.
   if [ -z "$dir" ]; then
     asks+=("unknown directory after cd: $segment")
@@ -117,7 +147,7 @@ while IFS= read -r segment; do
   if [ "$risky" = rm ]; then check_rm "$segment"; else check_git "$segment"; fi
 done <<< "$SEGMENTS"
 
-[ "$seen" -eq 1 ] || [ "${#asks[@]}" -gt 0 ] || exit 0
+[ "${#asks[@]}" -gt 0 ] || [ "${#tops[@]}" -gt 0 ] || [ "$temp_only" -eq 1 ] || exit 0
 
 # Prints a new snapshot ref holding the tracked and untracked files of a repo, ignored files excluded.
 snapshot() {

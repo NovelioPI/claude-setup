@@ -10,13 +10,13 @@ Two layers guard the destructive commands, and the overlap is on purpose.
 
 A plain `git push` is **not** guarded, on purpose. A guardrail that blocks a command you use every day teaches you to route around the guardrail. `--force-with-lease` also passes, because it refuses to overwrite unseen commits.
 
-The `permissions.deny` list in `settings.json` is the second layer. It repeats `git reset --hard` and `git clean -f`, so they stay blocked if the hook file goes missing.
+The `permissions.deny` list in `settings.json` is the second layer. It repeats `git reset --hard` and `git clean` with a dash followed later by an `f`, such as `-dfx`, so they stay blocked if the hook file goes missing. It also blocks a dry run whose path holds an `f`, such as `git clean -n -- fixtures`.
 
 ## Recoverable deletes
 
 `hooks/snapshot-guard.sh` runs before `rm`, `git stash`, `git restore`, `git checkout`, `git clean`, `git reset`, and `git rm`. It saves the working tree, untracked files included, to `refs/claude/snapshots/<time>`, then allows the command with no prompt. Undo with `git restore --source=<ref> -- <path>`, which leaves the index alone. It keeps the last 50 snapshots in each repo. An `rm` under `/tmp` runs with no snapshot.
 
-It asks instead when a snapshot cannot undo the command: a target outside a repo, a git-ignored file or a folder holding one, `git stash drop` or `clear`, `git -C`, `sudo rm`, `xargs rm`, `find -delete`, or a target hidden by quotes, `$`, or a `cd` it cannot follow. `scripts/test-snapshot-guard.sh` covers each case, and `scripts/install.sh` runs it.
+It fails closed. A command with a delete word anywhere (`rm`, `unlink`, `shred`, `eval`, `-delete`, or `git` with a risky subcommand) is allowed only in a form the hook parses: a plain `rm` or `git` command, after plain `cd`, `;`, `|`, `&&`, or `&`. It asks for every other form: `( )`, `{ }`, `$`, a backslash, `!`, a backtick, a heredoc, a quote across lines, `bash -c`, `sudo`, `xargs`, `env`, `find -delete`, or a delete word anywhere else, such as in a commit message. It also asks when a snapshot cannot undo the command: a target outside a repo, a git-ignored file or a folder holding one, `git stash drop` or `clear`, `git -C`, or a `cd` it cannot follow. `scripts/test-snapshot-guard.sh` covers each case, and `scripts/install.sh` runs it.
 
 `scripts/install.sh` tests both directions of the guard on every run.
 
@@ -32,7 +32,8 @@ An executable `.claude/quality.sh` in a project replaces `scripts/quality.sh` fo
 
 - `commit-gate.sh` matches commit commands by pattern. Forms such as `{ git commit; }`, `timeout 60 git commit`, a git alias, `merge`, and `rebase` get past it.
 - Both guards check the project in `CLAUDE_PROJECT_DIR`, not a repo named by `git -C` or `cd`.
-- `snapshot-guard.sh` does not see an `rm` inside `bash -c`, a script, or a Makefile. Those calls go through the normal permission mode.
+- `snapshot-guard.sh` prompts for any mention of a delete word, such as `git commit -m "fix rm bug"`. Parsers that tried to tell quoted text from code missed real deletes after a comment, `$'...'`, a subshell, or `eval`.
+- `snapshot-guard.sh` does not see an `rm` inside a script, a Makefile, or a split word such as `r''m`. Those calls go through the normal permission mode. It guards against mistakes, not against a deliberate bypass.
 - A large untracked file is copied into `.git` on each snapshot.
 - On a case-insensitive drive such as `/mnt/c`, a path with different letter case gets past `protect-signal.sh`.
 - `stop-gate.sh` keeps its last result in `claude-stop-gate` in the git dir. A change to a git-ignored file, a tool, `.venv`, or `node_modules` does not rerun it.

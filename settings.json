@@ -13,7 +13,7 @@
     "deny": [
       "Read(./tests/holdout/**)",
       "Bash(git reset --hard*)",
-      "Bash(git clean -f*)"
+      "Bash(git clean *-*f*)"
     ]
   },
   "model": "opus",
