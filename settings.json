@@ -11,15 +11,9 @@
       "mcp__plugin_linear_linear__create_attachment_from_upload"
     ],
     "deny": [
-      "Read(./tests/holdout/**)"
-    ],
-    "ask": [
-      "Bash(git stash*)",
-      "Bash(git clean*)",
-      "Bash(git checkout -- *)",
-      "Bash(git restore*)",
+      "Read(./tests/holdout/**)",
       "Bash(git reset --hard*)",
-      "Bash(rm *)"
+      "Bash(git clean -f*)"
     ]
   },
   "model": "opus",
@@ -31,6 +25,11 @@
           {
             "type": "command",
             "command": "bash ~/.claude/hooks/block-dangerous-git.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/snapshot-guard.sh",
+            "timeout": 60
           },
           {
             "type": "command",

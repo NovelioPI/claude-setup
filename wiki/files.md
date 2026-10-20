@@ -18,6 +18,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `guides/code-quality-dart.md` | Dart form, with Flutter rules |
 | `output-styles/plain-style.md` | Active chat output style: answer first, tables only to compare, simple English |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
+| `hooks/snapshot-guard.sh` | `PreToolUse` guard: snapshots the tree before `rm`, stash, restore, and similar, then allows them; asks when a snapshot cannot undo them |
 | `hooks/post-edit.sh` | `PostToolUse` check: formats and lints the edited file through the language adapter |
 | `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files in a project's `.claude/protected-paths`, or to test files by name when no list exists |
 | `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, then runs the stop gate |
@@ -36,6 +37,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |
+| `scripts/test-snapshot-guard.sh` | Regression test for `hooks/snapshot-guard.sh`: commands it allows, asks for, or ignores, and a restore from a snapshot |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `wiki/` | These detail pages; `README.md` links to each one |
 | `LICENSE` | MIT |
