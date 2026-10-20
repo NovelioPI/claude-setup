@@ -34,7 +34,8 @@ Before you report done, follow the Independent check in `rules/verification.md`.
 - A security-sensitive change: run `security-review` before the merge.
 - A bug in Core or Important code: ask me for a hypothesis and wait. Then report whether it was right, with file:line evidence.
 - End each task with what changed, why, and what you were unsure about. Say so if a test failed or was skipped. Then propose the commit.
-- When I make a mistake or you correct me, save what went wrong and the rule that prevents it. Do not save your decisions.
+- A project with no `CLAUDE.md`: run `/init`, then cut the result to one page with four sections: Commands (build, test, lint, each with a sample healthy output), Conventions, Architecture, and Things Claude gets wrong.
+- When I correct the same mistake twice in a project, add the rule that prevents it to that project's `CLAUDE.md` under Things Claude gets wrong. Save any other mistake or correction to memory. Do not save your decisions.
 
 ## Compact instructions
 

@@ -1,6 +1,6 @@
 # Intent: <title>
 
-Status: draft
+Author: <name>. Status: draft
 
 ## Problem
 
@@ -22,5 +22,5 @@ Status: draft
 
 ## Open questions
 
-| ID | Decision | Options | Recommendation | Depends on | Answer |
+| ID | Decision | Options | Recommendation | Depends on | Answer or `carried` |
 |---|---|---|---|---|---|

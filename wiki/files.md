@@ -26,11 +26,12 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
-| `skills/feature/` | `feature`: writes `docs/features/<slug>/` intent, spec, and plan from templates; stops for approval after intent and plan; then builds and verifies |
+| `skills/feature/` | `feature`: writes `docs/features/<slug>/` intent, spec, and plan from templates; stops for approval and commits after each file; then builds and verifies |
 | `skills/attribution/SKILL.md` | `/attribution on` or `off`: sets `attribution` in `settings.json` |
 | `skills/verify-this/`, `skills/control-ui/`, `skills/control-cli/`, `skills/deslop/` | Claim verdicts, browser and terminal drivers, code cleanup; copied from `cursor/plugins` `cursor-team-kit` (MIT) |
 | `skills/create-verification-skill/`, `skills/maintain-verification-skill/` | Generate and audit a project `verify-<app>` skill; copied from `cursor/plugins` `pstack` (MIT), paths changed to `.claude/` |
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams, only on `/tdd`; copied from `mattpocock/skills` commit `3f59913` (MIT) |
+| `agents/verifier.md` | Fresh-context subagent that checks each claim with `verify-this`, plus the two nearest flows; cannot edit files |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |

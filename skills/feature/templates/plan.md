@@ -15,8 +15,12 @@ Status: draft
 
 - Risk: if <condition>, then <consequence>.
 
+## Options not taken
+
+- <approach>: <why rejected>
+
 ## Proof
 
 | Claim | Check |
 |---|---|
-| B1 | <test name, or verify-this via control-ui, control-cli, or verify-app> |
+| B1 | <test name, or verifier via control-ui, control-cli, or verify-app> |

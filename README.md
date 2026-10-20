@@ -10,7 +10,7 @@ My global Claude Code config at `~/.claude/`.
 | Quality hooks | Format and lint after each edit; type checks and tests before a turn ends |
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
-| `feature` | Turns an idea into intent, spec, and plan files; you approve intent and plan, then it builds and verifies |
+| `feature` | Turns an idea into intent, spec, and plan files; you approve and it commits each one, then it builds and verifies |
 | `attribution` | `/attribution on` or `off` turns the Claude co-author trailer on or off |
 | Verification | `verify-this` gives VERIFIED, NOT VERIFIED, or INCONCLUSIVE from a fresh subagent; `control-ui` and `control-cli` drive the app |
 | Project verifier | `/create-verification-skill` writes a `verify-<app>` skill for each project |
@@ -39,9 +39,9 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 
 Start `claude` in the repo.
 
-1. Describe the task. For a feature, the `feature` skill writes intent, spec, and plan, and you approve intent and plan.
+1. Describe the task. For a feature, the `feature` skill writes intent, spec, and plan, and you approve each one.
 2. The agent writes the code and runs the checks.
-3. A fresh subagent verifies the change and gives a verdict with evidence.
+3. The `verifier` agent checks the change in a fresh context and gives a verdict with evidence.
 4. It reports what changed and what it was unsure about, then proposes a commit.
 
 ## More

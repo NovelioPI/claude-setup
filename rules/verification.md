@@ -9,7 +9,7 @@
 ### Order
 
 - Split work into small units. Each unit ends in a passing check before the next one starts.
-- For a bug, write the failing test first. Show that it fails for the intended reason, then fix.
+- For a bug, write the failing test first. Show that it fails for the intended reason, and commit it. Then fix the code without editing that test.
 
 ### Tests
 
@@ -21,4 +21,4 @@ After two failed fixes that share one premise, write the premise down. Test it b
 
 ### Independent check
 
-Before you report a change with visible behavior as done, a fresh subagent that did not write it runs `verify-this`. It uses the project's `verify-<app>` skill when one exists, else `control-ui` or `control-cli`. When the feature has a `spec.md`, it checks each Behavior claim. Report its verdict and the evidence paths. `NOT VERIFIED` or `INCONCLUSIVE` means the task is not done.
+Before you report a change with visible behavior as done, run the `verifier` agent. Give it the claims: the Behavior claims in `spec.md`, or one stated claim when there is no spec. Report its verdicts and evidence paths. `NOT VERIFIED` or `INCONCLUSIVE` on any claim means the task is not done.

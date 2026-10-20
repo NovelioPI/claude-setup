@@ -9,14 +9,16 @@ Each feature lives in `docs/features/<slug>/` in the project. Fill the templates
 
 | Step | Writes | Then |
 |---|---|---|
-| 1 Intent | `intent.md` | Stop. The user accepts it |
-| 2 Spec | `spec.md` | Go on |
-| 3 Plan | `plan.md` | Stop. The user accepts it |
-| 4 Build | code and tests | Verify, then set the plan to `done` |
+| 1 Intent | `intent.md` | Stop. The user accepts it. Commit it |
+| 2 Spec | `spec.md` | Stop. The user accepts it. Commit it |
+| 3 Plan | `plan.md` | Stop. The user accepts it. Commit it |
+| 4 Build | code and tests | Verify, then set the plan to `done` and commit |
 
-Each file has a `Status:` line: `draft`, `accepted`, or `done`. Change it only at the step that says so.
+Each file has a `Status:` line: `draft`, `accepted`, or `done`. Change it only at the step that says so. Each accepted file gets its own commit, so the git log records who asked for what and who accepted it.
 
 If `docs/features/<slug>/` already exists, read it and resume at the first file that is not `accepted`.
+
+If the project has no `CLAUDE.md`, follow the project CLAUDE.md rule in the global `CLAUDE.md` before step 1.
 
 ## Split first
 
@@ -57,28 +59,39 @@ Write the decisions that block the work in Open questions, as the table in the t
 
 ### Close
 
-Scan the file for `TBD`, an empty cell, and two rows that contradict each other. Fix them inline. Close Open questions with AskUserQuestion, up to four rows each round, in table order. Record each answer in its row.
+Scan the file for `TBD`, an empty cell, and two rows that contradict each other. Fix them inline. Close Open questions with AskUserQuestion, up to four rows each round, in table order. Record each answer in its row. A question the user wants to leave open stays, marked `carried`.
 
-Stop and ask the user to accept the intent. On acceptance, set `Status: accepted`.
+Ask the user to accept the intent. On acceptance, set `Status: accepted` and commit: `docs: Add intent for <slug>`.
 
 ## 2 Spec
 
 Write `spec.md` from the accepted intent.
 
-Write each line in Behavior as a falsifiable claim: a condition and an observable result. `verify-this` checks these claims, so a claim no one can observe is a defect.
+Write each line in Behavior as a falsifiable claim: a condition and an observable result. The verifier checks these claims, so a claim no one can observe is a defect.
 
-List in Concerns every place the spec cannot meet a constraint, or two constraints conflict. Do not resolve a concern by guessing. Set `Status: accepted` when Concerns is empty; otherwise ask the user about each concern first.
+List in Concerns every place the spec cannot meet a constraint, or two constraints conflict. Do not resolve a concern by guessing.
+
+Before you ask for acceptance, answer in chat:
+- Does the spec solve the Problem in `intent.md`?
+- Is each `carried` open question answered here, or carried forward in Concerns?
+
+Walk the user through Concerns first. On acceptance, set `Status: accepted` and commit: `docs: Add spec for <slug>`.
 
 ## 3 Plan
 
 Read the code the change touches, without editing. Write `plan.md`.
 
-In Proof, map every Behavior claim to its check: a test name, or a `verify-this` run with its surface (`control-ui`, `control-cli`, or the project's `verify-<app>`). A claim with no check means the plan is not done.
+In Proof, map every Behavior claim to its check: a test name, or a verifier run with its surface (`control-ui`, `control-cli`, or the project's `verify-<app>`). A claim with no check means the plan is not done.
 
-Stop and ask the user to accept the plan. On acceptance, set `Status: accepted`.
+Question the plan before you show it, and put the answers in Risks and Options not taken:
+- What could this change break?
+- Which step is the riskiest?
+- Which other approaches did you reject, and why?
+
+The plan is done when someone who never saw this conversation could build the change from the plan alone. Ask the user to accept it. On acceptance, set `Status: accepted` and commit: `docs: Add plan for <slug>`.
 
 ## 4 Build
 
-Follow Order of work. Keep each commit under 300 changed lines. When a step shows the plan is wrong, update `plan.md` and tell the user before you go on.
+Follow Order of work. Keep each commit under 300 changed lines. When the build departs from the plan, update `plan.md` in the same commit as the code that departs, and say so in the commit body.
 
-When all work is done, run the Independent check in `rules/verification.md` against every claim in Proof. Set the plan to `Status: done` only when every claim is `VERIFIED`.
+When all work is done, run the Independent check in `rules/verification.md` against every claim in Proof. Set the plan to `Status: done` only when every claim is `VERIFIED`, and commit it with the last change.
