@@ -58,6 +58,11 @@ expect ask   'find . -name x -delete'
 expect ask   'git stash drop'
 expect ask   'git -C /elsewhere restore f'
 expect ask   'cd "$DIR" && rm new.txt'
+expect ask   "bash -c 'true; rm tracked.txt'"
+expect ask   'sh -c "rm tracked.txt"'
+expect allow 'sleep 1 & rm new.txt'
+expect allow 'true |& rm new.txt'
+expect none  'ls 2>&1 && ls &>/dev/null'
 
 # Reason: outside a repo git fails on its own, so the hook must not claim a snapshot.
 outside=$(mktemp -d "$HOME/.snapshot-guard-out.XXXXXX")
