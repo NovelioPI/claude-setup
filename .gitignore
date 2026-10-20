@@ -43,6 +43,18 @@ skills/*
 !skills/tdd/**
 !skills/attribution/
 !skills/attribution/**
+!skills/verify-this/
+!skills/verify-this/**
+!skills/control-ui/
+!skills/control-ui/**
+!skills/control-cli/
+!skills/control-cli/**
+!skills/deslop/
+!skills/deslop/**
+!skills/create-verification-skill/
+!skills/create-verification-skill/**
+!skills/maintain-verification-skill/
+!skills/maintain-verification-skill/**
 
 # Third-party agents that belong to the `impeccable` skill, which is not tracked.
 agents/impeccable-*.md

@@ -11,6 +11,9 @@ My global Claude Code config at `~/.claude/`.
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
 | `attribution` | `/attribution on` or `off` turns the Claude co-author trailer on or off |
+| Verification | `verify-this` gives VERIFIED, NOT VERIFIED, or INCONCLUSIVE from a fresh subagent; `control-ui` and `control-cli` drive the app |
+| Project verifier | `/create-verification-skill` writes a `verify-<app>` skill for each project |
+| `deslop` | Removes AI code slop from the branch diff |
 | TDD | `/tdd` runs a red-green loop, only when you call it |
 
 ## Setup
