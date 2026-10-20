@@ -24,6 +24,8 @@ Keep plan mode off unless the harness puts you in it. There, ExitPlanMode is the
 
 Confirm against the code or configuration you change, by read or grep, before you propose. Memory, cache, and prior assumptions are not primary sources.
 
+Before you report done, follow the Independent check in `rules/verification.md`.
+
 ## Execution
 
 - Never create a plan file or shared task list for single-session work.

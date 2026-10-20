@@ -40,7 +40,8 @@ Start `claude` in the repo.
 
 1. Describe the task.
 2. The agent writes the code and runs the checks.
-3. It reports what changed and what it was unsure about, then proposes a commit.
+3. A fresh subagent verifies the change and gives a verdict with evidence.
+4. It reports what changed and what it was unsure about, then proposes a commit.
 
 ## More
 

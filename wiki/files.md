@@ -12,6 +12,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `rules/plain-words.md` | Word replacements for chat text and commit messages |
 | `rules/commit-style.md` | Commit subject, body, word, and trailer rules |
 | `rules/doc-style.md` | Style for a document a human reads |
+| `rules/verification.md` | Proof, test, and independent-check rules, adapted from pstack principles (MIT) |
 | `guides/code-quality-python.md` | Python form of those rules |
 | `guides/code-quality-typescript.md` | TypeScript and JavaScript form |
 | `guides/code-quality-dart.md` | Dart form, with Flutter rules |
