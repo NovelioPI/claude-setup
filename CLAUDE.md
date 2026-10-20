@@ -60,7 +60,6 @@ Confirm against the code or configuration you change, by read or grep, before yo
 ## Execution
 
 - Never create a plan file or shared task list for single-session work.
-- On a feature, read only your Linear issue and the project Decisions.
 - Ownership levels decide my involvement, whatever the change size.
 - A test, spec, or threshold looks wrong: stop and report. Never edit a test, special-case an input, or weaken an assertion to make it pass.
 - Keep a task diff under 300 changed lines. Split a larger one.
@@ -70,7 +69,6 @@ Confirm against the code or configuration you change, by read or grep, before yo
 - A bug in Core or Important code: ask me for a hypothesis and wait. Then report whether it was right, with file:line evidence.
 - End each task with what changed, why, and what you were unsure about. Say so if a test failed or was skipped. Then propose the commit.
 - When I make a mistake or you correct me, save what went wrong and the rule that prevents it. Do not save your decisions.
-- Context pressure is high: offer `/handoff`.
 - Ask before each use of a command in the hooks' block list or `permissions.ask`. A previous approval does not cover a new use.
 
 ## Compact instructions

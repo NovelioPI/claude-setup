@@ -25,16 +25,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
-| `commands/handoff.md` | `/handoff`: rewrites `.agent/progress.md` before a clear |
-| `commands/plan-feature.md` | `/plan-feature`: drafts a Linear project and issues, creates them after a token |
-| `commands/next-task.md` | `/next-task`: picks the next unblocked Linear issue of the feature; asks for a token before the work and before the commit |
-| `commands/auto.md` | `/auto`: plans a task and runs it to the end under Auto Mode |
-| `skills/project-init/SKILL.md` | `/project-init`: drafts a short project CLAUDE.md, then runs `/handoff` |
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams, only on `/tdd`; copied from `mattpocock/skills` commit `3f59913` (MIT) |
-| `skills/ui-check/SKILL.md` | `ui-check`: open changed pages with Playwright, desktop and mobile screenshots, console errors |
-| `skills/pr-flow/SKILL.md` | `pr-flow`: open a PR with `gh` after an approved push, watch CI, show failed logs |
-| `skills/reui/` | `reui`: find, install, and use ReUI registry components through the ReUI MCP server |
-| `skills/shadcn/` | `shadcn`: add, search, and compose shadcn/ui components; copied from `shadcn/ui` `skills/shadcn` |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
@@ -52,7 +43,7 @@ An output style file does nothing on its own. `settings.json` activates one with
 
 ## Skills
 
-This repo tracks only the skills written here: `brainstorming`, `project-init`, `ui-check`, and `pr-flow`. Other skills are other people's work, so they are not redistributed.
+This repo tracks the skills written here, `brainstorming`, and the MIT-licensed `tdd`. Other skills are other people's work, so they are not redistributed.
 
 | Skill | Source |
 |---|---|

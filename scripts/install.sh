@@ -55,56 +55,6 @@ else
   block "uv" "curl -LsSf https://astral.sh/uv/install.sh | sh"
 fi
 
-rtk_asset() {
-  case "$1/$2" in
-    Linux/x86_64)                 echo rtk-x86_64-unknown-linux-musl.tar.gz ;;
-    Linux/aarch64 | Linux/arm64)  echo rtk-aarch64-unknown-linux-gnu.tar.gz ;;
-    Darwin/x86_64)                echo rtk-x86_64-apple-darwin.tar.gz ;;
-    Darwin/arm64)                 echo rtk-aarch64-apple-darwin.tar.gz ;;
-    MINGW*/x86_64 | MSYS*/x86_64 | CYGWIN*/x86_64) echo rtk-x86_64-pc-windows-msvc.zip ;;
-    *) return 1 ;;
-  esac
-}
-
-sha256() {
-  if have sha256sum; then sha256sum "$1"
-  elif have shasum;  then shasum -a 256 "$1"
-  else return 1
-  fi | cut -d' ' -f1
-}
-
-# Reason: the subshell runs the EXIT trap, so the temp folder is removed on every path.
-install_rtk() (
-  asset=$(rtk_asset "$(uname -s)" "$(uname -m)") || exit 1
-  url=https://github.com/rtk-ai/rtk/releases/latest/download
-  tmp=$(mktemp -d) || exit 1
-  trap 'rm -rf "$tmp"' EXIT
-  curl -fsSL "$url/$asset" -o "$tmp/$asset" || exit 1
-  curl -fsSL "$url/checksums.txt" -o "$tmp/checksums.txt" || exit 1
-  want=$(awk -v a="$asset" '$2 == a { print $1 }' "$tmp/checksums.txt")
-  [ -n "$want" ] && [ "$want" = "$(sha256 "$tmp/$asset")" ] || exit 1
-  case "$asset" in
-    *.zip) unzip -oq "$tmp/$asset" -d "$tmp" && bin=rtk.exe ;;
-    *)     tar -xzf "$tmp/$asset" -C "$tmp" && bin=rtk ;;
-  esac || exit 1
-  mkdir -p "$HOME/.local/bin" && install -m 755 "$tmp/$bin" "$HOME/.local/bin/$bin"
-)
-
-# Reason: crates.io `rtk` is a different tool, and only the right one has `rtk gain`.
-if have rtk && rtk gain >/dev/null 2>&1; then
-  say "rtk" "present"
-elif have rtk; then
-  block "rtk" "a different program named rtk is on PATH; remove it, then re-run"
-elif have brew; then
-  say "rtk" "installing with brew..."
-  brew install rtk >/dev/null 2>&1 && say "rtk" "installed" || block "rtk" "brew install rtk"
-elif have curl && install_rtk; then
-  have rtk && say "rtk" "installed to ~/.local/bin" ||
-    block "rtk" "installed to ~/.local/bin, which is not on PATH; add it to PATH"
-else
-  block "rtk" "download a build from https://github.com/rtk-ai/rtk/releases into ~/.local/bin"
-fi
-
 if have notify-send || have powershell.exe; then
   say "notify" "present"
 else
@@ -122,13 +72,11 @@ npm_server() {
 
 echo
 echo "Language servers"
-npm_server pyright-langserver pyright
 npm_server typescript-language-server typescript-language-server typescript
 
 echo
 echo "Plugins"
-PLUGINS="pyright-lsp@claude-plugins-official typescript-lsp@claude-plugins-official
-  context7@anthropic-plugin-directory linear@claude-plugins-official"
+PLUGINS="typescript-lsp@claude-plugins-official context7@anthropic-plugin-directory"
 if have claude; then
   # Reason: a new machine has no official marketplace until the first interactive session.
   claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1
@@ -136,22 +84,6 @@ if have claude; then
     claude plugin install "$plugin" >/dev/null 2>&1 && say "plugin" "$plugin" ||
       block "plugin" "claude plugin install $plugin"
   done
-  say "linear" "after restart, run /mcp and sign in to Linear"
-  # Reason: ReUI is an HTTP MCP server, not a plugin, so it needs its own registration.
-  if claude mcp get reui >/dev/null 2>&1; then
-    say "reui" "already registered"
-  else
-    claude mcp add --scope user --transport http reui https://mcp.reui.io >/dev/null 2>&1 &&
-      say "reui" "after restart, run /mcp and sign in to ReUI" ||
-      block "reui" "claude mcp add --scope user --transport http reui https://mcp.reui.io"
-  fi
-  if claude mcp get shadcn >/dev/null 2>&1; then
-    say "shadcn" "already registered"
-  else
-    claude mcp add --scope user shadcn -- npx shadcn@latest mcp >/dev/null 2>&1 &&
-      say "shadcn" "registered" ||
-      block "shadcn" "claude mcp add --scope user shadcn -- npx shadcn@latest mcp"
-  fi
 else
   say "plugins" "claude CLI not found; plugins are not installed"
 fi
@@ -173,13 +105,6 @@ if have jq; then
   case "$out" in
     *rc=2*) say "git guard" "blocks git reset --hard" ;;
     *)      say "git guard" "FAILED to block: $out"; BLOCKERS=$((BLOCKERS + 1)) ;;
-  esac
-fi
-if have rtk; then
-  out=$(printf '%s' '{"tool_input":{"command":"git status"}}' | rtk hook claude 2>&1)
-  case "$out" in
-    *'rtk git status'*) say "rtk hook" "rewrites git status" ;;
-    *)                  say "rtk hook" "FAILED: $out"; BLOCKERS=$((BLOCKERS + 1)) ;;
   esac
 fi
 

@@ -4,10 +4,7 @@
     "pr": ""
   },
   "permissions": {
-    "allow": [
-      "mcp__plugin_linear_linear__save_issue",
-      "mcp__plugin_linear_linear__save_comment"
-    ],
+    "allow": [],
     "deny": [
       "Read(./tests/holdout/**)"
     ],
@@ -17,12 +14,7 @@
       "Bash(git checkout -- *)",
       "Bash(git restore*)",
       "Bash(git reset --hard*)",
-      "Bash(rm *)",
-      "Bash(rtk git stash*)",
-      "Bash(rtk git clean*)",
-      "Bash(rtk git checkout -- *)",
-      "Bash(rtk git restore*)",
-      "Bash(rtk git reset --hard*)"
+      "Bash(rm *)"
     ]
   },
   "model": "opus",
@@ -39,10 +31,6 @@
             "type": "command",
             "command": "bash ~/.claude/hooks/commit-gate.sh",
             "timeout": 300
-          },
-          {
-            "type": "command",
-            "command": "command -v rtk >/dev/null 2>&1 && rtk hook claude || true"
           }
         ]
       },
@@ -106,11 +94,9 @@
     "refreshInterval": 1
   },
   "enabledPlugins": {
-    "pyright-lsp@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "context7@anthropic-plugin-directory": true,
-    "playwright@anthropic-plugin-directory": true,
-    "linear@claude-plugins-official": true
+    "playwright@anthropic-plugin-directory": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {

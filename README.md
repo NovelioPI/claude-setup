@@ -11,11 +11,6 @@ My global Claude Code config at `~/.claude/`.
 | Quality hooks | Format and lint after each edit; type checks and tests before a turn ends |
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
-| Linear | `/plan-feature` drafts issues; `/next-task` picks the next one |
-| `ui-check` | Opens changed pages with Playwright: screenshots and console errors |
-| ReUI | Finds and installs ReUI registry components through MCP |
-| shadcn | Adds and composes shadcn/ui components through MCP and a skill |
-| `pr-flow` | Opens a PR with `gh` after an approved push, then watches CI |
 | TDD | `/tdd` runs a red-green loop, only when you call it |
 
 ## Setup
@@ -44,7 +39,6 @@ Start `claude` in the repo.
 2. Approve with "go", or with `Auto` to run to the end.
 3. The agent writes the code and runs the checks.
 4. It reports what changed and what it was unsure about, then proposes a commit.
-5. For review, run `pr-flow`: it asks before the push and watches CI.
 
 ## More
 
