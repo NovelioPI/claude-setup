@@ -25,12 +25,16 @@ setup() {
     gh project create --owner @me --title "$TITLE" >/dev/null || fail "cannot create project $TITLE"
     number=$(project_number)
   fi
-  local field
-  field=$(gh project field-list "$number" --owner @me --format json \
-    | jq -r '.fields[] | select(.name == "Status") | .id')
+  local status field
+  status=$(gh project field-list "$number" --owner @me --format json \
+    | jq -c '.fields[] | select(.name == "Status")')
+  field=$(jq -r '.id // empty' <<< "$status")
   [ -n "$field" ] || fail "project $TITLE has no Status field"
   # Reason: GitHub replaces the whole option list, so every status is sent each time.
-  printf '%s\n' $STATUSES | jq -R '{name: ., color: "GRAY", description: ""}' | jq -s \
+  # Reason: a new option ID breaks the built-in workflows that target it, so a kept name keeps its ID.
+  printf '%s\n' $STATUSES | jq -R --argjson old "$status" \
+    '. as $n | {name: $n, color: "GRAY", description: ""}
+     + ([$old.options[] | select(.name == $n) | {id}] | first // {})' | jq -s \
     --arg f "$field" '{
       query: "mutation($f: ID!, $o: [ProjectV2SingleSelectFieldOptionInput!]) { updateProjectV2Field(input: {fieldId: $f, singleSelectOptions: $o}) { clientMutationId } }",
       variables: {f: $f, o: .}}' \
