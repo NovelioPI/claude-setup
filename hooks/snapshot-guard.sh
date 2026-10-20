@@ -32,6 +32,11 @@ repo_top() { git -C "$1" rev-parse --show-toplevel 2>/dev/null; }
 check_target() {
   local path=$1 abs top
   case "$path" in /*) abs=$path ;; *) abs="$dir/$path" ;; esac
+  # Reason: realpath follows a link, so the check would test the target, not the link rm removes.
+  if [ -L "${abs%/}" ]; then
+    asks+=("$path is a symlink")
+    return
+  fi
   abs=$(realpath -m -- "$abs")
   # Reason: files under the temp dir are disposable, so they need no snapshot and no prompt.
   case "$abs" in /tmp/*|"${TMPDIR:-/tmp}"/*) temp_only=1; return ;; esac
@@ -74,18 +79,50 @@ check_rm() {
   done
 }
 
+# Prints the first path a revision tracks that is an ignored local file, which the snapshot skips.
+ignored_in_rev() {
+  local p
+  git -C "$1" ls-tree -r --name-only "$2" 2>/dev/null |
+    git -C "$1" check-ignore --no-index --stdin 2>/dev/null |
+    while IFS= read -r p; do
+      [ -e "$1/$p" ] || continue
+      git -C "$1" ls-files --error-unmatch -- "$p" >/dev/null 2>&1 && continue
+      echo "$p"
+      break
+    done
+}
+
 check_git() {
-  local top
-  if [[ "$1" =~ [[:space:]](-C|--git-dir|--work-tree) ]]; then
-    asks+=("git runs in another directory: $1")
+  local top word rev hit
+  local -a words
+  # Reason: -c can set core.worktree or clean.requireForce, which moves or widens what git deletes.
+  if [[ "$1" =~ [[:space:]](-C|-c|--git-dir|--work-tree)([[:space:]=]|$) ]]; then
+    asks+=("git runs with another directory or config: $1")
     return
   fi
   if [[ "$1" =~ ^git[[:space:]]+stash[[:space:]]+(drop|clear) ]]; then
     asks+=("a dropped stash is not in the snapshot")
     return
   fi
+  if [[ "$1" =~ ^git[[:space:]]+stash.*[[:space:]](-a|--all)([[:space:]]|$) ]] ||
+     [[ "$1" =~ ^git[[:space:]]+clean.*[[:space:]]-[^-[:space:]]*[xX] ]]; then
+    asks+=("this git command removes ignored files, which the snapshot skips")
+    return
+  fi
   top=$(repo_top "$dir")
-  [ -n "$top" ] && add_top "$top"
+  [ -n "$top" ] || return
+  read -ra words <<< "$1"
+  for word in "${words[@]:2}"; do
+    rev=${word#--source=}
+    [[ "$rev" == -* ]] && continue
+    git -C "$top" rev-parse -q --verify "$rev^{commit}" >/dev/null 2>&1 || continue
+    hit=$(ignored_in_rev "$top" "$rev")
+    if [ -n "$hit" ]; then
+      asks+=("$rev tracks $hit, an ignored local file the snapshot skips")
+      return
+    fi
+  done
+  add_top "$top"
 }
 
 # Prints the command with a newline at each ;, |, ||, &&, |&, and &.
@@ -111,7 +148,7 @@ split_segments() {
 # Reason: a boundary that excludes - keeps docker's --rm from counting as a delete.
 B='(^|[^[:alnum:]_-])'
 E='([^[:alnum:]_-]|$)'
-DELETE_WORD="${B}(rm|unlink|shred|eval)${E}|[[:space:]]-delete${E}|${B}git[[:space:]](.*[^[:alnum:]_-])?(stash|restore|checkout|clean|reset)${E}"
+DELETE_WORD="${B}(rm|unlink|shred|eval)${E}|[[:space:]]-delete${E}|${B}git[[:space:]](.*[^[:alnum:]_-])?(stash|restore|checkout|checkout-index|switch|clean|reset)${E}"
 [[ "$COMMAND" =~ $DELETE_WORD ]] || exit 0
 
 # Reason: from here the hook allows only forms it parses, so shell syntax it does not model asks.
@@ -124,16 +161,21 @@ fi
 SEGMENTS=$(split_segments "$COMMAND")
 while IFS= read -r segment; do
   segment="${segment#"${segment%%[![:space:]]*}"}"
-  if [[ "$segment" =~ ^cd[[:space:]]+([^[:space:]]+)[[:space:]]*$ ]]; then
-    target=${BASH_REMATCH[1]}
-    if [[ "$target" =~ [\'\"~] ]]; then dir=""; continue; fi
-    case "$target" in /*) dir=$target ;; *) dir="$dir/$target" ;; esac
+  if [[ "$segment" =~ ^(cd|pushd|popd)([[:space:]]|$) ]]; then
+    # Reason: only cd with one plain path is followed; any other form leaves the directory unknown.
+    if [[ "$segment" =~ ^cd[[:space:]]+([^-[:space:]][^[:space:]]*)[[:space:]]*$ ]] &&
+       [[ ! "${BASH_REMATCH[1]}" =~ [\'\"~] ]]; then
+      target=${BASH_REMATCH[1]}
+      case "$target" in /*) dir=$target ;; *) dir="$dir/$target" ;; esac
+    else
+      dir=""
+    fi
     continue
   fi
   [[ "$segment" =~ $DELETE_WORD ]] || continue
   if [[ "$segment" =~ ^rm([[:space:]]|$) ]]; then
     risky=rm
-  elif [[ "$segment" =~ ^git([[:space:]]+-[^[:space:]]+([[:space:]]+[^-][^[:space:]]*)?)*[[:space:]]+(stash|restore|checkout|clean|reset|rm)([[:space:]]|$) ]]; then
+  elif [[ "$segment" =~ ^git([[:space:]]+-[^[:space:]]+([[:space:]]+[^-][^[:space:]]*)?)*[[:space:]]+(stash|restore|checkout|checkout-index|switch|clean|reset|rm)([[:space:]]|$) ]]; then
     risky=git
   else
     asks+=("cannot check: $segment")
@@ -156,6 +198,11 @@ snapshot() {
   cp "$(git -C "$top" rev-parse --path-format=absolute --git-path index)" "$tmp/index" 2>/dev/null
   tree=$(
     export GIT_INDEX_FILE="$tmp/index"
+    # Reason: git add skips skip-worktree and assume-unchanged files, so their edits need the bits cleared.
+    # Reason: update-index applies only one of these flags per --stdin run, so each needs its own pass.
+    for flag in --no-skip-worktree --no-assume-unchanged; do
+      git -C "$top" ls-files -v | sed -n 's/^[a-zS] //p' | git -C "$top" update-index "$flag" --stdin 2>/dev/null
+    done
     git -C "$top" add -A -- :/ 2>/dev/null && git -C "$top" write-tree 2>/dev/null
   )
   rm -rf "$tmp"
