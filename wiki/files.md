@@ -25,6 +25,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `hooks/session-start.sh` | `SessionStart` hook: prints `.agent/progress.md` after start, compact, or clear |
+| `skills/attribution/SKILL.md` | `/attribution on` or `off`: sets `attribution` in `settings.json` |
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams, only on `/tdd`; copied from `mattpocock/skills` commit `3f59913` (MIT) |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars |
@@ -43,7 +44,7 @@ An output style file does nothing on its own. `settings.json` activates one with
 
 ## Skills
 
-This repo tracks the skills written here, `brainstorming`, and the MIT-licensed `tdd`. Other skills are other people's work, so they are not redistributed.
+This repo tracks the skills written here, `brainstorming` and `attribution`, and the MIT-licensed `tdd`. Other skills are other people's work, so they are not redistributed.
 
 | Skill | Source |
 |---|---|

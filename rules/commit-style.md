@@ -2,7 +2,18 @@
 
 ### Subject
 
-Write the subject in the imperative mood: "Add", "Fix", "Ignore". Start with a capital letter. Do not add a prefix. Do not use `feat:`, `fix:`, or a scope. Do not end with a period. Cap the subject at 60 characters.
+Start the subject with one prefix from the table, then a colon and a space. Do not add a scope. After the prefix, write in the imperative mood: "Add", "Fix", "Ignore". Start with a capital letter. Do not end with a period. Cap the subject at 60 characters, prefix included.
+
+| Prefix | Use for |
+|---|---|
+| `feat` | A new behavior or feature |
+| `fix` | A bug fix |
+| `refactor` | A code change with no behavior change |
+| `docs` | Docs, wiki, README, or comments only |
+| `test` | Tests only |
+| `chore` | Config, dependencies, build, CI, and anything else |
+
+Example: `fix: Stop the status line from wrapping`
 
 ### Body
 

@@ -41,6 +41,8 @@ skills/*
 !skills/brainstorming/**
 !skills/tdd/
 !skills/tdd/**
+!skills/attribution/
+!skills/attribution/**
 
 # Third-party agents that belong to the `impeccable` skill, which is not tracked.
 agents/impeccable-*.md

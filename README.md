@@ -10,6 +10,7 @@ My global Claude Code config at `~/.claude/`.
 | Quality hooks | Format and lint after each edit; type checks and tests before a turn ends |
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
+| `attribution` | `/attribution on` or `off` turns the Claude co-author trailer on or off |
 | TDD | `/tdd` runs a red-green loop, only when you call it |
 
 ## Setup
