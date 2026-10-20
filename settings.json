@@ -4,7 +4,10 @@
     "pr": ""
   },
   "permissions": {
-    "allow": [],
+    "allow": [
+      "mcp__plugin_linear_linear__save_issue",
+      "mcp__plugin_linear_linear__save_comment"
+    ],
     "deny": [
       "Read(./tests/holdout/**)"
     ],
@@ -96,7 +99,8 @@
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
     "context7@anthropic-plugin-directory": true,
-    "playwright@anthropic-plugin-directory": true
+    "playwright@anthropic-plugin-directory": true,
+    "linear@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {

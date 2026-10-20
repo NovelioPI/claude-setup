@@ -36,10 +36,6 @@ done
 for t in gh rg; do
   have "$t" && say "$t" "present" || say "$t" "absent (optional)"
 done
-if have gh; then
-  gh auth status 2>&1 | grep -q "'project'" && say "gh scope" "project present" ||
-    say "gh scope" "no project scope; the feature board needs: gh auth refresh -s project"
-fi
 
 NODE_MIN_MAJOR=20
 node_major=$(node -v 2>/dev/null | sed 's/^v//; s/\..*//')
@@ -80,7 +76,8 @@ npm_server typescript-language-server typescript-language-server typescript
 
 echo
 echo "Plugins"
-PLUGINS="typescript-lsp@claude-plugins-official context7@anthropic-plugin-directory"
+PLUGINS="typescript-lsp@claude-plugins-official context7@anthropic-plugin-directory
+  linear@claude-plugins-official"
 if have claude; then
   # Reason: a new machine has no official marketplace until the first interactive session.
   claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1
@@ -88,6 +85,7 @@ if have claude; then
     claude plugin install "$plugin" >/dev/null 2>&1 && say "plugin" "$plugin" ||
       block "plugin" "claude plugin install $plugin"
   done
+  say "linear" "after restart, run /mcp and sign in to Linear"
 else
   say "plugins" "claude CLI not found; plugins are not installed"
 fi

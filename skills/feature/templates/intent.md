@@ -1,7 +1,7 @@
 # Intent: <title>
 
 Author: <name>. Status: draft
-Issue: <url, added on acceptance>
+Issue: <Linear ID, added on acceptance>
 
 ## Problem
 
