@@ -1,7 +1,5 @@
 ## Verification
 
-Adapted from the pstack principles by Lauren Tan (MIT).
-
 ### Proof
 
 - Check the real artifact, not a proxy. "It compiles" and "the tests pass" do not prove what a user sees.

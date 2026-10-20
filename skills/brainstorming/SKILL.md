@@ -5,8 +5,6 @@ description: Widen a raw idea into a feature space, grounded tech facts, and a n
 
 # Brainstorm an idea
 
-This skill widens an idea. AskUserQuestion closes the decisions it finds, per the Discussion section of CLAUDE.md.
-
 ## Classify first
 
 Say the path out loud before the first question, so the user can override it.
@@ -87,5 +85,3 @@ Scan the file for `TBD`, an empty cell, and two rows that contradict each other.
 Show the file path and the count of open decisions. Then close the pass 3 table with AskUserQuestion, up to four rows each round, in the table order.
 
 Next: add the milestones to `docs/roadmap.md`.
-
-Risk: if a brainstorm ends without a decision table, then nothing is left to close and the work has no plan.

@@ -40,7 +40,7 @@ Reason: a symbol table removes the clause that would explain each letter inside 
 
 ### Analogy
 
-Write an analogy on its own line, after the label `Analogy:`. The label tells the reader the sentence is not literal.
+Write an analogy on its own line, after the label `Analogy:`.
 
 ### Markers
 
