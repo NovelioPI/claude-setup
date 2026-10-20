@@ -21,4 +21,4 @@ After two failed fixes that share one premise, write the premise down. Test it b
 
 ### Independent check
 
-Before you report a change with visible behavior as done, run the `verifier` agent. Give it the claims: the Behavior claims in `spec.md`, or one stated claim when there is no spec. Report its verdicts and evidence paths. `NOT VERIFIED` or `INCONCLUSIVE` on any claim means the task is not done.
+Before you report a change with visible behavior as done, run the `verifier` agent. Give it the claims only: the Behavior claims in `spec.md`, or one stated claim when there is no spec. Do not give it your account of the work. Report its verdicts and evidence paths. A verdict counts only while `HEAD` matches its `Commit:` line. `NOT VERIFIED` or `INCONCLUSIVE` on any claim means the task is not done.
