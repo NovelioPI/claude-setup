@@ -163,9 +163,9 @@ while IFS= read -r segment; do
   segment="${segment#"${segment%%[![:space:]]*}"}"
   if [[ "$segment" =~ ^(cd|pushd|popd)([[:space:]]|$) ]]; then
     # Reason: only cd with one plain path is followed; any other form leaves the directory unknown.
-    if [[ "$segment" =~ ^cd[[:space:]]+([^-[:space:]][^[:space:]]*)[[:space:]]*$ ]] &&
-       [[ ! "${BASH_REMATCH[1]}" =~ [\'\"~] ]]; then
-      target=${BASH_REMATCH[1]}
+    target=""
+    [[ "$segment" =~ ^cd[[:space:]]+([^-[:space:]][^[:space:]]*)[[:space:]]*$ ]] && target=${BASH_REMATCH[1]}
+    if [ -n "$target" ] && [[ ! "$target" =~ [\'\"~] ]]; then
       case "$target" in /*) dir=$target ;; *) dir="$dir/$target" ;; esac
     else
       dir=""

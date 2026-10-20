@@ -33,6 +33,7 @@ An executable `.claude/quality.sh` in a project replaces `scripts/quality.sh` fo
 - `commit-gate.sh` matches commit commands by pattern. Forms such as `{ git commit; }`, `timeout 60 git commit`, a git alias, `merge`, and `rebase` get past it.
 - Both guards check the project in `CLAUDE_PROJECT_DIR`, not a repo named by `git -C` or `cd`.
 - `snapshot-guard.sh` prompts for any mention of a delete word, such as `git commit -m "fix rm bug"`. Parsers that tried to tell quoted text from code missed real deletes after a comment, `$'...'`, a subshell, or `eval`.
+- `snapshot-guard.sh` allows these forms, but its snapshot cannot undo them: `git checkout -` or `git switch -`, `git restore -s<rev>`, `git stash` when HEAD tracks an ignored file the index does not, `git stash -ak` or `--al`, `git checkout-index --prefix`, `git --config-env`, `--recurse-submodules`, and `rm -rf` of a nested repo or submodule, whose snapshot keeps only a gitlink.
 - `snapshot-guard.sh` does not see an `rm` inside a script, a Makefile, or a split word such as `r''m`. Those calls go through the normal permission mode. It guards against mistakes, not against a deliberate bypass.
 - A large untracked file is copied into `.git` on each snapshot.
 - On a case-insensitive drive such as `/mnt/c`, a path with different letter case gets past `protect-signal.sh`.
