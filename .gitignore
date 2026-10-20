@@ -35,6 +35,7 @@ remote/
 remote-settings.json
 state/
 remote-settings.json.synced-at
+remote-settings.json.signature*.json
 # Only the skills listed here are tracked.
 skills/*
 !skills/feature/

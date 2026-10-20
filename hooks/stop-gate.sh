@@ -14,11 +14,6 @@ adapter=(bash "$(cd "$(dirname "$0")/.." && pwd)/scripts/quality.sh")
 self="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 cd "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
 git rev-parse --git-dir >/dev/null 2>&1 || exit 0
-# Reason: a tool that wrote .agent/.skip-gate lets one turn end with red tests, never a commit.
-if [ "${GATE_CONTEXT:-stop}" != commit ] && [ -f .agent/.skip-gate ]; then
-  rm -f .agent/.skip-gate
-  exit 0
-fi
 
 # Reason: macOS ships bash 3.2, which has no mapfile, so arrays fill through read loops.
 changed=()

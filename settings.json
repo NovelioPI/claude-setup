@@ -70,17 +70,6 @@
         ]
       }
     ],
-    "SessionStart": [
-      {
-        "matcher": "startup|compact|clear",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/session-start.sh"
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "hooks": [
