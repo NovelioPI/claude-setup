@@ -31,7 +31,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `skills/verify-this/`, `skills/control-ui/`, `skills/control-cli/`, `skills/deslop/` | Claim verdicts, browser and terminal drivers, code cleanup; copied from `cursor/plugins` `cursor-team-kit` (MIT) |
 | `skills/create-verification-skill/`, `skills/maintain-verification-skill/` | Generate and audit a project `verify-<app>` skill; copied from `cursor/plugins` `pstack` (MIT), paths changed to `.claude/` |
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams, only on `/tdd`; copied from `mattpocock/skills` commit `3f59913` (MIT) |
-| `agents/verifier.md` | Fresh-context subagent that checks each claim with `verify-this`, plus the two nearest flows; a fixed tool list with no edit tools |
+| `agents/verifier.md` | Fresh-context Sonnet subagent that checks claims a test cannot prove with `verify-this`, plus the two nearest flows at feature end; a fixed tool list with no edit tools |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `agents/researcher.md` | Read-only subagent for web and doc research; a short tool list keeps its start context small |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars, and a `/compact` hint |

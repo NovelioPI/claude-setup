@@ -46,7 +46,7 @@ Start `claude`, or `cc` to skip permission prompts, in the repo. Set its tier on
 
 1. Describe the task. For a feature, the `feature` skill writes intent, spec, and plan, and you approve each one.
 2. The agent writes the code and runs the checks.
-3. The `verifier` agent checks the change in a fresh context and gives a verdict with evidence.
+3. When a claim needs a screenshot, a UI flow, a profile, or logs, or a Large-tier feature is done, the `verifier` agent checks it in a fresh context and gives a verdict with evidence.
 4. It reports what changed and what it was unsure about, then proposes a commit.
 
 ## More
