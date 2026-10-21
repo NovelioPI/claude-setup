@@ -28,11 +28,6 @@
           },
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/snapshot-guard.sh",
-            "timeout": 60
-          },
-          {
-            "type": "command",
             "command": "bash ~/.claude/hooks/commit-gate.sh",
             "timeout": 300
           }
@@ -90,7 +85,8 @@
     "typescript-lsp@claude-plugins-official": true,
     "context7@anthropic-plugin-directory": true,
     "playwright@anthropic-plugin-directory": true,
-    "linear@claude-plugins-official": true
+    "linear@claude-plugins-official": false,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -113,5 +109,6 @@
       "effortLevel": "medium"
     }
   },
+  "skipDangerousModePermissionPrompt": true,
   "agentPushNotifEnabled": true
 }

@@ -108,11 +108,6 @@ if have jq; then
     *rc=2*) say "git guard" "blocks git reset --hard" ;;
     *)      say "git guard" "FAILED to block: $out"; BLOCKERS=$((BLOCKERS + 1)) ;;
   esac
-  if ./scripts/test-snapshot-guard.sh >/dev/null 2>&1; then
-    say "snapshot guard" "passes its tests"
-  else
-    say "snapshot guard" "FAILED: run scripts/test-snapshot-guard.sh"; BLOCKERS=$((BLOCKERS + 1))
-  fi
 fi
 
 echo
