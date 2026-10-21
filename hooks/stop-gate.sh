@@ -17,7 +17,7 @@ git rev-parse --git-dir >/dev/null 2>&1 || exit 0
 
 # Reason: macOS ships bash 3.2, which has no mapfile, so arrays fill through read loops.
 changed=()
-while IFS= read -r file; do changed+=("$file"); done < <(
+while IFS= read -r file; do is_ignored "$PWD" "$file" || changed+=("$file"); done < <(
   git diff --relative --name-only --diff-filter=d HEAD 2>/dev/null
   git ls-files --others --exclude-standard
 )
@@ -49,7 +49,8 @@ worktree_tree() {
 state="$(git rev-parse --git-dir)/claude-stop-gate"
 fingerprint=""
 tree=$(worktree_tree) &&
-  fingerprint=$(printf '%s\n' "$PWD" "$tree" "$(git hash-object -- "${adapter[${#adapter[@]}-1]}" "$self")" |
+  fingerprint=$(printf '%s\n' "$PWD" "$tree" \
+                "$(git hash-object -- "${adapter[${#adapter[@]}-1]}" "$self" "$(dirname "$self")/protected-paths.sh")" |
                 git hash-object --stdin)
 saved_fingerprint=""
 saved_status=""
@@ -79,7 +80,7 @@ count_in_head() { git show "HEAD:./$1" 2>/dev/null | count_suppressions; }
 suppression_ratchet() {
   local file before=0 after=0
   local -a deleted=()
-  while IFS= read -r file; do deleted+=("$file"); done < <(
+  while IFS= read -r file; do is_ignored "$PWD" "$file" || deleted+=("$file"); done < <(
     git diff --relative --name-only --no-renames --diff-filter=D HEAD 2>/dev/null
   )
   for file in "$@"; do

@@ -20,6 +20,10 @@ An executable `.claude/quality.sh` in a project replaces `scripts/quality.sh` fo
 
 `.claude/protected-paths` in a project holds one glob per line, relative to the project, where `*` also matches `/`. A line with no wildcard, such as `tests/conftest.py`, also blocks creating that file. A project with no list protects only the adapter, so Claude can edit test files. The commit gate also checks unstaged changes, so a changed protected file, including one you edited, blocks every commit made through Claude until you restore or commit it yourself. To change a listed file, edit it yourself. A gate that runs past its 300-second timeout lets the action go through.
 
+## Ignored paths
+
+The lint, check, and suppression gates skip `.claude/skills/` and each glob in `.claude/quality-ignore`, one per line. A skill script often uses another language, so the project's tools fail on it. Python checks also run only with `pyproject.toml`, `setup.py`, `setup.cfg`, or `mypy.ini`, and Dart checks only with `pubspec.yaml`. Both guards protect the ignore list, so only you can edit it.
+
 ## Known gaps
 
 - `commit-gate.sh` matches commit commands by pattern. Forms such as `{ git commit; }`, `timeout 60 git commit`, a git alias, `merge`, and `rebase` get past it.

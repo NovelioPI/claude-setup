@@ -1,7 +1,7 @@
 #!/bin/bash
 # Sourced by protect-signal.sh, commit-gate.sh, post-edit.sh, and stop-gate.sh.
 # Matches a path against <project>/.claude/protected-paths, and the adapter,
-# and finds a trusted project adapter.
+# matches a path against the gates' ignore list, and finds a trusted project adapter.
 
 # Prints an absolute path with `.`, `..`, and repeated slashes removed.
 normalize() {
@@ -25,6 +25,7 @@ protected_patterns() {
   local list="$1/.claude/protected-paths" pattern
   # Reason: the project adapter decides what the gates check, so it is always protected.
   echo .claude/quality.sh
+  echo .claude/quality-ignore
   [ -f "$list" ] || return 0
   while IFS= read -r pattern || [ -n "$pattern" ]; do
     # Reason: a list saved on Windows ends each line with \r, which no path matches.
@@ -65,5 +66,20 @@ is_protected_new() {
     case "$pattern" in *'*'* | *'?'* | *'['*) continue ;; esac
     [ "$2" = "$pattern" ] && return 0
   done < <(protected_patterns "$1")
+  return 1
+}
+
+# Succeeds when path $2, relative to project root $1, matches the gates' ignore list.
+# Reason: a skill script has its own language and tools, so the project's checks fail on it.
+is_ignored() {
+  local list="$1/.claude/quality-ignore" pattern
+  case "$2" in .claude/skills/*) return 0 ;; esac
+  [ -f "$list" ] || return 1
+  while IFS= read -r pattern || [ -n "$pattern" ]; do
+    pattern=${pattern%$'\r'}
+    case "$pattern" in '' | '#'*) continue ;; esac
+    # shellcheck disable=SC2254
+    case "$2" in $pattern) return 0 ;; esac
+  done < "$list"
   return 1
 }

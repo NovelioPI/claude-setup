@@ -137,7 +137,8 @@ check_files() {
     esac
   done
 
-  if [ "${#py[@]}" -gt 0 ]; then
+  # Reason: a global mypy or pytest found on PATH runs on a stray script in a project of another language.
+  if [ "${#py[@]}" -gt 0 ] && has_config pyproject.toml setup.py setup.cfg mypy.ini; then
     check_python_types "${py[@]}"
     pytest=$(project_tool pytest)
     # Reason: pytest exits 5 when no test file exists, which is not a failure.
@@ -154,7 +155,7 @@ check_files() {
     run node_modules/.bin/vitest run --changed --passWithNoTests --exclude 'tests/holdout/**'
   fi
 
-  if [ "${#dart[@]}" -gt 0 ] && have dart; then
+  if [ "${#dart[@]}" -gt 0 ] && has_config pubspec.yaml && have dart; then
     run dart analyze "${dart[@]}"
   fi
 }

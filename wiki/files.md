@@ -22,9 +22,9 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `hooks/post-edit.sh` | `PostToolUse` step: formats the edited file and applies lint autofixes; never blocks |
 | `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files in a project's `.claude/protected-paths`, or to test files by name when no list exists |
 | `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, or whose changed files fail lint or limits, then runs the stop gate |
-| `hooks/protected-paths.sh` | Shared path check for the two guards above |
+| `hooks/protected-paths.sh` | Shared path check for the two guards above, and the gates' ignore list |
 | `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` and `researcher` agents: allows read-only Bash commands |
-| `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
+| `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files, except `.claude/skills/` and paths in `.claude/quality-ignore`; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `skills/feature/` | `feature`: writes `docs/features/<slug>/` intent, spec, and plan from templates; stops for approval and commits after each file; then builds and verifies |
 | `skills/attribution/SKILL.md` | `/attribution on` or `off`: sets `attribution` in `settings.json` |
@@ -35,9 +35,10 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
 | `agents/researcher.md` | Read-only subagent for web and doc research; a short tool list keeps its start context small |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars, and a `/compact` hint |
-| `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
+| `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config) and runs `tests/unit` only with a Python project config, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |
+| `scripts/test-quality-scope.sh` | Regression test for the gates' file scope: ignored paths, the protected ignore list, and Python checks with no Python config |
 | `scripts/probe-context-floor.sh` | Check that `rules/` stayed small and the guide pointer fires |
 | `wiki/` | These detail pages; `README.md` links to each one |
 | `LICENSE` | MIT |

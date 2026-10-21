@@ -61,6 +61,7 @@ project=$(project_adapter "$root") && adapter=("$project")
 problems=""
 while IFS= read -r -d '' file; do
   [ -f "$root/$file" ] || continue
+  is_ignored "$root" "$file" && continue
   out=$("${adapter[@]}" lint "$root/$file" 2>&1) || problems+="$file"$'\n'"$out"$'\n'
 # Reason: in `git add -A && git commit`, this hook runs before the add, so untracked files count too.
 done < <(git -C "$root" diff --relative --name-only -z --diff-filter=d "$base" 2>/dev/null
