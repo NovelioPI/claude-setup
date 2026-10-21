@@ -33,7 +33,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams, only on `/tdd`; copied from `mattpocock/skills` commit `3f59913` (MIT) |
 | `agents/verifier.md` | Fresh-context subagent that checks each claim with `verify-this`, plus the two nearest flows; cannot edit files |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
-| `statusline-command.sh` | Status line: model, effort, cache, usage bars |
+| `statusline-command.sh` | Status line: model, effort, cache, usage bars, and a `/compact` hint |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |
 | `scripts/test-explorer-readonly.sh` | Regression test for `hooks/explorer-readonly.sh`: pipes inside quotes, and commands it must block |

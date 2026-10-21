@@ -67,7 +67,8 @@ fmt_day() {
 CACHE_TTL=3600
 cache_indicator=""
 if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
-  last_mtime=$(stat -f %m "$transcript_path" 2>/dev/null || stat -c %Y "$transcript_path" 2>/dev/null)
+  # Reason: on Linux, BSD `stat -f %m` succeeds and prints file system info, so GNU form goes first.
+  last_mtime=$(stat -c %Y "$transcript_path" 2>/dev/null || stat -f %m "$transcript_path" 2>/dev/null)
   if [ -n "$last_mtime" ]; then
     now=$(date +%s)
     remaining=$((CACHE_TTL - (now - last_mtime)))
@@ -78,6 +79,21 @@ if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
     else
       cache_indicator="\033[1;38;5;209m◶ cache expired${RESET}"
     fi
+  fi
+fi
+
+# Compact hint: a long context costs more each turn, and after the cache expires
+# the next turn sends the whole context again at full price.
+COMPACT_CTX=30
+EXPIRED_COMPACT_CTX=15
+compact_hint=""
+if [ -n "$used_ctx" ]; then
+  # Reason: the Ctx bar rounds, so the hint rounds too and both show one number.
+  ctx_whole=$(awk -v p="$used_ctx" 'BEGIN{printf "%.0f", p}')
+  if [ "$ctx_whole" -ge "$COMPACT_CTX" ]; then
+    compact_hint="\033[1;38;5;209m⚑ /compact: context ${ctx_whole}%${RESET}"
+  elif [ -n "${remaining:-}" ] && [ "$remaining" -le 0 ] && [ "$ctx_whole" -ge "$EXPIRED_COMPACT_CTX" ]; then
+    compact_hint="\033[1;38;5;209m⚑ /compact: cache expired, context ${ctx_whole}%${RESET}"
   fi
 fi
 
@@ -139,6 +155,9 @@ if [ -n "$effort_indicator" ]; then
 fi
 if [ -n "$cache_indicator" ]; then
   header="${header}  ${cache_indicator}"
+fi
+if [ -n "$compact_hint" ]; then
+  header="${header}  ${compact_hint}"
 fi
 
 printf "%b\n\xe2\x80\x8b\n%b" "$header" "$lines"
