@@ -14,6 +14,8 @@ five_pct=$(printf '%s' "$input" | jq -r '.rate_limits.five_hour.used_percentage 
 week_pct=$(printf '%s' "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
 five_reset=$(printf '%s' "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 week_reset=$(printf '%s' "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
+caching_observed=$(printf '%s' "$input" | jq -r '.prompt_cache.caching_observed // empty')
+cache_expires_at=$(printf '%s' "$input" | jq -r '.prompt_cache.expires_at // empty')
 
 RESET="\033[0m"
 DIM="\033[2m"
@@ -62,23 +64,29 @@ fmt_day() {
   fmt_reset "$1" "%a"
 }
 
-# Prompt-cache countdown: use the transcript file's last-modified time as a
-# proxy for the last API turn, and count down from a 1-hour cache TTL.
+# Prompt-cache countdown. prompt_cache.expires_at gives the real expiry for both
+# the 1-hour and the 5-minute TTL. Before the first response it is absent, so the
+# transcript file's last-modified time stands in, with a 1-hour TTL.
 CACHE_TTL=3600
 cache_indicator=""
-if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
+now=$(date +%s)
+expires_at=""
+if [ "$caching_observed" = "true" ]; then
+  # Reason: a null expires_at means the last response wrote no cache, so the cache is already cold.
+  expires_at=${cache_expires_at:-$now}
+  # Reason: bash arithmetic fails on a decimal, which would hide the hint without a message.
+  expires_at=${expires_at%%.*}
+elif [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
   # Reason: on Linux, BSD `stat -f %m` succeeds and prints file system info, so GNU form goes first.
   last_mtime=$(stat -c %Y "$transcript_path" 2>/dev/null || stat -f %m "$transcript_path" 2>/dev/null)
-  if [ -n "$last_mtime" ]; then
-    now=$(date +%s)
-    remaining=$((CACHE_TTL - (now - last_mtime)))
-    if [ "$remaining" -gt 0 ]; then
-      mins=$((remaining / 60))
-      secs=$((remaining % 60))
-      cache_indicator="${DIM}◶ cache ${mins}m ${secs}s${RESET}"
-    else
-      cache_indicator="\033[1;38;5;209m◶ cache expired${RESET}"
-    fi
+  [ -n "$last_mtime" ] && expires_at=$((last_mtime + CACHE_TTL))
+fi
+if [ -n "$expires_at" ]; then
+  remaining=$((expires_at - now))
+  if [ "$remaining" -gt 0 ]; then
+    cache_indicator="${DIM}◶ cache $((remaining / 60))m $((remaining % 60))s${RESET}"
+  else
+    cache_indicator="\033[1;38;5;209m◶ cache expired${RESET}"
   fi
 fi
 
