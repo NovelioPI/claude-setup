@@ -27,6 +27,7 @@ Before you report done, follow the Independent check in `rules/verification.md`.
 ## Execution
 
 - Plan and track work by the project tier in `rules/project-tiers.md`.
+- Delegate read-only work to `explorer` (code) or `researcher` (web and docs). Use `general-purpose` only when the agent must edit files: it starts with about 3x the context.
 - A test, spec, or threshold looks wrong: stop and report. Never edit a test, special-case an input, or weaken an assertion to make it pass.
 - A code change invalidates a doc: update the doc in the same turn.
 - A security-sensitive change: run `security-review` before the merge.

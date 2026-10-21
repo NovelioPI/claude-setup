@@ -23,7 +23,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files in a project's `.claude/protected-paths`, or to test files by name when no list exists |
 | `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, or whose changed files fail lint or limits, then runs the stop gate |
 | `hooks/protected-paths.sh` | Shared path check for the two guards above |
-| `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` agent: allows read-only Bash commands |
+| `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` and `researcher` agents: allows read-only Bash commands |
 | `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
 | `hooks/notify.sh` | Notification hook: Linux notification, Windows toast, or a bell |
 | `skills/feature/` | `feature`: writes `docs/features/<slug>/` intent, spec, and plan from templates; stops for approval and commits after each file; then builds and verifies |
@@ -31,8 +31,9 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `skills/verify-this/`, `skills/control-ui/`, `skills/control-cli/`, `skills/deslop/` | Claim verdicts, browser and terminal drivers, code cleanup; copied from `cursor/plugins` `cursor-team-kit` (MIT) |
 | `skills/create-verification-skill/`, `skills/maintain-verification-skill/` | Generate and audit a project `verify-<app>` skill; copied from `cursor/plugins` `pstack` (MIT), paths changed to `.claude/` |
 | `skills/tdd/` | `tdd`: red-green loop at agreed seams, only on `/tdd`; copied from `mattpocock/skills` commit `3f59913` (MIT) |
-| `agents/verifier.md` | Fresh-context subagent that checks each claim with `verify-this`, plus the two nearest flows; cannot edit files |
+| `agents/verifier.md` | Fresh-context subagent that checks each claim with `verify-this`, plus the two nearest flows; a fixed tool list with no edit tools |
 | `agents/explorer.md` | Read-only subagent that searches the code and returns a report of 400 words or less |
+| `agents/researcher.md` | Read-only subagent for web and doc research; a short tool list keeps its start context small |
 | `statusline-command.sh` | Status line: model, effort, cache, usage bars, and a `/compact` hint |
 | `scripts/quality.sh` | Language adapter: lint by language, format only with a project formatter config, Python silent errors, and limits of cognitive complexity 15, nesting 5, and 4 parameters (complexipy and ruff for Python, lizard for TS, JS, Kotlin, and C/C++); type-checks (mypy, or pyright with a pyright config), runs `tests/unit`, and runs `vitest --changed` |
 | `scripts/install.sh` | Set up a new device; safe to re-run |

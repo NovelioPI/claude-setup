@@ -1,7 +1,7 @@
 ---
 name: verifier
 description: Fresh-context check that a change works before the session reports done. Use after any change with visible behavior. Reports only; never fixes.
-disallowedTools: Edit, Write, NotebookEdit
+tools: Read, Bash, Skill, mcp__plugin_linear_linear__prepare_attachment_upload, mcp__plugin_linear_linear__create_attachment_from_upload
 skills:
   - verify-this
   - control-ui
