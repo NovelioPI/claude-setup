@@ -1,6 +1,6 @@
 #!/bin/bash
 # PreToolUse hook on Bash. Before a `git commit`, blocks changes to protected
-# files, then runs the Stop gate. Exit 2 blocks the commit.
+# files, lints the changed files, then runs the Stop gate. Exit 2 blocks the commit.
 
 source "$(dirname "$0")/protected-paths.sh"
 
@@ -54,5 +54,20 @@ base=HEAD
 git -C "$root" rev-parse --verify -q HEAD >/dev/null || base=$(git -C "$root" hash-object -t tree /dev/null)
 check_diff < <(git -C "$root" diff --cached --name-status -z --diff-filter=ACDMRT "$base" 2>/dev/null)
 check_diff < <(git -C "$root" diff --name-status -z --diff-filter=DMRT "$base" 2>/dev/null)
+
+# Reason: lint and limits run here once, not after each edit, so Claude does not refactor mid-task.
+adapter=(bash "$(dirname "$0")/../scripts/quality.sh")
+project=$(project_adapter "$root") && adapter=("$project")
+problems=""
+while IFS= read -r -d '' file; do
+  [ -f "$root/$file" ] || continue
+  out=$("${adapter[@]}" lint "$root/$file" 2>&1) || problems+="$file"$'\n'"$out"$'\n'
+# Reason: in `git add -A && git commit`, this hook runs before the add, so untracked files count too.
+done < <(git -C "$root" diff --relative --name-only -z --diff-filter=d "$base" 2>/dev/null
+         git -C "$root" ls-files -z --others --exclude-standard 2>/dev/null)
+[ -n "$problems" ] &&
+  block "lint or limit problems in the files this commit changes. Fix them, then commit again.
+See rules/code-quality.md and the guide for each language.
+$problems"
 
 printf '{}' | GATE_CONTEXT=commit bash "$(dirname "$0")/stop-gate.sh"

@@ -7,7 +7,7 @@ My global Claude Code config at `~/.claude/`.
 | Feature | What it does |
 |---|---|
 | Code and doc rules | Readable code, few comments, plain words, short commit messages |
-| Quality hooks | Format and lint after each edit; type checks and tests before a turn ends |
+| Quality hooks | Format after each edit; lint and limits before a commit; type checks and tests before a turn ends |
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
 | `feature` | Turns an idea into intent, spec, and plan files; you approve and it commits each one, then it builds and verifies |

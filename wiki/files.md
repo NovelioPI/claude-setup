@@ -18,9 +18,9 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `guides/code-quality-dart.md` | Dart form, with Flutter rules |
 | `output-styles/plain-style.md` | Active chat output style: answer first, tables only to compare, simple English |
 | `hooks/block-dangerous-git.sh` | `PreToolUse` guard: blocks unrecoverable git commands |
-| `hooks/post-edit.sh` | `PostToolUse` check: formats and lints the edited file through the language adapter |
+| `hooks/post-edit.sh` | `PostToolUse` step: formats the edited file and applies lint autofixes; never blocks |
 | `hooks/protect-signal.sh` | `PreToolUse` guard: blocks edits to files in a project's `.claude/protected-paths`, or to test files by name when no list exists |
-| `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, then runs the stop gate |
+| `hooks/commit-gate.sh` | `PreToolUse` guard: blocks a commit that changes, deletes, or renames protected files, or whose changed files fail lint or limits, then runs the stop gate |
 | `hooks/protected-paths.sh` | Shared path check for the two guards above |
 | `hooks/explorer-readonly.sh` | `PreToolUse` guard for the `explorer` agent: allows read-only Bash commands |
 | `hooks/stop-gate.sh` | `Stop` check: runs the adapter's `check` on changed files; also blocks a new suppression comment without `Reason:` on its line; blocks a turn once, and a commit every time; skips when nothing changed since its last run, but a commit only after a pass |
