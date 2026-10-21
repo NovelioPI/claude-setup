@@ -10,6 +10,7 @@ My global Claude Code config at `~/.claude/`.
 | Quality hooks | Format after each edit; lint and limits before a commit; type checks and tests before a turn ends |
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
+| `cc` alias | `cc` starts `claude --dangerously-skip-permissions`; deny rules and blocking hooks still apply |
 | `feature` | Turns an idea into intent, spec, and plan files; you approve and it commits each one, then it builds and verifies |
 | Project tiers | A `Tier: small` or `Tier: large` line in the project `CLAUDE.md`; `rules/project-tiers.md` says what each uses. `small` writes intent and plan out of git; `large` runs the full `feature` skill with Linear |
 | Linear | Off by default; on in each `large` project. The `feature` skill sets each issue's status through the Linear MCP |
@@ -30,7 +31,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
    git clone git@github.com:NovelioPI/claude-setup.git ~/.claude
    cp -r ~/.claude.bak/projects ~/.claude/ 2>/dev/null
    ```
-3. Run the installer. It checks every tool and installs what needs no sudo:
+3. Run the installer. It checks every tool, installs what needs no sudo, and adds the `cc` alias to your shell rc file:
    ```bash
    ~/.claude/scripts/install.sh
    ```
@@ -40,7 +41,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 
 ## Workflow
 
-Start `claude` in the repo. Set its tier once: `Tier: small` or `Tier: large` in the project `CLAUDE.md`.
+Start `claude`, or `cc` to skip permission prompts, in the repo. Set its tier once: `Tier: small` or `Tier: large` in the project `CLAUDE.md`.
 
 1. Describe the task. For a feature, the `feature` skill writes intent, spec, and plan, and you approve each one.
 2. The agent writes the code and runs the checks.

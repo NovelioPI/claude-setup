@@ -14,4 +14,6 @@ The script is safe to re-run. It installs what needs no sudo and prints the comm
 | `claude` | the plugins `typescript-lsp`, `context7`, and `linear` | yes, by `claude plugin install`; Linear is then turned off for the user and on in each `large` project, which needs `/mcp` sign-in |
 | `gh`, `rg` | pull requests and search | no, optional |
 
+It adds `alias cc='claude --dangerously-skip-permissions'` to `~/.zshrc` when the shell is zsh, or `~/.bashrc` otherwise, once.
+
 It also tests both directions of the git guard and the context floor in `scripts/probe-context-floor.sh`.

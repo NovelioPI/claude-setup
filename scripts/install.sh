@@ -93,6 +93,17 @@ else
 fi
 
 echo
+echo "Shell alias"
+case "${SHELL:-}" in */zsh) rc="$HOME/.zshrc" ;; *) rc="$HOME/.bashrc" ;; esac
+CC_ALIAS="alias cc='claude --dangerously-skip-permissions'"
+if grep -qxF "$CC_ALIAS" "$rc" 2>/dev/null; then
+  say "alias cc" "already in $rc"
+else
+  printf '\n%s\n' "$CC_ALIAS" >> "$rc"
+  say "alias cc" "added to $rc; open a new shell"
+fi
+
+echo
 echo "Permissions"
 chmod +x hooks/*.sh statusline-command.sh scripts/*.sh 2>/dev/null
 say "chmod +x" "hooks, status line, scripts"
