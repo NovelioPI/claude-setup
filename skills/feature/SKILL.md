@@ -7,6 +7,8 @@ description: Turn an idea into docs/features/<slug>/ with intent.md, spec.md, an
 
 Each feature lives in `docs/features/<slug>/` in the project. Fill the templates in `templates/` and follow `rules/doc-style.md`.
 
+In a `small` tier project, `rules/project-tiers.md` overrides this skill: run Intent and Plan only, with no Linear issue and no commit of these files.
+
 | Step | Writes | Then | Linear status |
 |---|---|---|---|
 | 1 Intent | `intent.md` | Stop. The user accepts it. Commit it | Create the issue: Planning |

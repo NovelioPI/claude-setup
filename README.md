@@ -11,7 +11,8 @@ My global Claude Code config at `~/.claude/`.
 | Guards | Block unrecoverable git commands and edits to protected test files |
 | Plain chat style | Answer first, tables over prose, short sentences |
 | `feature` | Turns an idea into intent, spec, and plan files; you approve and it commits each one, then it builds and verifies |
-| Linear | Tracks every feature across repos; the `feature` skill sets each issue's status through the Linear MCP |
+| Project tiers | A `Tier: small` or `Tier: large` line in the project `CLAUDE.md`; `rules/project-tiers.md` says what each uses. `small` writes intent and plan out of git; `large` runs the full `feature` skill with Linear |
+| Linear | Off by default; on in each `large` project. The `feature` skill sets each issue's status through the Linear MCP |
 | `attribution` | `/attribution on` or `off` turns the Claude co-author trailer on or off |
 | Verification | `verify-this` gives VERIFIED, NOT VERIFIED, or INCONCLUSIVE from a fresh subagent; `control-ui` and `control-cli` drive the app |
 | Project verifier | `/create-verification-skill` writes a `verify-<app>` skill for each project |
@@ -39,7 +40,7 @@ This repo **is** `~/.claude`. Clone it into place; do not copy files out of it.
 
 ## Workflow
 
-Start `claude` in the repo.
+Start `claude` in the repo. Set its tier once: `Tier: small` or `Tier: large` in the project `CLAUDE.md`.
 
 1. Describe the task. For a feature, the `feature` skill writes intent, spec, and plan, and you approve each one.
 2. The agent writes the code and runs the checks.

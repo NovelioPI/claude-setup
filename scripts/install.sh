@@ -85,7 +85,9 @@ if have claude; then
     claude plugin install "$plugin" >/dev/null 2>&1 && say "plugin" "$plugin" ||
       block "plugin" "claude plugin install $plugin"
   done
-  say "linear" "after restart, run /mcp and sign in to Linear"
+  # Reason: install turns a plugin on for every project, but Linear belongs only to large-tier projects.
+  claude plugin disable -s user linear@claude-plugins-official >/dev/null 2>&1
+  say "linear" "off by default; a large-tier project turns it on, then run /mcp and sign in"
 else
   say "plugins" "claude CLI not found; plugins are not installed"
 fi

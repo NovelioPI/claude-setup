@@ -9,7 +9,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 REPO=$(pwd)
 FAILS=0
-EXPECTED="code-quality.md commit-style.md doc-style.md plain-words.md verification.md"
+EXPECTED="code-quality.md commit-style.md doc-style.md plain-words.md project-tiers.md verification.md"
 MARKER="ZZFLOOR-$$-CANARY"
 
 say()  { printf '  %-12s %s\n' "$1" "$2"; }
@@ -26,7 +26,7 @@ echo "Context floor"
 
 actual=$(ls -1 "$REPO/rules" | LC_ALL=C sort | tr '\n' ' ' | sed 's/ $//')
 if [ "$actual" = "$EXPECTED" ]; then
-  say "rules/" "5 files, as expected"
+  say "rules/" "6 files, as expected"
 else
   fail "rules/" "expected [$EXPECTED], found [$actual]"
 fi

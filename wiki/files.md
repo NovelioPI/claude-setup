@@ -12,6 +12,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 | `rules/plain-words.md` | Word replacements for chat text and commit messages |
 | `rules/commit-style.md` | Commit subject, body, word, and trailer rules |
 | `rules/doc-style.md` | Style for a document a human reads |
+| `rules/project-tiers.md` | What a `small` and a `large` project use: intent and plan files, the `feature` skill, Linear, workflows |
 | `rules/verification.md` | Proof, test, and independent-check rules, adapted from pstack principles (MIT) |
 | `guides/code-quality-python.md` | Python form of those rules |
 | `guides/code-quality-typescript.md` | TypeScript and JavaScript form |
@@ -42,7 +43,7 @@ What each file in this repo does, how it loads, and which skills are tracked.
 
 ## How rules and guides load
 
-Claude Code auto-loads every file under `rules/` with no import line needed. `plain-words.md` and `commit-style.md` load in every session. `code-quality.md` and `doc-style.md` have `paths:` frontmatter, so each loads only when Claude reads or edits a matching code or Markdown file. A Bash heredoc write does not trigger them. `guides/` is never auto-loaded: a pointer in `rules/code-quality.md` sends the agent there on its first edit in that language.
+Claude Code auto-loads every file under `rules/` with no import line needed. `plain-words.md`, `commit-style.md`, `verification.md`, and `project-tiers.md` load in every session. `code-quality.md` and `doc-style.md` have `paths:` frontmatter, so each loads only when Claude reads or edits a matching code or Markdown file. A Bash heredoc write does not trigger them. `guides/` is never auto-loaded: a pointer in `rules/code-quality.md` sends the agent there on its first edit in that language.
 
 An output style file does nothing on its own. `settings.json` activates one with `"outputStyle": "plain-style"`.
 
