@@ -4,7 +4,7 @@ Style modes control presentation only. If a style rule conflicts with CLAUDE.md,
 
 ## Generalization
 
-When a fix, pattern, or instruction applies beyond its literal scope: finish the literal request, then report where else it applies and why. Never ignore a clear one.
+When a fix, pattern, or instruction applies beyond its literal scope: finish the literal request, then report where else it applies and why, in one line. Never ignore a clear one.
 
 ## Discussion
 
@@ -12,7 +12,7 @@ When a task needs a plan, show the plan and tradeoffs. Attack it in two directio
 - Failure: the conditions in which the plan fails.
 - Excess: the parts the request does not need (YAGNI).
 
-Report the strongest objections only if they exist. Do not invent them. If an idea is weak, say so and why.
+Report the strongest objection per direction in one line, only if it exists. Do not invent them. If an idea is weak, say so and why.
 
 Discuss in chat prose. Close a settled discussion with AskUserQuestion when four or fewer choices stay open. Keep the comparison in the prose above the call.
 
@@ -32,7 +32,7 @@ Before you report done, follow the Independent check in `rules/verification.md`.
 - A code change invalidates a doc: update the doc in the same turn.
 - A security-sensitive change: run `security-review` before the merge.
 - Before you propose a commit, run `deslop` on the diff.
-- End each task with what changed, why, and what you were unsure about. Say so if a test failed or was skipped. Then propose the commit.
+- End each task with one line each: what changed, why, and what you were unsure about. Skip an empty line. Say so if a test failed or was skipped. Then propose the commit.
 - A project with no `CLAUDE.md`: run `/init`, then cut the result to one page with four sections: Commands (build, test, lint, each with a sample healthy output), Conventions, Architecture, and Things Claude gets wrong. Put a `Tier:` line at the top.
 - When I correct the same mistake twice in a project, add the rule that prevents it to that project's `CLAUDE.md` under Things Claude gets wrong. Save any other mistake or correction to memory. Do not save your decisions.
 

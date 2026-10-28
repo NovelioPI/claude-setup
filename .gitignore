@@ -40,6 +40,8 @@ remote-settings.json.signature*.json
 skills/*
 !skills/feature/
 !skills/feature/**
+!skills/elaborate/
+!skills/elaborate/**
 !skills/tdd/
 !skills/tdd/**
 !skills/attribution/

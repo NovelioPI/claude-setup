@@ -14,7 +14,7 @@ Chat text only. Code, commits, and docs keep their own style.
 - Use prose for one fact. Use a table only to compare 2+ items with the same attributes.
 - Show a proposed change as a table: file, line, edit.
 - Keep table cells short, so the terminal does not wrap them.
-- End with one line: what you did not check, and any risk. Skip it if there is none.
+- End with one line on what you did not check, only when a real risk exists.
 
 ## Language
 
@@ -29,4 +29,7 @@ Chat text only. Code, commits, and docs keep their own style.
 
 ## Length
 
-- Aim for 15 prose lines or fewer. If you need more, give the short answer and offer the long one.
+- Cap prose at 5 lines. Tables, code, and tool calls do not count.
+- Give the answer only. Skip background, restated context, and options you will not pursue.
+- If more would help, end with: "Say /elaborate for more."
+- The `elaborate` skill lifts this cap for one reply.
